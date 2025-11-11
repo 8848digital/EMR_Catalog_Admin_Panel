@@ -15,12 +15,12 @@
             <h2>Configuration Management</h2>
             <form id="filterForm">
                 <div class="form-row">
-
                     <div class="form-group">
                         <label for="operation">Select Operation:</label>
                         <select id="operation" name="operation" required>
                             <option value="">--Select Operation--</option>
                             <option value="add_custMst">Manage Customers</option>
+                            <option value="add_email">Manage Email</option>
                         </select>
                     </div>
                     <div class="form-group submit-group">
@@ -37,7 +37,7 @@
             <div class="section-header">
                 <h3 id="dataTitle">Records</h3>
                 <div class="button-group">
-                    <button type="button" id="updateBtn" class="update-btn hidden">Save</button>
+                    <button type="button" id="addBtn" class="btn-primary hidden">Add Data</button>
                 </div>
             </div>
             <div class="table-container">
@@ -56,8 +56,6 @@
         <div class="spinner"></div>
     </div>
 
-
-    <!-- Load all scripts in this order -->
     <script src="/js/config.js"></script>
 </body>
 
