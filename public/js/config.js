@@ -18,9 +18,11 @@ const ConfigManager = (() => {
   ];
 
   const EMAIL_COLUMNS = [
-    { key: 'PDesc', label: 'Mail To/CC', editable: true, type: 'select', options: ['to', 'cc'], newRowOnly: true },
-    { key: 'PDesc225', label: 'Email ID', editable: true, type: 'text' },
-    { key: 'yPIdNo', label: 'ID', hidden: true }
+    { key: 'PTyp', label: 'Type', hidden: true },
+    { key: 'PMCd', label: 'Code', hidden: true },
+    { key: 'PSCd', label: 'Sequence', width: '100px' },
+    { key: 'PDesc', label: 'Mail To/CC', width: '120px' },
+    { key: 'PDesc225', label: 'Email ID', editable: true, type: 'text', width: '300px' }
   ];
 
   // Initialize
@@ -66,6 +68,11 @@ const ConfigManager = (() => {
     }
   }
 
+  // Generate unique ID for email rows using PDesc + PDesc225
+  function generateEmailRowId(row) {
+    return `${row.PDesc}|${row.PDesc225}`;
+  }
+
   // Add new email row inline
   function addNewEmailRow() {
     // Check if there's already a new row being added
@@ -82,28 +89,26 @@ const ConfigManager = (() => {
     const cells = visibleColumns.map(col => {
       const widthStyle = col.width ? `style="min-width: ${col.width};"` : '';
       
-      if (col.readonly && col.defaultValue) {
-        return `<td ${widthStyle}>${col.defaultValue}</td>`;
-      } else if (col.editable || col.newRowOnly) {
-        if (col.type === 'text') {
-          return `<td ${widthStyle}><input type="text" class="edit-field" 
-                    data-field="${col.key}" value="" 
-                    maxlength="225" style="width: 100%; background-color: white;"></td>`;
-        } else if (col.type === 'select' && col.options) {
-          return `<td ${widthStyle}>
-                    <select class="edit-field" data-field="${col.key}" style="background-color:white;">
-                      <option value="">--Select--</option>
-                      ${col.options.map(opt => 
-                        `<option value="${opt}">${opt}</option>`
-                      ).join('')}
-                    </select>
-                  </td>`;
-        }
+      if (col.key === 'PDesc') {
+        // PDesc field - dropdown for new row
+        return `<td ${widthStyle}>
+                  <select class="edit-field" data-field="${col.key}" style="background-color:white;">
+                    <option value="">--Select--</option>
+                    <option value="to">to</option>
+                    <option value="cc">cc</option>
+                  </select>
+                </td>`;
+      } else if (col.key === 'PDesc225') {
+        // Email ID field - text input
+        return `<td ${widthStyle}><input type="text" class="edit-field" 
+                  data-field="${col.key}" value="" 
+                  maxlength="225" style="width: 100%; background-color: white;"></td>`;
       }
+      // PSCd field - empty for new row (will be auto-generated)
       return `<td ${widthStyle}></td>`;
     }).join('');
     
-    const newRow = `<tr data-is-new="true" data-id-key="yPIdNo" style="background-color: #e8e6dfff;">${cells}
+    const newRow = `<tr data-is-new="true" style="background-color: #e8e6dfff;">${cells}
       <td class="action-cell">
         <button class="action-btn save-btn" onclick="ConfigManager.saveNewRow()" title="Save">💾</button>
         <button class="action-btn cancel-btn" onclick="ConfigManager.cancelNewRow()" title="Cancel">❌</button>
@@ -139,13 +144,13 @@ const ConfigManager = (() => {
     
     // Validate
     if (!pDesc) {
-      showMessage('Please select Description (to/cc)', 'error');
+      showMessage('Please select Mail To/CC (to or cc)', 'error');
       pDescSelect.focus();
       return;
     }
     
     if (!pDesc225) {
-      showMessage('Please enter Description 225 (email address)', 'error');
+      showMessage('Please enter Email ID', 'error');
       pDesc225Input.focus();
       return;
     }
@@ -245,7 +250,7 @@ const ConfigManager = (() => {
       if (result.success) {
         currentData = result.data || [];
         currentColumns = EMAIL_COLUMNS;
-        currentIdKey = 'yPIdNo';
+        currentIdKey = 'emailUnique'; // Use unique key based on PDesc + PDesc225
         renderTable(currentData, currentColumns, currentIdKey, true);
         document.getElementById('dataTitle').textContent = 'Email Configuration Management';
         document.getElementById('resultsSection').classList.remove('hidden');
@@ -301,17 +306,21 @@ const ConfigManager = (() => {
   }
 
   // Update email
-  async function updateEmail(rowId, pDesc225) {
+  async function updateEmail(uniqueId, pDesc225) {
     showLoading(true);
     const modUsr = sessionStorage.getItem('modUsr') || '';
     
-    try {  
+    try {
+      // Parse unique ID (PDesc|PDesc225)
+      const [PDesc, OldPDesc225] = uniqueId.split('|');
+      
       const response = await fetch(`${BASE_URL}/updateEmail`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
-          yPIdNo: parseInt(rowId, 10),
+          PDesc,
           PDesc225: pDesc225,
+          OldPDesc225: OldPDesc225,
           modUsr: modUsr 
         })
       });
@@ -327,6 +336,8 @@ const ConfigManager = (() => {
       
       if (result.success) {
         showMessage('Email configuration updated successfully.', 'success');
+        // Reload data to reflect changes
+        await loadEmailData();
         return true;
       } else {
         showMessage(result.error || 'Failed to update email configuration', 'error');
@@ -374,12 +385,14 @@ const ConfigManager = (() => {
     }
     
     tableBody.innerHTML = data.map(row => {
-      const rowIdValue = row[idKey];
+      // Generate unique ID for email rows (PDesc|PDesc225)
+      const rowIdValue = idKey === 'emailUnique' ? generateEmailRowId(row) : row[idKey];
+      
       const cells = visibleColumns.map(col => {
         const value = row[col.key] ?? '';
         const widthStyle = col.width ? `style="min-width: ${col.width};"` : '';
         
-        if (col.editable && !col.newRowOnly) {
+        if (col.editable) {
           if (col.type === 'number') {
             return `<td ${widthStyle}><input type="number" step="0.01" min="0" class="edit-field" 
                       data-field="${col.key}" value="${value}" 
@@ -435,17 +448,17 @@ const ConfigManager = (() => {
     });
     editingRows.set(rowId, originalValues);
     
-    // Enable editing
+    // Enable editing for editable fields only
     inputs.forEach(input => {
       input.disabled = false;
       input.classList.add('editing');
     });
     
-    const firstInput = row.querySelector('.edit-field');
-    if (firstInput) {
-      firstInput.focus();
-      if (firstInput.type === 'number' || firstInput.tagName === 'INPUT') {
-        firstInput.select();
+    const firstEditableInput = Array.from(inputs).find(input => !input.disabled);
+    if (firstEditableInput) {
+      firstEditableInput.focus();
+      if (firstEditableInput.type === 'number' || firstEditableInput.tagName === 'INPUT') {
+        firstEditableInput.select();
       }
     }
     
@@ -533,22 +546,24 @@ const ConfigManager = (() => {
   }
 
   // Save email row
-  async function saveEmailRow(row, rowId) {
+  async function saveEmailRow(row, uniqueId) {
     const pDesc225Input = row.querySelector('input[data-field="PDesc225"]');
     const pDesc225 = pDesc225Input.value.trim();
     
     // Validate PDesc225
     if (!pDesc225) {
-      showMessage('Description 225 is required', 'error');
+      showMessage('Email ID is required', 'error');
       pDesc225Input.focus();
       return;
     }
     
     // Save to server
-    const success = await updateEmail(rowId, pDesc225);
+    const success = await updateEmail(uniqueId, pDesc225);
     
     if (success) {
-      disableEditMode(row, rowId);
+      // Don't disable edit mode, loadEmailData() will refresh the table
+      // Just clear the editing state
+      editingRows.delete(uniqueId);
     }
   }
 
