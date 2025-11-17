@@ -51,10 +51,16 @@ async function updateCustMstData(conn) {
 
     const mulValue = parseFloat(yCmMulBy);
 
-    // must be ≥ 1
-    if (mulValue < 1) {
-      throw new Error('Multiplier value cannot be less than 1');
+    // Check if trying to set multiplier to exactly 1
+    if (mulValue === 1) {
+      throw new Error('Cannot set multiplier to 1. Multiplier must be greater than 1.');
     }
+
+    // must be > 1 (not >= 1)
+    if (mulValue <= 1) {
+      throw new Error('Multiplier value must be greater than 1');
+    }
+    
     // must have at most 2 decimal places
     if (!/^\d+(\.\d{1,2})?$/.test(yCmMulBy)) {
       throw new Error('Multiplier can have up to 2 decimal places only');

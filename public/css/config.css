@@ -25,6 +25,30 @@ body {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
   border: 1px solid #e2e8f0;
   margin-bottom: 24px;
+  position: relative;
+}
+/* Logout Link */
+.logout-container {
+  position: absolute;
+  top: 20px;
+  right: 24px;
+  z-index: 10;
+}
+
+.logout-link {
+  color: #dc2626;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: 600;
+  transition: color 0.2s ease;
+  display: inline-block;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.logout-link:hover {
+  color: #b91c1c;
+  text-decoration: underline;
 }
 
 h2 {
@@ -380,6 +404,12 @@ tr.editing-row {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .logout-container {
+    position: static;
+    text-align: right;
+    margin-bottom: 16px;
+  }
+
   .form-row {
     flex-direction: column;
     gap: 12px;

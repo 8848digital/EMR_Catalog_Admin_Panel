@@ -7,7 +7,6 @@ const ConfigManager = (() => {
   let currentIdKey = '';
   
   const CUSTOMER_COLUMNS = [
-    { key: 'yCmId', label: 'Customer ID' },
     { key: 'yCmCd', label: 'Customer Code' },
     { key: 'yCmName', label: 'Name' },
     { key: 'yCmEmail', label: 'Email' },
@@ -20,7 +19,6 @@ const ConfigManager = (() => {
   const EMAIL_COLUMNS = [
     { key: 'PTyp', label: 'Type', hidden: true },
     { key: 'PMCd', label: 'Code', hidden: true },
-    { key: 'PSCd', label: 'Sequence', width: '100px' },
     { key: 'PDesc', label: 'Mail To/CC', width: '120px' },
     { key: 'PDesc225', label: 'Email ID', editable: true, type: 'text', width: '300px' }
   ];
@@ -40,6 +38,16 @@ const ConfigManager = (() => {
     if (addBtn) {
       addBtn.addEventListener('click', handleAddData);
     }
+
+    const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+      logoutBtn.addEventListener('click', handleLogout);
+    }
+  }
+
+  function handleLogout() {
+    sessionStorage.removeItem('modUsr');
+    window.location.href = '/login';
   }
 
   // Handle form submission
@@ -99,12 +107,10 @@ const ConfigManager = (() => {
                   </select>
                 </td>`;
       } else if (col.key === 'PDesc225') {
-        // Email ID field - text input
         return `<td ${widthStyle}><input type="text" class="edit-field" 
                   data-field="${col.key}" value="" 
                   maxlength="225" style="width: 100%; background-color: white;"></td>`;
       }
-      // PSCd field - empty for new row (will be auto-generated)
       return `<td ${widthStyle}></td>`;
     }).join('');
     
@@ -114,7 +120,6 @@ const ConfigManager = (() => {
         <button class="action-btn cancel-btn" onclick="ConfigManager.cancelNewRow()" title="Cancel">❌</button>
       </td></tr>`;
     
-    // Insert at the top of the table
     tableBody.insertAdjacentHTML('afterbegin', newRow);
     
     // Focus on the first editable field
@@ -394,7 +399,7 @@ const ConfigManager = (() => {
         
         if (col.editable) {
           if (col.type === 'number') {
-            return `<td ${widthStyle}><input type="number" step="0.01" min="0" class="edit-field" 
+            return `<td ${widthStyle}><input type="text" class="edit-field" 
                       data-field="${col.key}" value="${value}" 
                       oninput="ConfigManager.validateDecimalInput(this)" disabled></td>`;
           } else if (col.type === 'text') {
@@ -457,7 +462,7 @@ const ConfigManager = (() => {
     const firstEditableInput = Array.from(inputs).find(input => !input.disabled);
     if (firstEditableInput) {
       firstEditableInput.focus();
-      if (firstEditableInput.type === 'number' || firstEditableInput.tagName === 'INPUT') {
+      if (firstEditableInput.type === 'text') {
         firstEditableInput.select();
       }
     }
@@ -524,8 +529,23 @@ const ConfigManager = (() => {
       return;
     }
     
-    if (isNaN(multiplierValue) || parseFloat(multiplierValue) < 1) {
-      showMessage('Multiplier must be 1 or greater', 'error');
+    const numValue = parseFloat(multiplierValue);
+    
+    if (isNaN(numValue)) {
+      showMessage('Multiplier must be a valid number', 'error');
+      multiplierInput.focus();
+      return;
+    }
+    
+    // Check if trying to set multiplier to exactly 1
+    if (numValue === 1) {
+      showMessage('Cannot set multiplier to 1. Multiplier must be greater than 1.', 'error');
+      multiplierInput.focus();
+      return;
+    }
+    
+    if (numValue < 1) {
+      showMessage('Multiplier must be greater than 1', 'error');
       multiplierInput.focus();
       return;
     }
@@ -587,35 +607,68 @@ const ConfigManager = (() => {
     editingRows.delete(rowId);
   }
 
-  // Validate decimal input
+  // Validate decimal input - Fix for cursor position issue
   function validateDecimalInput(input) {
+    // Save cursor position
+    const cursorPosition = input.selectionStart;
     let value = input.value;
+    
     if (value === '') return;
     
-    // Remove invalid characters
+    // Store the original length
+    const originalLength = value.length;
+    
+    // Allow negative sign at the start (temporary, will be validated later)
+    const hasNegative = value.startsWith('-');
+    
+    // Remove invalid characters but keep valid ones (digits, decimal point, negative sign)
     value = value.replace(/[^\d.-]/g, '');
+    
+    // Ensure only one decimal point
+    const parts = value.split('.');
+    if (parts.length > 2) {
+      value = parts[0] + '.' + parts.slice(1).join('');
+    }
+    
+    // Ensure only one negative sign at the start
+    if (value.indexOf('-') > 0) {
+      value = value.replace(/-/g, '');
+      if (hasNegative) value = '-' + value;
+    }
     
     // For customer multiplier, enforce minimum value of 1
     if (currentOperation === 'add_custMst') {
-      if (parseFloat(value) < 1 && value !== '' && value !== '-') {
-        value = '1';
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue) && numValue < 1 && value !== '' && value !== '-' && value !== '.') {
+        // Don't auto-correct to 1, just prevent values less than 1
+        if (numValue <= 0) {
+          value = '1';
+        }
       }
     } else {
       // For email values, enforce minimum value of 0
-      if (parseFloat(value) < 0 && value !== '' && value !== '-') {
+      const numValue = parseFloat(value);
+      if (!isNaN(numValue) && numValue < 0 && value !== '' && value !== '-') {
         value = '0';
       }
     }
     
     // Limit to 2 decimal places
     if (value.includes('.')) {
-      const parts = value.split('.');
-      if (parts[1] && parts[1].length > 2) {
-        value = parts[0] + '.' + parts[1].substring(0, 2);
+      const decimalParts = value.split('.');
+      if (decimalParts[1] && decimalParts[1].length > 2) {
+        value = decimalParts[0] + '.' + decimalParts[1].substring(0, 2);
       }
     }
     
+    // Calculate new cursor position
+    const lengthDiff = value.length - originalLength;
+    const newCursorPosition = cursorPosition + lengthDiff;
+    
     input.value = value;
+    
+    // Restore cursor position
+    input.setSelectionRange(newCursorPosition, newCursorPosition);
   }
 
   // Show loading overlay
