@@ -5,7 +5,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "build": "npx esbuild app.js --bundle --minify --platform=node --outfile=dist/app.js --external:typescript"
   },
   "keywords": [],
   "author": "",

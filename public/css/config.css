@@ -27,6 +27,7 @@ body {
   margin-bottom: 24px;
   position: relative;
 }
+
 /* Logout Link */
 .logout-container {
   position: absolute;
@@ -179,12 +180,15 @@ button:disabled {
 .table-container {
   overflow-x: auto;
   width: 100%;
+  margin: 20px 0;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
   background: white;
+  table-layout: auto;
+  min-width: 800px;
 }
 
 th {
@@ -195,6 +199,8 @@ th {
   color: #475569;
   border-bottom: 1px solid #e2e8f0;
   font-size: 13px;
+  min-width: 120px;
+  white-space: nowrap;
 }
 
 td {
@@ -203,6 +209,8 @@ td {
   font-size: 13px;
   color: #334155;
   vertical-align: middle;
+  min-width: 120px;
+  white-space: nowrap;
 }
 
 .readonly-cell {
@@ -245,6 +253,7 @@ tr.editing-row {
   font-size: 13px;
   background-color: #f1f5f9;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-width: 150px;
 }
 
 .edit-field:disabled {
@@ -267,18 +276,32 @@ tr.editing-row {
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
 }
 
+.edit-field select {
+  width: 100% !important;
+  box-sizing: border-box;
+  min-width: 150px;
+}
+
 /* Action Buttons */
+.action-cell {
+  white-space: nowrap;
+  min-width: 150px;
+  width: 150px;
+}
+
 .action-buttons {
   display: flex;
   gap: 6px;
   align-items: center;
   justify-content: center;
+  flex-wrap: nowrap;
 }
 
 .action-btn,
 .edit-btn,
 .save-btn,
-.cancel-btn {
+.cancel-btn,
+.delete-btn {
   background-color: transparent;
   border: none;
   font-size: 20px;
@@ -287,21 +310,27 @@ tr.editing-row {
   cursor: pointer;
   min-width: 30px;
   height: 30px;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   transition: background-color 0.2s ease;
   line-height: 1;
+  vertical-align: middle;
 }
 
 .edit-btn:hover,
 .save-btn:hover,
-.cancel-btn:hover {
+.cancel-btn:hover,
+.delete-btn:hover {
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.action-btn.hidden {
-  display: none;
+.action-btn.hidden,
+.edit-btn.hidden,
+.save-btn.hidden,
+.cancel-btn.hidden,
+.delete-btn.hidden {
+  display: none !important;
 }
 
 /* Loading Overlay */
@@ -338,6 +367,104 @@ tr.editing-row {
   100% {
     transform: rotate(360deg);
   }
+}
+
+/* Confirmation Dialog */
+.confirm-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.confirm-dialog.hidden {
+  display: none;
+}
+
+.confirm-content {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.confirm-content h3 {
+  font-size: 1.5rem;
+  color: #1e293b;
+  margin-bottom: 15px;
+  font-weight: 600;
+}
+
+.confirm-content p {
+  font-size: 1rem;
+  color: #475569;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+.confirm-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.confirm-btn {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: auto;
+}
+
+.confirm-btn:hover {
+  background: #b91c1c;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+}
+
+.cancel-btn {
+  background: #94a3b8;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  height: auto;
+}
+
+.cancel-btn:hover {
+  background: #64748b;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
 }
 
 /* Messages */
@@ -402,7 +529,24 @@ tr.editing-row {
   background-color: #fff5f5;
 }
 
+/* Results section width */
+#resultsSection {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
 /* Responsive Design */
+@media screen and (max-width: 1200px) {
+  .table-container {
+    overflow-x: scroll;
+  }
+  
+  table {
+    min-width: 100%;
+  }
+}
+
 @media (max-width: 768px) {
   .logout-container {
     position: static;
@@ -452,5 +596,19 @@ tr.editing-row {
   .cancel-btn {
     font-size: 18px;
     padding: 4px;
+  }
+
+  .confirm-content {
+    padding: 20px;
+    max-width: 90%;
+  }
+
+  .confirm-buttons {
+    flex-direction: column;
+  }
+
+  .confirm-btn,
+  .cancel-btn {
+    width: 100%;
   }
 }
