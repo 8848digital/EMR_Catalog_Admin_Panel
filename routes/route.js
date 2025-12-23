@@ -1,11 +1,22 @@
 const express = require('express');
+const multer = require('multer');
 const { transactionalControllerWrapper } = require('../utils/controllerWrapper');
 const { loginUser } = require('../controllers/authController');
 
 const router = express.Router();
 
+// Multer configuration for file uploads
+const upload = multer({ 
+  dest: 'uploads/',
+  limits: {
+    fileSize: 10 * 1024 * 1024 // 10MB limit
+  }
+});
+
+// Auth routes
 router.post('/login', transactionalControllerWrapper(loginUser));
 
+// Dynamic controller routes
 const { 
   getPMCdList,
   getPSCdList, 
@@ -29,5 +40,22 @@ router.get('/pmcdList', transactionalControllerWrapper(getPMCdList));
 router.get('/pscdList', transactionalControllerWrapper(getPSCdList));
 router.get('/newCategoryList', transactionalControllerWrapper(getNewCategoryList));
 router.post('/bulkSave', transactionalControllerWrapper(bulkSaveData));
+
+// File management routes
+const {
+  uploadFile,
+  deleteFile,
+  replaceFile,
+  getBasePath
+} = require('../controllers/fileController');
+
+// File routes - these don't use transactionalControllerWrapper
+router.post('/uploadFile', upload.array('files'), uploadFile);
+router.post('/deleteFile', deleteFile);
+router.post('/replaceFile', upload.array('files'), replaceFile);
+router.get('/getBasePath', getBasePath);
+
+const { getAdvEvents } = require('../controllers/getAdvEvents');
+router.get('/getAdvEvents', transactionalControllerWrapper(getAdvEvents));
 
 module.exports = router;

@@ -23,7 +23,7 @@ const ConfigManager = (() => {
     'add_met_kt': metKtOperation,
     'add_ctg_filter': ctgFilterOperation,
     'add_rg_filter': rgFilterOperation,
-    // 'add_adv_event': advEventOperation,
+    'add_adv_event': advEventOperation,
   };
 
   function init() {

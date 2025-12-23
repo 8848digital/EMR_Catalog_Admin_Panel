@@ -2,14 +2,13 @@ const sql = require('mssql');
 
 module.exports = {
     label: 'Manage Diamond Grade',
-    useDatabase: 'yDbKc', 
 
     // Get PMCd dropdown list from KC database
     getPMCdList: {
         selectClause: `
             PSCd
         `,
-        from: (masterDb) => `[${masterDb}].[dbo].[Param]`,
+        from: `[${process.env.DB_DATABASE}].[dbo].[Param]`,
         whereConditions: ["PTyp = @PTyp", "PMCd = @PMCd"],
         orderByClause: "PSCd",
         inputTypeMap: {
@@ -20,7 +19,6 @@ module.exports = {
             PTyp: 'GRDCD',
             PMCd: 'DIA'
         },
-        useDatabase: 'DB_DATABASEKc'  
     },
 
     getData: {
@@ -29,7 +27,7 @@ module.exports = {
             PMCd,
             PDesc
         `,
-        from: (dbName) => `[${dbName}].[dbo].[yParam]`,
+        from:  `[${process.env.yDb}].[dbo].[yParam]`,
         whereConditions: ["PTyp = @PTyp"],
         orderByClause: "PMCd",
         inputTypeMap: {
@@ -71,7 +69,7 @@ module.exports = {
                 const checkDuplicateQuery = {
                     rawQuery: `
                         SELECT COUNT(*) as Count
-                        FROM [${process.env.yDbKc}].[dbo].[yParam]
+                        FROM [${process.env.yDb}].[dbo].[yParam]
                         WHERE PTyp = 'yDiaGrd' 
                           AND PMCd = @NewPMCd
                     `,
@@ -91,7 +89,7 @@ module.exports = {
 
             const updateQuery = {
                 rawQuery: `
-                    UPDATE [${process.env.yDbKc}].[dbo].[yParam]
+                    UPDATE [${process.env.yDb}].[dbo].[yParam]
                     SET 
                         PMCd = @NewPMCd,
                         PDesc = @NewPDesc,
@@ -156,7 +154,7 @@ module.exports = {
             const checkDuplicateQuery = {
                 rawQuery: `
                     SELECT COUNT(*) as Count
-                    FROM [${process.env.yDbKc}].[dbo].[yParam]
+                    FROM [${process.env.yDb}].[dbo].[yParam]
                     WHERE PTyp = 'yDiaGrd' 
                       AND PMCd = @PMCd
                 `,
@@ -177,7 +175,7 @@ module.exports = {
             const getPValue3Query = {
                 rawQuery: `
                     SELECT ISNULL(MAX(CAST(PValue3 AS INT)), 0) + 1 AS NextPValue3
-                    FROM [${process.env.yDbKc}].[dbo].[yParam]
+                    FROM [${process.env.yDb}].[dbo].[yParam]
                     WHERE PTyp = 'yDiaGrd'
                 `,
                 inputTypeMap: {},
@@ -190,7 +188,7 @@ module.exports = {
             // Insert new record into 8848EmrKc
             const insertQuery = {
                 rawQuery: `
-                    INSERT INTO [${process.env.yDbKc}].[dbo].[yParam]
+                    INSERT INTO [${process.env.yDb}].[dbo].[yParam]
                     (PTyp, PMCd, PSCd, PDesc, PDesc225, PValue, PNum, PValue1, PNum1, PValue2, 
                      ModUsr, ModDt, ModTime, PValue3, PValidYn, PPrtKey)
                     VALUES 
@@ -260,7 +258,7 @@ module.exports = {
 
             const deleteQuery = {
                 rawQuery: `
-                    DELETE FROM [${process.env.yDbKc}].[dbo].[yParam]
+                    DELETE FROM [${process.env.yDb}].[dbo].[yParam]
                     WHERE PTyp = 'yDiaGrd' 
                       AND PMCd = @PMCd
                 `,

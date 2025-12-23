@@ -2,11 +2,10 @@ const sql = require('mssql');
 
 module.exports = {
     label: 'Manage Range Filter',
-    useDatabase: 'yDb',
 
     getPMCdList: {
         selectClause: `DISTINCT PMCd`,
-        from: (dbName) => `[${dbName}].[dbo].[yParam]`,
+        from:  `[${process.env.yDb}].[dbo].[yParam]`,
         whereConditions: ["PTyp = @PTyp", "PMCd LIKE @PMCdPattern"],
         orderByClause: "PMCd",
         inputTypeMap: {
@@ -20,7 +19,6 @@ module.exports = {
         useDatabase: 'yDb'
     },
 
-    // Get existing filter data for selected PMCd
     getData: {
         selectClause: `
             PTyp,
@@ -31,7 +29,7 @@ module.exports = {
             PNum1,
             PValue3
         `,
-        from: (dbName) => `[${dbName}].[dbo].[yParam]`,
+        from: `[${process.env.yDb}].[dbo].[yParam]`,
         whereConditions: ["PTyp = @PTyp", "PMCd = @PMCd"],
         orderByClause: "CAST(PValue3 AS INT)",
         inputTypeMap: {
@@ -41,10 +39,8 @@ module.exports = {
         inputValuesMap: {
             PTyp: 'yFilter'
         },
-        useDatabase: 'yDb'
     },
 
-    // Bulk save for all range records
     bulkSave: {
         customBulkSave: async (conn, records, PMCd, modUsr) => {
             const { sql, exeQuery } = conn;
@@ -80,9 +76,7 @@ module.exports = {
                         : null;
 
                     if (isNew) {
-                        // INSERT new record
-                        
-                        // Check for duplicate PSCd
+
                         const duplicateCheck = await exeQuery(conn, {
                             rawQuery: `
                                 SELECT COUNT(*) as Count

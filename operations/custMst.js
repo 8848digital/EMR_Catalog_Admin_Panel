@@ -3,8 +3,6 @@ const sql = require('mssql');
 module.exports = {
     label: 'Manage Customer Multiplier',
     
-    useDatabase: 'yDb',
-    
     getData: {
         selectClause: `
         yCmId,
@@ -16,7 +14,7 @@ module.exports = {
         yCmMulBy,
         yCmValidYN
       `,
-        from: (dbName) => `[${dbName}].dbo.yCustMst`,
+        from:  `[${process.env.yDb}].dbo.yCustMst`,
         whereConditions: [],
         orderByClause: "yCmId",
         inputTypeMap: {},
@@ -50,8 +48,8 @@ module.exports = {
 
             return true;
         },
-        rawQuery: (dbName) => `
-        UPDATE [${dbName}].dbo.yCustMst 
+        rawQuery: `
+        UPDATE [${process.env.yDb}].dbo.yCustMst 
         SET 
           yCmMulBy = @yCmMulBy,
           yCmValidYN = @yCmValidYN,

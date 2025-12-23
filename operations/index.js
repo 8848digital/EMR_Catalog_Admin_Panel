@@ -12,7 +12,7 @@ const metColOperation = require('./metCol');
 const metKtOperation = require('./metKt');
 const ctgFilterOperation = require('./ctgFilter');
 const rgFilterOperation = require('./rgFilter');
-// const advEventOperation = require('./advEvent');
+const advEventOperation = require('./advEvent');
 
 module.exports = {
     add_custMst: custMstOperation,
@@ -29,5 +29,5 @@ module.exports = {
     add_met_kt: metKtOperation,
     add_ctg_filter: ctgFilterOperation,
     add_rg_filter: rgFilterOperation,
-    // add_adv_event: advEventOperation,
+    add_adv_event: advEventOperation,
 };

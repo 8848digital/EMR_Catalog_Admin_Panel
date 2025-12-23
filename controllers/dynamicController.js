@@ -27,21 +27,10 @@ async function getPMCdList(conn) {
 
     const pmcdConfig = config.getPMCdList;
     
-    let dbName;
-    if (pmcdConfig.useMasterDb) {
-      dbName = process.env.DB_DATABASE;
-    } else if (pmcdConfig.useDatabase) {
-      dbName = process.env[pmcdConfig.useDatabase];
-    } else if (config.useDatabase) {
-      dbName = process.env[config.useDatabase];
-    } else {
-      dbName = process.env.yDb;
-    }
-
     const queryStmts = {
       selectClause: pmcdConfig.selectClause,
       from: typeof pmcdConfig.from === 'function' 
-        ? pmcdConfig.from(dbName) 
+        ? pmcdConfig.from() 
         : pmcdConfig.from,
       whereConditions: pmcdConfig.whereConditions || [],
       orderByClause: pmcdConfig.orderByClause || '',
@@ -73,29 +62,11 @@ async function getPSCdList(conn) {
     }
 
     const customerConfig = config.getPSCdList;
-    
-    let dbName;
-    
-    if (customerConfig.useMasterDb) {
-      dbName = process.env.DB_DATABASE;
-    } 
-    else if (customerConfig.useDatabase) {
-      dbName = process.env[customerConfig.useDatabase];
-      console.log('Using getPSCdList.useDatabase:', customerConfig.useDatabase, '=', dbName);
-    } 
-    else if (config.useDatabase) {
-      dbName = process.env[config.useDatabase];
-      console.log('Using operation.useDatabase:', config.useDatabase, '=', dbName);
-    } 
-    else {
-      dbName = process.env.yDb;
-      console.log('Using default yDb:', dbName);
-    }
 
     const queryStmts = {
       selectClause: customerConfig.selectClause,
       from: typeof customerConfig.from === 'function' 
-        ? customerConfig.from(dbName) 
+        ? customerConfig.from() 
         : customerConfig.from,
       whereConditions: customerConfig.whereConditions || [],
       orderByClause: customerConfig.orderByClause || '',
@@ -129,28 +100,11 @@ async function getNewCategoryList(conn) {
     }
 
     const categoryConfig = config.getNewCategoryList;
-    
-    let dbName;
-    
-    if (categoryConfig.useMasterDb) {
-      dbName = process.env.DB_DATABASEKc;
-    } 
-    else if (categoryConfig.useDatabase) {
-      dbName = process.env[categoryConfig.useDatabase];
-    } 
-    else if (config.useDatabase) {
-      dbName = process.env[config.useDatabase];
-    } 
-    else {
-      dbName = process.env.DB_DATABASEKc; 
-    }
-
-    console.log('Loading new category list from database:', dbName);
 
     const queryStmts = {
       selectClause: categoryConfig.selectClause,
       from: typeof categoryConfig.from === 'function' 
-        ? categoryConfig.from(dbName) 
+        ? categoryConfig.from() 
         : categoryConfig.from,
       whereConditions: categoryConfig.whereConditions || [],
       orderByClause: categoryConfig.orderByClause || '',
@@ -180,10 +134,6 @@ async function getData(conn) {
     if (!config.getData) {
       throw new Error(`Operation does not support getData: ${operation}`);
     }
-
-    const dbName = config.useDatabase 
-      ? process.env[config.useDatabase] 
-      : process.env.yDb;
     
     const getDataConfig = config.getData;
 
@@ -206,7 +156,7 @@ async function getData(conn) {
     const queryStmts = {
       selectClause: getDataConfig.selectClause,
       from: typeof getDataConfig.from === 'function' 
-        ? getDataConfig.from(dbName) 
+        ? getDataConfig.from() 
         : getDataConfig.from,
       whereConditions: getDataConfig.whereConditions || [],
       orderByClause: getDataConfig.orderByClause || '',
@@ -252,13 +202,9 @@ async function updateData(conn) {
       );
     }
 
-    const dbName = config.useDatabase 
-      ? process.env[config.useDatabase] 
-      : process.env.yDb;
-
     const queryStmts = {
       rawQuery: typeof updateConfig.rawQuery === 'function'
-        ? updateConfig.rawQuery(dbName)
+        ? updateConfig.rawQuery()
         : updateConfig.rawQuery,
       inputTypeMap: updateConfig.inputTypeMap,
       inputValuesMap: updateConfig.prepareInputValues(req.body, modUsr),
@@ -310,13 +256,9 @@ async function addData(conn) {
       );
     }
 
-    const dbName = config.useDatabase 
-      ? process.env[config.useDatabase] 
-      : process.env.yDb;
-
     const queryStmts = {
       rawQuery: typeof addConfig.rawQuery === 'function'
-        ? addConfig.rawQuery(dbName)
+        ? addConfig.rawQuery()
         : addConfig.rawQuery,
       inputTypeMap: addConfig.inputTypeMap,
       inputValuesMap: addConfig.prepareInputValues(req.body, modUsr),
@@ -364,13 +306,9 @@ async function deleteData(conn) {
       );
     }
 
-    const dbName = config.useDatabase 
-      ? process.env[config.useDatabase] 
-      : process.env.yDb;
-
     const queryStmts = {
       rawQuery: typeof deleteConfig.rawQuery === 'function'
-        ? deleteConfig.rawQuery(dbName)
+        ? deleteConfig.rawQuery()
         : deleteConfig.rawQuery,
       inputTypeMap: deleteConfig.inputTypeMap,
       inputValuesMap: deleteConfig.prepareInputValues(req.body, modUsr),
@@ -434,13 +372,11 @@ async function validateSize(conn) {
     if (!PSCd) {
       throw new Error('PSCd parameter is required');
     }
-
-    const masterDb = process.env.DB_DATABASE;
     
     const queryStmts = {
       rawQuery: `
         SELECT COUNT(*) as count
-        FROM [${masterDb}].dbo.Param
+        FROM [${process.env.DB_DATABASE}].dbo.Param
         WHERE PMCd = @SizeValue AND PTyp = 'DMSZ'
       `,
       inputTypeMap: {

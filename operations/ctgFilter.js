@@ -2,11 +2,10 @@ const sql = require('mssql');
 
 module.exports = {
     label: 'Manage Category Filter',
-    useDatabase: 'yDb',
 
     getPMCdList: {
         selectClause: `DISTINCT PMCd`,
-        from: (dbName) => `[${dbName}].[dbo].[yParam]`,
+        from:`[${process.env.yDb}].[dbo].[yParam]`,
         whereConditions: ["PTyp = @PTyp", "PMCd LIKE @PMCdPattern"],
         orderByClause: "PMCd",
         inputTypeMap: {
@@ -17,7 +16,6 @@ module.exports = {
             PTyp: 'yFilter',
             PMCdPattern: '%Ctg'
         },
-        useDatabase: 'yDb'
     },
 
     // Get existing filter data for selected PMCd
@@ -37,7 +35,7 @@ module.exports = {
             PValidYn,
             PPrtKey
         `,
-        from: (dbName) => `[${dbName}].[dbo].[yParam]`,
+        from: `[${process.env.yDb}].[dbo].[yParam]`,
         whereConditions: ["PTyp = @PTyp", "PMCd = @PMCd"],
         orderByClause: "CAST(PValue3 AS INT)",
         inputTypeMap: {

@@ -2,8 +2,6 @@ const sql = require('mssql');
 
 module.exports = {
     label: 'Manage Email',
-
-    useDatabase: 'yDb',
     
     getData: {
         selectClause: `
@@ -13,7 +11,7 @@ module.exports = {
         PDesc,
         PDesc225
       `,
-        from: (dbName) => `[${dbName}].[dbo].[yParam]`,
+        from: `[${process.env.yDb}].[dbo].[yParam]`,
         whereConditions: ["PTyp = @PTyp", "PMCd = @PMCd"],
         orderByClause: "PSCd",
         inputTypeMap: {
@@ -37,7 +35,6 @@ module.exports = {
 
         customUpdate: async (conn, body, modUsr) => {
             const { sql, exeQuery } = conn;
-            const dbName = process.env.yDb;
             const { PDesc, PDesc225, OldPDesc225 } = body;
 
             const newEmail = PDesc225.trim().toLowerCase();
@@ -48,7 +45,7 @@ module.exports = {
                 const checkDuplicateQuery = {
                     rawQuery: `
               SELECT COUNT(*) as Count
-              FROM [${dbName}].[dbo].[yParam]
+              FROM [${process.env.yDb}].[dbo].[yParam]
               WHERE PTyp = 'yCfg' 
                 AND PMCd = 'MlCfg'
                 AND PDesc = @PDesc
@@ -72,7 +69,7 @@ module.exports = {
 
             const queryStmts = {
                 rawQuery: `
-            UPDATE [${dbName}].[dbo].[yParam]
+            UPDATE [${process.env.yDb}].[dbo].[yParam]
             SET 
               PDesc225 = @PDesc225,
               ModUsr = @ModUsr,
@@ -127,16 +124,14 @@ module.exports = {
         },
         customAdd: async (conn, body, modUsr) => {
             const { sql, exeQuery } = conn;
-            const dbName = process.env.yDb;
             const { PDesc, PDesc225 } = body;
 
             const emailToCheck = PDesc225.trim().toLowerCase();
 
-
             const checkDuplicateQuery = {
                 rawQuery: `
             SELECT COUNT(*) as Count
-            FROM [${dbName}].[dbo].[yParam]
+            FROM [${process.env.yDb}].[dbo].[yParam]
             WHERE PTyp = 'yCfg' 
               AND PMCd = 'MlCfg'
               AND PDesc = @PDesc
@@ -160,7 +155,7 @@ module.exports = {
             const getMaxPSCdQuery = {
                 rawQuery: `
             SELECT ISNULL(MAX(CAST(PSCd AS INT)), 0) + 1 AS NextPSCd
-            FROM [${dbName}].[dbo].[yParam]
+            FROM [${process.env.yDb}].[dbo].[yParam]
             WHERE PTyp = 'yCfg' 
               AND PMCd = 'MlCfg'
               AND PDesc = @PDesc
@@ -178,7 +173,7 @@ module.exports = {
 
             const insertQuery = {
                 rawQuery: `
-            INSERT INTO [${dbName}].[dbo].[yParam]
+            INSERT INTO [${process.env.yDb}].[dbo].[yParam]
             (PTyp, PMCd, PSCd, PDesc, PDesc225, PValue, PNum, PValue1, PNum1, PValue2, 
              ModUsr, ModDt, ModTime, PValue3, PValidYn, PPrtKey)
             VALUES 

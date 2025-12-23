@@ -2,15 +2,15 @@ const sql = require('mssql');
 
 module.exports = {
     label: 'Manage Sales Person',
-    useDatabase: 'yDbKc', 
+
 
     // PMCd dropdown list - from SP/USR join
     getPMCdList: {
         selectClause: `
             usr.PDesc
         `,
-        from: (masterDb) => `[${masterDb}].[dbo].[Param] sp
-               JOIN [${masterDb}].[dbo].[Param] usr
+        from:  `[${process.env.DB_DATABASE}].[dbo].[Param] sp
+               JOIN [${process.env.DB_DATABASE}].[dbo].[Param] usr
                  ON sp.PDesc = usr.PDesc`,
         whereConditions: ["sp.PTyp = @SPTyp", "usr.PTyp = @USRTyp"],
         orderByClause: "usr.PDesc",
@@ -22,15 +22,14 @@ module.exports = {
             SPTyp: 'SP',
             USRTyp: 'USR'
         },
-        useDatabase: 'DB_DATABASEKc'
+
     },
 
-    // PSCd dropdown list - from USR type
     getPSCdList: {
         selectClause: `
             PMCd
         `,
-        from: (masterDb) => `[${masterDb}].[dbo].[Param]`,
+        from: `[${process.env.DB_DATABASE}].[dbo].[Param]`,
         whereConditions: ["PTyp = @PTyp"],
         orderByClause: "PMCd",
         inputTypeMap: {
@@ -39,7 +38,7 @@ module.exports = {
         inputValuesMap: {
             PTyp: 'USR'
         },
-        useDatabase: 'DB_DATABASEKc'  
+
     },
 
     getData: {
@@ -49,7 +48,7 @@ module.exports = {
             PSCd,
             PDesc225
         `,
-        from: (dbName) => `[${dbName}].[dbo].[yParam]`,
+        from: `[${process.env.yDb}].[dbo].[yParam]`,
         whereConditions: ["PTyp = @PTyp"],
         orderByClause: "PMCd",
         inputTypeMap: {
@@ -58,7 +57,7 @@ module.exports = {
         inputValuesMap: {
             PTyp: 'yslsPrsn'
         },
-        useDatabase: 'yDbKc'
+
     },
 
     updateData: {
@@ -89,13 +88,11 @@ module.exports = {
 
             const isChanged = newPMCd !== oldPMCd || newPSCd !== oldPSCd;
 
-            // Since values come from dropdown, no need to check existence in master tables
-
             if (isChanged) {
                 const checkDuplicateQuery = {
                     rawQuery: `
                         SELECT COUNT(*) as Count
-                        FROM [${process.env.yDbKc}].[dbo].[yParam]
+                        FROM [${process.env.yDb}].[dbo].[yParam]
                         WHERE PTyp = 'yslsPrsn' 
                           AND PMCd = @NewPMCd
                           AND PSCd = @NewPSCd
@@ -123,7 +120,7 @@ module.exports = {
 
             const updateQuery = {
                 rawQuery: `
-                    UPDATE [${process.env.yDbKc}].[dbo].[yParam]
+                    UPDATE [${process.env.yDb}].[dbo].[yParam]
                     SET 
                         PMCd = @NewPMCd,
                         PSCd = @NewPSCd,
@@ -200,7 +197,7 @@ module.exports = {
             const checkDuplicateQuery = {
                 rawQuery: `
                     SELECT COUNT(*) as Count
-                    FROM [${process.env.yDbKc}].[dbo].[yParam]
+                    FROM [${process.env.yDb}].[dbo].[yParam]
                     WHERE PTyp = 'yslsPrsn' 
                       AND PMCd = @PMCd
                       AND PSCd = @PSCd
@@ -222,7 +219,7 @@ module.exports = {
 
             const insertQuery = {
                 rawQuery: `
-                    INSERT INTO [${process.env.yDbKc}].[dbo].[yParam]
+                    INSERT INTO [${process.env.yDb}].[dbo].[yParam]
                     (PTyp, PMCd, PSCd, PDesc, PDesc225, PValue, PNum, PValue1, PNum1, PValue2, 
                      ModUsr, ModDt, ModTime, PValue3, PValidYn, PPrtKey)
                     VALUES 
@@ -294,7 +291,7 @@ module.exports = {
             const checkUsageQuery = {
                 rawQuery: `
                     SELECT COUNT(*) as Count
-                    FROM [${process.env.yDbKc}].[dbo].[yParam]
+                    FROM [${process.env.yDb}].[dbo].[yParam]
                     WHERE PTyp = 'yCustMp' 
                       AND PMCd = @PMCd
                 `,
@@ -313,7 +310,7 @@ module.exports = {
 
             const deleteQuery = {
                 rawQuery: `
-                    DELETE FROM [${process.env.yDbKc}].[dbo].[yParam]
+                    DELETE FROM [${process.env.yDb}].[dbo].[yParam]
                     WHERE PTyp = 'yslsPrsn' 
                       AND PMCd = @PMCd
                 `,

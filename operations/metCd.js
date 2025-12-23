@@ -2,7 +2,6 @@ const sql = require('mssql');
 
 module.exports = {
     label: 'Manage Metal Code',
-    useDatabase: 'yDbKc', 
 
     getData: {
         selectClause: `
@@ -12,7 +11,7 @@ module.exports = {
             PDesc225,
             PValue3
         `,
-        from: (dbName) => `[${dbName}].[dbo].[yParam]`,
+        from: `[${process.env.yDb}].[dbo].[yParam]`,
         whereConditions: ["PTyp = @PTyp"],
         orderByClause: "CAST(PValue3 AS INT)",
         inputTypeMap: {
@@ -55,7 +54,7 @@ module.exports = {
                 const checkDuplicateQuery = {
                     rawQuery: `
                         SELECT COUNT(*) as Count
-                        FROM [${process.env.yDbKc}].[dbo].[yParam]
+                        FROM [${process.env.yDb}].[dbo].[yParam]
                         WHERE PTyp = 'yMetCd' 
                           AND PMCd = @NewPMCd
                     `,
@@ -76,7 +75,7 @@ module.exports = {
             // Update record in 8848EmrKc
             const updateQuery = {
                 rawQuery: `
-                    UPDATE [${process.env.yDbKc}].[dbo].[yParam]
+                    UPDATE [${process.env.yDb}].[dbo].[yParam]
                     SET 
                         PMCd = @NewPMCd,
                         PDesc = @NewPDesc,
@@ -148,7 +147,7 @@ module.exports = {
             const checkDuplicateQuery = {
                 rawQuery: `
                     SELECT COUNT(*) as Count
-                    FROM [${process.env.yDbKc}].[dbo].[yParam]
+                    FROM [${process.env.yDb}].[dbo].[yParam]
                     WHERE PTyp = 'yMetCd' 
                       AND PMCd = @PMCd
                 `,
@@ -168,7 +167,7 @@ module.exports = {
             const getPValue3Query = {
                 rawQuery: `
                     SELECT ISNULL(MAX(CAST(PValue3 AS INT)), 0) + 1 AS NextPValue3
-                    FROM [${process.env.yDbKc}].[dbo].[yParam]
+                    FROM [${process.env.yDb}].[dbo].[yParam]
                     WHERE PTyp = 'yMetCd'
                 `,
                 inputTypeMap: {},
@@ -180,7 +179,7 @@ module.exports = {
 
             const insertQuery = {
                 rawQuery: `
-                    INSERT INTO [${process.env.yDbKc}].[dbo].[yParam]
+                    INSERT INTO [${process.env.yDb}].[dbo].[yParam]
                     (PTyp, PMCd, PSCd, PDesc, PDesc225, PValue, PNum, PValue1, PNum1, PValue2, 
                      ModUsr, ModDt, ModTime, PValue3, PValidYn, PPrtKey)
                     VALUES 
@@ -251,7 +250,7 @@ module.exports = {
 
             const deleteQuery = {
                 rawQuery: `
-                    DELETE FROM [${process.env.yDbKc}].[dbo].[yParam]
+                    DELETE FROM [${process.env.yDb}].[dbo].[yParam]
                     WHERE PTyp = 'yMetCd' 
                       AND PMCd = @PMCd
                 `,

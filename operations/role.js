@@ -2,13 +2,12 @@ const sql = require('mssql');
 
 module.exports = {
     label: 'Manage Roles',
-    useDatabase: 'yDbKc', 
 
     getPMCdList: {
         selectClause: `
             PMCd
         `,
-        from: (masterDb) => `[${masterDb}].[dbo].[Param]`,
+        from: `[${process.env.DB_DATABASE}].[dbo].[Param]`,
         whereConditions: ["PTyp = @PTyp"],
         orderByClause: "PMCd",
         inputTypeMap: {
@@ -17,13 +16,12 @@ module.exports = {
         inputValuesMap: {
             PTyp: 'USR'
         },
-        useDatabase: 'DB_DATABASEKc'  
+  
     },
 
-    // NEW: Get list of Role Codes (PSCd) from vParam with complex logic
     getPSCdList: {
         selectClause: `DISTINCT vPMCd`,
-        from: (masterDb) => `[${masterDb}].[dbo].[vParam]`,
+        from:  `[${process.env.DB_DATABASE}].[dbo].[vParam]`,
         whereConditions: [
             "vPTyp = @vPTyp",
             `vPCoCd IN (
@@ -44,7 +42,7 @@ module.exports = {
         inputValuesMap: {
             vPTyp: 'chr'
         },
-        useDatabase: 'DB_DATABASEKc'
+
     },
 
     getData: {
@@ -54,7 +52,7 @@ module.exports = {
             PSCd,
             PNum
         `,
-        from: (dbName) => `[${dbName}].[dbo].[yParam]`,
+        from:  `[${process.env.yDb}].[dbo].[yParam]`,
         whereConditions: ["PTyp = @PTyp"],
         orderByClause: "PMCd, PSCd",
         inputTypeMap: {
@@ -63,7 +61,7 @@ module.exports = {
         inputValuesMap: {
             PTyp: 'yRole'
         },
-        useDatabase: 'yDbKc'
+
     },
 
     updateData: {
@@ -99,7 +97,7 @@ module.exports = {
                 const checkMasterQuery = {
                     rawQuery: `
                         SELECT COUNT(*) as Count
-                        FROM [${process.env.DB_DATABASEKc}].[dbo].[Param]
+                        FROM [${process.env.DB_DATABASE}].[dbo].[Param]
                         WHERE PTyp = 'USR' AND PMCd = @PMCd
                     `,
                     inputTypeMap: {
@@ -123,7 +121,7 @@ module.exports = {
                 const checkDuplicateQuery = {
                     rawQuery: `
                         SELECT COUNT(*) as Count
-                        FROM [${process.env.yDbKc}].[dbo].[yParam]
+                        FROM [${process.env.yDb}].[dbo].[yParam]
                         WHERE PTyp = 'yRole' 
                           AND PMCd = @NewPMCd
                           AND PSCd = @NewPSCd
@@ -151,7 +149,7 @@ module.exports = {
 
             const updateQuery = {
                 rawQuery: `
-                    UPDATE [${process.env.yDbKc}].[dbo].[yParam]
+                    UPDATE [${process.env.yDb}].[dbo].[yParam]
                     SET 
                         PMCd = @NewPMCd,
                         PSCd = @NewPSCd,
@@ -226,7 +224,7 @@ module.exports = {
             const checkMasterQuery = {
                 rawQuery: `
                     SELECT COUNT(*) as Count
-                    FROM [${process.env.DB_DATABASEKc}].[dbo].[Param]
+                    FROM [${process.env.DB_DATABASE}].[dbo].[Param]
                     WHERE PTyp = 'USR' AND PMCd = @PMCd
                 `,
                 inputTypeMap: {
@@ -246,7 +244,7 @@ module.exports = {
             const checkDuplicateQuery = {
                 rawQuery: `
                     SELECT COUNT(*) as Count
-                    FROM [${process.env.yDbKc}].[dbo].[yParam]
+                    FROM [${process.env.yDb}].[dbo].[yParam]
                     WHERE PTyp = 'yRole' 
                       AND PMCd = @PMCd
                       AND PSCd = @PSCd
@@ -268,7 +266,7 @@ module.exports = {
 
             const insertQuery = {
                 rawQuery: `
-                    INSERT INTO [${process.env.yDbKc}].[dbo].[yParam]
+                    INSERT INTO [${process.env.yDb}].[dbo].[yParam]
                     (PTyp, PMCd, PSCd, PDesc, PDesc225, PValue, PNum, PValue1, PNum1, PValue2, 
                      ModUsr, ModDt, ModTime, PValue3, PValidYn, PPrtKey)
                     VALUES 
@@ -338,7 +336,7 @@ module.exports = {
 
             const deleteQuery = {
                 rawQuery: `
-                    DELETE FROM [${process.env.yDbKc}].[dbo].[yParam]
+                    DELETE FROM [${process.env.yDb}].[dbo].[yParam]
                     WHERE PTyp = 'yRole' 
                       AND PMCd = @PMCd 
                       AND PSCd = @PSCd

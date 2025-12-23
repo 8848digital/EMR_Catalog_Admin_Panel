@@ -2,13 +2,12 @@ const sql = require('mssql');
 
 module.exports = {
     label: 'Manage User Mapping',
-    useDatabase: 'yDbKc', 
 
     getPMCdList: {
         selectClause: `
             PMCd
         `,
-        from: (masterDb) => `[${masterDb}].[dbo].[Param]`,
+        from:  `[${process.env.DB_DATABASE}].[dbo].[Param]`,
         whereConditions: ["PTyp = @PTyp"],
         orderByClause: "PMCd",
         inputTypeMap: {
@@ -17,19 +16,18 @@ module.exports = {
         inputValuesMap: {
             PTyp: 'USR'
         },
-        useDatabase: 'DB_DATABASEKc'  
     },
 
     getPSCdList: {
         selectClause: `
             CmCd
         `,
-        from: (dbName) => `[${dbName}].[dbo].[CustMst]`,
+        from: `[${process.env.yDb}].[dbo].[CustMst]`,
         whereConditions: [],
         orderByClause: "CmCd",
         inputTypeMap: {},
         inputValuesMap: {},
-        useDatabase: 'DB_DATABASEKc' 
+
     },
 
     getData: {
@@ -38,7 +36,7 @@ module.exports = {
             PMCd,
             PSCd
         `,
-        from: (dbName) => `[${dbName}].[dbo].[yParam]`,
+        from: `[${process.env.yDb}].[dbo].[yParam]`,
         whereConditions: ["PTyp = @PTyp"],
         orderByClause: "PMCd, PSCd",
         inputTypeMap: {
@@ -81,12 +79,10 @@ module.exports = {
             const isPSCdChanged = newPSCd !== oldPSCd;
 
             if (isPSCdChanged) {
-                // Check if the new PSCd is already mapped to a DIFFERENT user
-                // (Same customer code cannot be mapped to different user codes)
                 const checkDuplicateQuery = {
                     rawQuery: `
                         SELECT PMCd
-                        FROM [${process.env.yDbKc}].[dbo].[yParam]
+                        FROM [${process.env.yDb}].[dbo].[yParam]
                         WHERE PTyp = 'yUsrMap' 
                           AND PSCd = @NewPSCd
                           AND PMCd != @NewPMCd
@@ -110,7 +106,7 @@ module.exports = {
 
             const updateQuery = {
                 rawQuery: `
-                    UPDATE [${process.env.yDbKc}].[dbo].[yParam]
+                    UPDATE [${process.env.yDb}].[dbo].[yParam]
                     SET 
                         PMCd = @NewPMCd,
                         PSCd = @NewPSCd,
@@ -177,7 +173,7 @@ module.exports = {
             const checkDuplicateQuery = {
                 rawQuery: `
                     SELECT PMCd
-                    FROM [${process.env.yDbKc}].[dbo].[yParam]
+                    FROM [${process.env.yDb}].[dbo].[yParam]
                     WHERE PTyp = 'yUsrMap' 
                       AND PSCd = @PSCd
                 `,
@@ -197,7 +193,7 @@ module.exports = {
 
             const insertQuery = {
                 rawQuery: `
-                    INSERT INTO [${process.env.yDbKc}].[dbo].[yParam]
+                    INSERT INTO [${process.env.yDb}].[dbo].[yParam]
                     (PTyp, PMCd, PSCd, PDesc, PDesc225, PValue, PNum, PValue1, PNum1, PValue2, 
                      ModUsr, ModDt, ModTime, PValue3, PValidYn, PPrtKey)
                     VALUES 
@@ -266,7 +262,7 @@ module.exports = {
 
             const deleteQuery = {
                 rawQuery: `
-                    DELETE FROM [${process.env.yDbKc}].[dbo].[yParam]
+                    DELETE FROM [${process.env.yDb}].[dbo].[yParam]
                     WHERE PTyp = 'yUsrMap' 
                       AND PMCd = @PMCd 
                       AND PSCd = @PSCd

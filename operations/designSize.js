@@ -2,12 +2,11 @@ const sql = require('mssql');
 
 module.exports = {
     label: 'Manage Design Size',
-    useDatabase: 'yDb',
 
     // Get list of Design Categories (PMCd) for dropdown filter
     getPMCdList: {
         selectClause: `DISTINCT PMCd`,
-        from: (dbName) => `[${dbName}].[dbo].[yParam]`,
+        from: `[${process.env.yDb}].[dbo].[yParam]`,
         whereConditions: ["PTyp = @PTyp", "PMCd != ''"],
         orderByClause: "PMCd",
         inputTypeMap: {
@@ -16,13 +15,12 @@ module.exports = {
         inputValuesMap: {
             PTyp: 'yDmSz'
         },
-        useDatabase: 'yDb'
     },
 
     // Get list of Size Codes (PSCd) from master Param table
     getPSCdList: {
         selectClause: `PMCd`,
-        from: (dbName) => `[${dbName}].[dbo].[Param]`,
+        from: `[${process.env.DB_DATABASE}].[dbo].[Param]`,
         whereConditions: ["PTyp = @PTyp"],
         orderByClause: "PMCd",
         inputTypeMap: {
@@ -31,12 +29,12 @@ module.exports = {
         inputValuesMap: {
             PTyp: 'DMSZ'
         },
-        useDatabase: 'DB_DATABASE'
+
     },
 
     getNewCategoryList: {
         selectClause: `PMCd, PDesc`,
-        from: (dbName) => `[${dbName}].[dbo].[Param]`,
+        from: `[${process.env.DB_DATABASE}].[dbo].[Param]`,
         whereConditions: ["PTyp = @PTyp"],
         orderByClause: "PMCd",
         inputTypeMap: {
@@ -45,7 +43,6 @@ module.exports = {
         inputValuesMap: {
             PTyp: 'dmctg'
         },
-        useDatabase: 'DB_DATABASEKc'
     },
 
     // Get existing design sizes for selected PMCd
@@ -56,7 +53,7 @@ module.exports = {
             PDesc,
             PValue3
         `,
-        from: (dbName) => `[${dbName}].[dbo].[yParam]`,
+        from:`[${process.env.yDb}].[dbo].[yParam]`,
         whereConditions: ["PTyp = @PTyp", "PMCd = @PMCd"],
         orderByClause: "CAST(PValue3 AS INT)",
         inputTypeMap: {
@@ -66,7 +63,7 @@ module.exports = {
         inputValuesMap: {
             PTyp: 'yDmSz'
         },
-        useDatabase: 'yDb'
+
     },
 
     updateData: {
