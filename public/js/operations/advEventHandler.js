@@ -1,9 +1,9 @@
 const advEventOperation = (() => {
     const COLUMNS = [
-        { key: 'yPIdNo', label: 'ID', hidden: false, editable: false, type: 'text', width: '80px' },
+        { key: 'yPIdNo', label: 'ID', hidden: true, editable: false, type: 'text', width: '80px' },
         { key: 'PTyp', label: 'Type', hidden: true },
         { key: 'PMCd', label: 'Title', editable: true, type: 'text', width: '200px', maxlength: 140 },
-        { key: 'PDesc225', label: 'Description', editable: true, type: 'textarea', width: '250px', maxlength: 225 },
+        { key: 'PDesc225', label: 'Description', editable: true, type: 'text', width: '250px', maxlength: 225 },
         { key: 'PValue', label: 'Start Date', editable: true, type: 'date', width: '150px' },
         { key: 'PValue1', label: 'End Date', editable: true, type: 'date', width: '150px' },
         { key: 'PNum', label: 'Duration', editable: true, type: 'number', width: '120px' },
@@ -13,8 +13,6 @@ const advEventOperation = (() => {
         { key: 'PValue5', label: 'Image 4', editable: true, type: 'image', width: '120px', imageLetter: 'D' },
         { key: 'PValue6', label: 'Image 5', editable: true, type: 'image', width: '120px', imageLetter: 'E' }
     ];
-
-    const BASE_IMAGE_PATH = '/adCfgImages/YAdvEvent';
 
     function getColumns() {
         return COLUMNS;
@@ -44,20 +42,27 @@ const advEventOperation = (() => {
     function renderDisplayCell(col, value, row) {
         if (col.type === 'image') {
             if (value && value.trim() !== '') {
-                return `<img src="${value}" alt="Image" style="max-width: 100px; max-height: 100px; cursor: pointer; display: block;" 
-                onclick="window.open('${value}', '_blank')">`;
+                return `<img src="${value}" alt="Image" class="image-display" style="max-width: 100px; max-height: 100px; cursor: pointer; display: block; border: 1px solid #ddd; border-radius: 4px;">`;
             } else {
-                return '<span style="color: #999; font-size: 12px;">No image</span>';
+                return '<span class="no-image-text" style="color: #999; font-size: 12px;">No image</span>';
             }
         }
         if (col.type === 'textarea') {
-            return `<div style="max-height: 60px; overflow-y: auto; white-space: pre-wrap;">${value || ''}</div>`;
+            return `<div class="textarea-display" style="max-height: 60px; overflow-y: auto; white-space: pre-wrap; cursor: text;">${value || ''}</div>`;
+        }
+        if (col.type === 'date') {
+            if (value) {
+                const date = new Date(value);
+                return `<span class="date-display" style="cursor: text;">${date.toISOString().split('T')[0]}</span>`;
+            }
+            return '<span class="date-display" style="cursor: text; color: #999;">Select date</span>';
         }
         return null;
     }
 
     function createEditControl(col, value, row) {
         if (col.type === 'textarea') {
+            const container = document.createElement('div');
             const textarea = document.createElement('textarea');
             textarea.className = 'edit-field';
             textarea.dataset.field = col.key;
@@ -65,159 +70,16 @@ const advEventOperation = (() => {
             textarea.dataset.originalValue = value || '';
             textarea.style.width = '100%';
             textarea.style.minHeight = '60px';
+            textarea.style.backgroundColor = 'white';
             if (col.maxlength) {
                 textarea.maxLength = col.maxlength;
             }
-            return textarea;
-        }
-
-        if (col.type === 'image') {
-            const container = document.createElement('div');
-            container.style.display = 'flex';
-            container.style.flexDirection = 'column';
-            container.style.gap = '3px';
-            container.style.alignItems = 'flex-start';
-
-            // Current image preview
-            if (value && value.trim() !== '') {
-                const currentImg = document.createElement('img');
-                currentImg.src = value;
-                currentImg.style.maxWidth = '100px';
-                currentImg.style.maxHeight = '100px';
-                currentImg.style.cursor = 'pointer';
-                currentImg.style.display = 'block';
-                currentImg.onclick = () => window.open(value, '_blank');
-                container.appendChild(currentImg);
-            } else {
-                const noImageText = document.createElement('span');
-                noImageText.textContent = 'No image';
-                noImageText.style.color = '#999';
-                noImageText.style.fontSize = '12px';
-                container.appendChild(noImageText);
-            }
-
-            // Hidden input to store current image path
-            const hiddenInput = document.createElement('input');
-            hiddenInput.type = 'hidden';
-            hiddenInput.dataset.field = col.key;
-            hiddenInput.value = value || '';
-            hiddenInput.dataset.originalValue = value || '';
-            container.appendChild(hiddenInput);
-
-            // File input (hidden)
-            const fileInput = document.createElement('input');
-            fileInput.type = 'file';
-            fileInput.accept = 'image/*';
-            fileInput.className = 'edit-field-file';
-            fileInput.dataset.field = `${col.key}_file`;
-            fileInput.dataset.imageLetter = col.imageLetter || '';
-            fileInput.style.display = 'none';
-            
-            // Only show "change image" link if image exists
-            if (value && value.trim() !== '') {
-                const changeLink = document.createElement('a');
-                changeLink.textContent = 'change image';
-                changeLink.href = 'javascript:void(0)';
-                changeLink.style.fontSize = '11px';
-                changeLink.style.color = '#4CAF50';
-                changeLink.style.textDecoration = 'underline';
-                changeLink.style.cursor = 'pointer';
-                
-                // When file is selected, show preview
-                fileInput.addEventListener('change', (e) => {
-                    if (e.target.files.length > 0) {
-                        const file = e.target.files[0];
-                        const reader = new FileReader();
-                        
-                        reader.onload = (event) => {
-                            // Update preview image
-                            const existingImg = container.querySelector('img');
-                            const noImageText = container.querySelector('span');
-                            
-                            if (existingImg) {
-                                existingImg.src = event.target.result;
-                            } else {
-                                // Remove "No image" text if exists
-                                if (noImageText) {
-                                    noImageText.remove();
-                                }
-                                
-                                // Create new preview image
-                                const newImg = document.createElement('img');
-                                newImg.src = event.target.result;
-                                newImg.style.maxWidth = '100px';
-                                newImg.style.maxHeight = '100px';
-                                newImg.style.cursor = 'pointer';
-                                newImg.style.display = 'block';
-                                container.insertBefore(newImg, hiddenInput);
-                            }
-                            
-                            // Mark that new file was selected
-                            hiddenInput.dataset.newFileSelected = 'true';
-                            
-                            // Update change link text
-                            changeLink.textContent = 'change image ✓';
-                            changeLink.style.color = '#45a049';
-                        };
-                        
-                        reader.readAsDataURL(file);
-                    }
-                });
-                
-                changeLink.onclick = () => {
-                    fileInput.click();
-                };
-                
-                container.appendChild(changeLink);
-            } else {
-                // For empty images, show file input when editing
-                fileInput.addEventListener('change', (e) => {
-                    if (e.target.files.length > 0) {
-                        const file = e.target.files[0];
-                        const reader = new FileReader();
-                        
-                        reader.onload = (event) => {
-                            const noImageText = container.querySelector('span');
-                            if (noImageText) {
-                                noImageText.remove();
-                            }
-                            
-                            // Create new preview image
-                            const newImg = document.createElement('img');
-                            newImg.src = event.target.result;
-                            newImg.style.maxWidth = '100px';
-                            newImg.style.maxHeight = '100px';
-                            newImg.style.cursor = 'pointer';
-                            newImg.style.display = 'block';
-                            container.insertBefore(newImg, hiddenInput);
-                            
-                            // Mark that new file was selected
-                            hiddenInput.dataset.newFileSelected = 'true';
-                        };
-                        
-                        reader.readAsDataURL(file);
-                    }
-                });
-            }
-            
-            container.appendChild(fileInput);
-
+            container.appendChild(textarea);
             return container;
         }
 
-        if (col.type === 'number') {
-            const input = document.createElement('input');
-            input.type = 'number';
-            input.className = 'edit-field';
-            input.dataset.field = col.key;
-            input.value = value || '';
-            input.dataset.originalValue = value || '';
-            input.step = 'any';
-            input.style.width = '100%';
-            return input;
-        }
-
         if (col.type === 'date') {
+            const container = document.createElement('div');
             const input = document.createElement('input');
             input.type = 'date';
             input.className = 'edit-field';
@@ -228,10 +90,28 @@ const advEventOperation = (() => {
             }
             input.dataset.originalValue = value || '';
             input.style.width = '100%';
-            return input;
+            input.style.backgroundColor = 'white';
+            container.appendChild(input);
+            return container;
+        }
+
+        if (col.type === 'number') {
+            const container = document.createElement('div');
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.className = 'edit-field';
+            input.dataset.field = col.key;
+            input.value = value || '';
+            input.dataset.originalValue = value || '';
+            input.step = 'any';
+            input.style.width = '100%';
+            input.style.backgroundColor = 'white';
+            container.appendChild(input);
+            return container;
         }
 
         if (col.type === 'text') {
+            const container = document.createElement('div');
             const input = document.createElement('input');
             input.type = 'text';
             input.className = 'edit-field';
@@ -242,7 +122,157 @@ const advEventOperation = (() => {
                 input.maxLength = col.maxlength;
             }
             input.style.width = '100%';
-            return input;
+            input.style.backgroundColor = 'white';
+            container.appendChild(input);
+            return container;
+        }
+
+        if (col.type === 'image') {
+            const container = document.createElement('div');
+            container.style.display = 'flex';
+            container.style.flexDirection = 'column';
+            container.style.gap = '8px';
+            container.style.alignItems = 'flex-start';
+
+            // Image preview container
+            const imagePreviewContainer = document.createElement('div');
+            imagePreviewContainer.style.position = 'relative';
+            imagePreviewContainer.className = 'image-preview-container';
+            imagePreviewContainer.style.cursor = 'pointer';
+            imagePreviewContainer.style.border = '2px dashed #ccc';
+            imagePreviewContainer.style.padding = '10px';
+            imagePreviewContainer.style.borderRadius = '4px';
+            imagePreviewContainer.style.minHeight = '100px';
+            imagePreviewContainer.style.minWidth = '100px';
+            imagePreviewContainer.style.display = 'flex';
+            imagePreviewContainer.style.alignItems = 'center';
+            imagePreviewContainer.style.justifyContent = 'center';
+            imagePreviewContainer.style.transition = 'all 0.3s ease';
+
+            // Hidden input to store the image path
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.className = 'edit-field';
+            hiddenInput.dataset.field = col.key;
+            hiddenInput.value = value || '';
+            hiddenInput.dataset.originalValue = value || '';
+
+            // File input
+            const fileInput = document.createElement('input');
+            fileInput.type = 'file';
+            fileInput.accept = 'image/*';
+            fileInput.className = 'edit-field-file';
+            fileInput.dataset.field = `${col.key}_file`;
+            fileInput.dataset.imageLetter = col.imageLetter || '';
+            fileInput.style.display = 'none';
+
+            // Function to update preview
+            function updatePreview(imgSrc, isNewFile = false) {
+                imagePreviewContainer.innerHTML = '';
+
+                const img = document.createElement('img');
+                img.src = imgSrc;
+                img.style.maxWidth = '100px';
+                img.style.maxHeight = '100px';
+                img.style.cursor = 'pointer';
+                img.style.display = 'block';
+                img.style.borderRadius = '4px';
+                img.style.objectFit = 'cover';
+
+                if (isNewFile) {
+                    imagePreviewContainer.style.border = '2px solid #4CAF50';
+                    imagePreviewContainer.style.backgroundColor = '#f0fff0';
+                } else {
+                    imagePreviewContainer.style.border = '2px dashed #4CAF50';
+                    imagePreviewContainer.style.backgroundColor = 'transparent';
+                }
+
+                imagePreviewContainer.appendChild(img);
+            }
+
+            // Initialize preview
+            if (value && value.trim() !== '') {
+                updatePreview(value, false);
+            } else {
+                const placeholder = document.createElement('div');
+                placeholder.style.textAlign = 'center';
+                placeholder.style.color = '#999';
+                placeholder.innerHTML = `
+                    <div style="font-size: 32px; margin-bottom: 5px;">📷</div>
+                    <div style="font-size: 11px;">Click to upload</div>
+                `;
+                imagePreviewContainer.appendChild(placeholder);
+            }
+
+            // Hover effect
+            imagePreviewContainer.addEventListener('mouseenter', () => {
+                imagePreviewContainer.style.borderColor = '#4CAF50';
+                imagePreviewContainer.style.backgroundColor = '#f9fff9';
+            });
+
+            imagePreviewContainer.addEventListener('mouseleave', () => {
+                if (!hiddenInput.dataset.newFileSelected || hiddenInput.dataset.newFileSelected !== 'true') {
+                    imagePreviewContainer.style.borderColor = '#ccc';
+                    imagePreviewContainer.style.backgroundColor = 'transparent';
+                } else {
+                    imagePreviewContainer.style.borderColor = '#4CAF50';
+                    imagePreviewContainer.style.backgroundColor = '#f0fff0';
+                }
+            });
+
+            // Click handler for the preview container
+            imagePreviewContainer.addEventListener('click', () => {
+                fileInput.click();
+            });
+
+            // File input change handler
+            fileInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    const file = e.target.files[0];
+
+                    // Validate file type
+                    if (!file.type.startsWith('image/')) {
+                        alert('Please select a valid image file');
+                        return;
+                    }
+
+                    // Validate file size (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('File size must be less than 5MB');
+                        return;
+                    }
+
+                    const reader = new FileReader();
+
+                    reader.onload = (event) => {
+                        updatePreview(event.target.result, true);
+                        hiddenInput.dataset.newFileSelected = 'true';
+
+                        // Update hint text
+                        if (hint) {
+                            hint.textContent = '✓ New image selected';
+                            hint.style.color = '#4CAF50';
+                            hint.style.fontWeight = 'bold';
+                        }
+                    };
+
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            container.appendChild(imagePreviewContainer);
+            container.appendChild(hiddenInput);
+            container.appendChild(fileInput);
+
+            // Add text hint below
+            const hint = document.createElement('div');
+            hint.style.fontSize = '11px';
+            hint.style.color = '#666';
+            hint.textContent = value && value.trim() !== '' ? 'Click image to change' : 'Click to upload';
+            hint.className = 'image-hint';
+            container.appendChild(hint);
+
+            return container;
         }
 
         return null;
@@ -313,8 +343,16 @@ const advEventOperation = (() => {
         };
         const recordId = uniqueId || `temp_${Date.now()}`;
 
-        // Get all text/date/number/textarea fields
-        row.querySelectorAll('.edit-field').forEach(el => {
+        // Get ALL text/date/number/textarea fields
+        row.querySelectorAll('.edit-field:not([type="hidden"])').forEach(el => {
+            const field = el.dataset.field;
+            if (field && !imageFields.includes(field)) {
+                fields[field] = el.value.trim();
+            }
+        });
+
+        // Also check for textarea elements directly
+        row.querySelectorAll('textarea.edit-field').forEach(el => {
             const field = el.dataset.field;
             if (field && !imageFields.includes(field)) {
                 fields[field] = el.value.trim();
@@ -335,7 +373,7 @@ const advEventOperation = (() => {
                     if (originalValue) {
                         await deleteImage(originalValue);
                     }
-                    
+
                     // Upload new image
                     fields[imgField] = await uploadImage(
                         fileInput.files[0],
@@ -343,7 +381,7 @@ const advEventOperation = (() => {
                         imageLetterMap[imgField]
                     );
                 } else {
-                    // Keep existing image
+                    // Keep original value
                     fields[imgField] = originalValue;
                 }
             }
@@ -368,6 +406,11 @@ const advEventOperation = (() => {
         if (!fields.PValue2 || fields.PValue2.trim() === '') {
             throw new Error('At least Image 1 is required');
         }
+        const startDate = new Date(fields.PValue);
+        const endDate = new Date(fields.PValue1);
+        if (startDate >= endDate) {
+            throw new Error('End Date must be after Start Date');
+        }
 
         const modUsr = sessionStorage.getItem('modUsr') || '';
 
@@ -378,8 +421,8 @@ const advEventOperation = (() => {
                 operation: operation,
                 yPIdNo: uniqueId,
                 PMCd: fields.PMCd,
-                PSCd: '',  // Not used but required by backend
-                PDesc: '',  // Not used but required by backend
+                PSCd: '',
+                PDesc: '',
                 PDesc225: fields.PDesc225,
                 PValue: fields.PValue,
                 PValue1: fields.PValue1,
@@ -417,69 +460,48 @@ const advEventOperation = (() => {
         const visibleColumns = COLUMNS.filter(col => !col.hidden);
         const recordId = `new_${Date.now()}`;
 
-        const cells = visibleColumns.map(col => {
-            const widthStyle = col.width ? `style="min-width: ${col.width};"` : '';
+        const newRow = document.createElement('tr');
+        newRow.dataset.isNew = 'true';
+        newRow.dataset.recordId = recordId;
+        newRow.style.backgroundColor = '#e8f4f8';
+
+        visibleColumns.forEach(col => {
+            const td = document.createElement('td');
+            if (col.width) {
+                td.style.minWidth = col.width;
+            }
 
             if (!col.editable) {
-                return `<td ${widthStyle}><span style="color: #999;">Auto</span></td>`;
+                td.innerHTML = '<span style="color: #999;">Auto</span>';
+            } else {
+                // Use createEditControl for all editable fields to get consistent UI
+                const editControl = createEditControl(col, '', {});
+                if (editControl) {
+                    td.appendChild(editControl);
+                } else {
+                    // Fallback for types not handled by createEditControl
+                    td.innerHTML = '<input type="text" class="edit-field" style="width: 100%;">';
+                }
             }
 
-            if (col.type === 'textarea') {
-                return `<td ${widthStyle}>
-                  <textarea class="edit-field" data-field="${col.key}" 
-                    maxlength="${col.maxlength || ''}" 
-                    style="width: 100%; min-height: 60px; background-color: white;"></textarea>
-                </td>`;
-            }
+            newRow.appendChild(td);
+        });
 
-            if (col.type === 'image') {
-                return `<td ${widthStyle}>
-                  <div>
-                    <input type="file" accept="image/*" class="edit-field-file" 
-                      data-field="${col.key}_file" data-image-letter="${col.imageLetter || ''}" 
-                      style="font-size: 11px;">
-                    <input type="hidden" class="edit-field" data-field="${col.key}" value="">
-                    ${col.required ? '<span style="color: red;">*</span>' : ''}
-                  </div>
-                </td>`;
-            }
+        // Add action buttons
+        const actionTd = document.createElement('td');
+        actionTd.className = 'action-cell';
+        actionTd.innerHTML = `
+            <button class="action-btn save-btn" onclick="ConfigManager.saveNewRow()" title="Save">💾</button>
+            <button class="action-btn cancel-btn" onclick="ConfigManager.cancelNewRow()" title="Cancel">❌</button>
+        `;
+        newRow.appendChild(actionTd);
 
-            if (col.type === 'date') {
-                return `<td ${widthStyle}>
-                  <input type="date" class="edit-field" data-field="${col.key}" 
-                    style="width: 100%; background-color: white;">
-                </td>`;
-            }
+        tableBody.insertBefore(newRow, tableBody.firstChild);
 
-            if (col.type === 'number') {
-                return `<td ${widthStyle}>
-                  <input type="number" class="edit-field" data-field="${col.key}" 
-                    step="any" style="width: 100%; background-color: white;">
-                </td>`;
-            }
-
-            if (col.type === 'text') {
-                const maxlength = col.maxlength ? `maxlength="${col.maxlength}"` : '';
-                return `<td ${widthStyle}>
-                  <input type="text" class="edit-field" data-field="${col.key}" 
-                    ${maxlength} style="width: 100%; background-color: white;">
-                </td>`;
-            }
-
-            return `<td ${widthStyle}></td>`;
-        }).join('');
-
-        const newRow = `<tr data-is-new="true" data-record-id="${recordId}" style="background-color: #e8e6dfff;">${cells}
-      <td class="action-cell">
-        <button class="action-btn save-btn" onclick="ConfigManager.saveNewRow()" title="Save">💾</button>
-        <button class="action-btn cancel-btn" onclick="ConfigManager.cancelNewRow()" title="Cancel">❌</button>
-      </td></tr>`;
-
-        tableBody.insertAdjacentHTML('afterbegin', newRow);
-
-        const firstInput = tableBody.querySelector('tr[data-is-new="true"] .edit-field, tr[data-is-new="true"] .edit-field-file');
+        // Focus first input
+        const firstInput = newRow.querySelector('.edit-field, input[type="date"], input[type="number"]');
         if (firstInput) {
-            firstInput.focus();
+            setTimeout(() => firstInput.focus(), 100);
         }
     }
 
@@ -495,15 +517,13 @@ const advEventOperation = (() => {
         };
         const recordId = row.dataset.recordId || `new_${Date.now()}`;
 
-        // Get all text/date/number fields
-        row.querySelectorAll('.edit-field').forEach(el => {
+        row.querySelectorAll('.edit-field:not([type="hidden"])').forEach(el => {
             const field = el.dataset.field;
             if (field && !imageFields.includes(field)) {
                 fields[field] = el.value.trim();
             }
         });
 
-        // Handle image uploads
         for (const imgField of imageFields) {
             const fileInput = row.querySelector(`input[type="file"][data-field="${imgField}_file"]`);
 
@@ -518,7 +538,6 @@ const advEventOperation = (() => {
             }
         }
 
-        // Validate required fields
         if (!fields.PMCd) {
             throw new Error('Title is required');
         }
@@ -537,6 +556,11 @@ const advEventOperation = (() => {
         if (!fields.PValue2 || fields.PValue2.trim() === '') {
             throw new Error('At least Image 1 is required');
         }
+        const startDate = new Date(fields.PValue);
+        const endDate = new Date(fields.PValue1);
+        if (startDate >= endDate) {
+            throw new Error('End Date must be after Start Date');
+        }
 
         const modUsr = sessionStorage.getItem('modUsr') || '';
 
@@ -546,8 +570,8 @@ const advEventOperation = (() => {
             body: JSON.stringify({
                 operation: operation,
                 PMCd: fields.PMCd,
-                PSCd: '',  // Not used but required by backend
-                PDesc: '',  // Not used but required by backend
+                PSCd: '',
+                PDesc: '',
                 PDesc225: fields.PDesc225,
                 PValue: fields.PValue,
                 PValue1: fields.PValue1,
@@ -599,7 +623,6 @@ const advEventOperation = (() => {
             throw new Error(result.error || 'Failed to delete Advertisement Event');
         }
 
-        // Delete associated images if returned
         if (result.data && result.data.imagePaths) {
             for (const imagePath of result.data.imagePaths) {
                 if (imagePath && imagePath.trim() !== '') {

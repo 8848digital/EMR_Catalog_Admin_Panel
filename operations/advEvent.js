@@ -57,6 +57,12 @@ module.exports = {
                 throw new Error('Duration (PNum) must be greater than 0');
             }
 
+            const startDate = new Date(PValue);
+            const endDate = new Date(PValue1);
+            if (startDate >= endDate) {
+                throw new Error('End Date must be after Start Date');
+            }
+
             // Validate at least one image
             if (!body.PValue2 || body.PValue2.trim() === '') {
                 throw new Error('At least one image (IMG1) is required');
@@ -160,6 +166,11 @@ module.exports = {
             }
             if (!PValue1 || PValue1.trim() === '') {
                 throw new Error('End Date (PValue1) is required');
+            }
+            const startDate = new Date(PValue);
+            const endDate = new Date(PValue1);
+            if (startDate >= endDate) {
+                throw new Error('End Date must be after Start Date');
             }
             if (!PNum || PNum <= 0) {
                 throw new Error('Duration (PNum) must be greater than 0');

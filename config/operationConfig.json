@@ -87,7 +87,7 @@
     {
       "key": "add_adv_event",
       "label": "Manage Advertisement",
-      "visible": false,
+      "visible": true,
       "order": 15
     }
   ]

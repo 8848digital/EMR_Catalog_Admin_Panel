@@ -26,6 +26,18 @@ const ConfigManager = (() => {
     'add_adv_event': advEventOperation,
   };
 
+  // Helper function to escape HTML
+  function escapeHtml(text) {
+    const map = {
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#039;'
+    };
+    return String(text).replace(/[&<>"']/g, m => map[m]);
+  }
+
   function init() {
     const modUsr = sessionStorage.getItem('modUsr');
     if (!modUsr) {
@@ -51,11 +63,12 @@ const ConfigManager = (() => {
     if (logoutBtn) {
       logoutBtn.addEventListener('click', handleLogout);
     }
+    
     const saveAllBtn = document.getElementById('saveAllBtn');
     if (saveAllBtn) {
       saveAllBtn.addEventListener('click', handleSaveAll);
     }
-// Initialize modal buttons
+
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
     
@@ -67,7 +80,6 @@ const ConfigManager = (() => {
       cancelDeleteBtn.addEventListener('click', cancelDelete);
     }
 
-    // Close modal on background click
     const confirmDialog = document.getElementById('confirmDialog');
     if (confirmDialog) {
       confirmDialog.addEventListener('click', (e) => {
@@ -193,7 +205,6 @@ const ConfigManager = (() => {
         `<option value="${item.PMCd}">${item.PMCd}</option>`
       ).join('');
 
-      // Check if handler supports "Add New Category" option
       const showAddNewCategory = currentHandler.showAddNewCategory !== false;
       const addNewOption = showAddNewCategory ? '<option value="__NEW__">+ Add New Category</option>' : '';
 
@@ -336,51 +347,10 @@ const ConfigManager = (() => {
       currentData = await currentHandler.loadData(BASE_URL, currentOperation, pmcd);
       const columns = currentHandler.getColumns();
 
-      renderTable(currentData, columns);
-
-      const operationSelect = document.getElementById('operation');
-      const selectedOption = operationSelect.options[operationSelect.selectedIndex];
-      document.getElementById('dataTitle').textContent =
-        `${selectedOption.textContent} - ${pmcd}`;
-
-      document.getElementById('resultsSection').classList.remove('hidden');
-
-      const addBtn = document.getElementById('addBtn');
-      if (addBtn) {
-        if (currentHandler.supportsAdd) {
-          addBtn.classList.remove('hidden');
-        } else {
-          addBtn.classList.add('hidden');
-        }
-      }
-
-      if (!currentData || currentData.length === 0) {
-        showMessage(`No data available for category "${pmcd}". Click "Add Data" to create records.`, 'info');
-      }
-
-    } catch (error) {
-      console.error('Load data error:', error);
-      showMessage('Error loading data: ' + error.message, 'error');
-    } finally {
-      showLoading(false);
-    }
-  }
-
-  async function loadDataWithPMCd(pmcd) {
-    showLoading(true);
-    editingRows.clear();
-
-    try {
-      currentData = await currentHandler.loadData(BASE_URL, currentOperation, pmcd);
-      const columns = currentHandler.getColumns();
-
-      // Check if handler has custom table renderer
       if (currentHandler.renderTable) {
-        // Use custom renderer for special cases like Range Filter
         const resultsSection = document.getElementById('resultsSection');
         currentHandler.renderTable(resultsSection);
       } else {
-        // Use default renderer
         renderTable(currentData, columns);
       }
 
@@ -396,7 +366,6 @@ const ConfigManager = (() => {
         if (currentHandler.supportsAdd) {
           addBtn.classList.remove('hidden');
 
-          // Change button text for bulk save operations
           if (currentHandler.supportsBulkSave) {
             addBtn.textContent = 'Add Range';
           } else {
@@ -407,7 +376,6 @@ const ConfigManager = (() => {
         }
       }
 
-      // Show "Save All" button for bulk save operations
       const saveAllBtn = document.getElementById('saveAllBtn');
       if (saveAllBtn) {
         if (currentHandler.supportsBulkSave) {
@@ -429,7 +397,6 @@ const ConfigManager = (() => {
     }
   }
 
-  // Add bulk save handler
   async function handleSaveAll() {
     if (!currentHandler || !currentHandler.bulkSave) {
       showMessage('Bulk save not supported', 'error');
@@ -441,7 +408,6 @@ const ConfigManager = (() => {
       const success = await currentHandler.bulkSave(BASE_URL, currentOperation, showMessage);
 
       if (success) {
-        // Reload data
         if (currentHandler.requiresPMCdFilter && currentPMCd) {
           await loadDataWithPMCd(currentPMCd);
         } else {
@@ -525,28 +491,34 @@ const ConfigManager = (() => {
         const value = row[col.key] ?? '';
         const widthStyle = col.width ? `style="min-width: ${col.width};"` : '';
 
+        // For fields that need special edit handling (image, textarea, date)
+        if (col.editable && (col.type === 'image' || col.type === 'textarea' || col.type === 'date')) {
+          let displayValue = value;
+          if (currentHandler.renderDisplayCell) {
+            const customDisplay = currentHandler.renderDisplayCell(col, value, row);
+            if (customDisplay !== null) {
+              displayValue = customDisplay;
+            }
+          }
+          return `<td ${widthStyle} data-field="${col.key}" data-type="${col.type}" data-original-value="${escapeHtml(value || '')}">${displayValue}</td>`;
+        }
+
         if (col.editable) {
           if (col.type === 'dropdown') {
             let displayValue = value;
-            if (currentHandler.renderDisplayCell) {
-              const customDisplay = currentHandler.renderDisplayCell(col, value, row);
-              if (customDisplay !== null) {
-                displayValue = customDisplay;
-              }
-            }
-            return `<td ${widthStyle} data-field="${col.key}" data-value="${value}">${displayValue}</td>`;
+            return `<td ${widthStyle} data-field="${col.key}" data-value="${escapeHtml(value)}" data-original-value="${escapeHtml(value)}">${displayValue}</td>`;
           } else if (col.type === 'number') {
             return `<td ${widthStyle}><input type="text" class="edit-field" 
-                      data-field="${col.key}" value="${value}" 
-                      data-original-value="${value}"
+                      data-field="${col.key}" value="${escapeHtml(value)}" 
+                      data-original-value="${escapeHtml(value)}"
                       oninput="ConfigManager.validateInput(this)" disabled></td>`;
           } else if (col.type === 'select') {
             if (col.options) {
               return `<td ${widthStyle}>
                         <select class="edit-field" data-field="${col.key}" 
-                          data-original-value="${value}" disabled>
+                          data-original-value="${escapeHtml(value)}" disabled>
                           ${col.options.map(opt =>
-                `<option value="${opt}" ${value === opt ? 'selected' : ''}>${opt}</option>`
+                `<option value="${escapeHtml(opt)}" ${value === opt ? 'selected' : ''}>${escapeHtml(opt)}</option>`
               ).join('')}
                         </select>
                       </td>`;
@@ -554,12 +526,12 @@ const ConfigManager = (() => {
           } else if (col.type === 'text') {
             const maxlength = col.maxlength ? `maxlength="${col.maxlength}"` : '';
             return `<td ${widthStyle}><input type="text" class="edit-field" 
-                      data-field="${col.key}" value="${value}" 
-                      data-original-value="${value}"
+                      data-field="${col.key}" value="${escapeHtml(value)}" 
+                      data-original-value="${escapeHtml(value)}"
                       ${maxlength} disabled style="width: 100%;"></td>`;
           }
         }
-        return `<td ${widthStyle}>${value}</td>`;
+        return `<td ${widthStyle}>${escapeHtml(value)}</td>`;
       }).join('');
 
       const supportsDelete = currentHandler.supportsDelete;
@@ -587,7 +559,6 @@ const ConfigManager = (() => {
       return;
     }
 
-    const inputs = row.querySelectorAll('.edit-field');
     const editBtn = row.querySelector('.edit-btn');
     const saveBtn = row.querySelector('.save-btn');
     const cancelBtn = row.querySelector('.cancel-btn');
@@ -598,39 +569,65 @@ const ConfigManager = (() => {
     const originalValues = {};
     const columns = currentHandler.getColumns();
 
-    columns.filter(col => col.type === 'dropdown' && col.editable).forEach(col => {
+    // Handle ALL editable fields including textarea, date, and image
+    columns.filter(col => col.editable).forEach(col => {
       const cell = row.querySelector(`td[data-field="${col.key}"]`);
+      
       if (cell) {
-        const value = cell.dataset.value || cell.textContent.trim();
-        originalValues[col.key] = value;
-
-        if (currentHandler.createEditControl && rowData) {
-          const editControl = currentHandler.createEditControl(col, value, rowData);
-          if (editControl) {
-            cell.innerHTML = '';
-            cell.appendChild(editControl);
+        // Get original value from data-original-value attribute
+        const originalValue = cell.getAttribute('data-original-value') || cell.dataset.originalValue || '';
+        originalValues[col.key] = originalValue;
+        
+        // For fields that need special edit controls (image, textarea, date)
+        if (col.type === 'image' || col.type === 'textarea' || col.type === 'date') {
+          if (currentHandler.createEditControl) {
+            // Call createEditControl even without rowData - it doesn't actually need it
+            const editControl = currentHandler.createEditControl(col, originalValue, rowData || {});
+            
+            if (editControl) {
+              cell.innerHTML = '';
+              cell.appendChild(editControl);
+            }
           }
         }
       }
     });
 
+    // Handle regular input fields that are already in the DOM
+    const inputs = row.querySelectorAll('.edit-field:not([type="hidden"])');
     inputs.forEach(input => {
       const field = input.dataset.field;
-      originalValues[field] = input.value;
+      if (!originalValues[field]) {
+        originalValues[field] = input.dataset.originalValue || input.value;
+      }
       input.disabled = false;
       input.classList.add('editing');
     });
 
+    // Handle select fields
+    const selects = row.querySelectorAll('select.edit-field');
+    selects.forEach(select => {
+      const field = select.dataset.field;
+      if (!originalValues[field]) {
+        originalValues[field] = select.dataset.originalValue || select.value;
+      }
+      select.disabled = false;
+      select.classList.add('editing');
+    });
+
     editingRows.set(rowId, originalValues);
 
-    const allEditableFields = row.querySelectorAll('.edit-field, select[data-field], input[data-field]');
-    const firstEditableInput = Array.from(allEditableFields).find(input => !input.disabled);
-    if (firstEditableInput) {
-      firstEditableInput.focus();
-      if (firstEditableInput.type === 'text') {
-        firstEditableInput.select();
+    // Focus first editable field (with slight delay for DOM updates)
+    setTimeout(() => {
+      const allEditableFields = row.querySelectorAll('.edit-field:not([type="hidden"]), select.edit-field, textarea.edit-field, input[type="date"]');
+      const firstEditableInput = Array.from(allEditableFields).find(input => !input.disabled);
+      if (firstEditableInput) {
+        firstEditableInput.focus();
+        if (firstEditableInput.type === 'text' || firstEditableInput.tagName === 'TEXTAREA') {
+          firstEditableInput.select();
+        }
       }
-    }
+    }, 100);
 
     editBtn.classList.add('hidden');
     saveBtn.classList.remove('hidden');
@@ -655,23 +652,38 @@ const ConfigManager = (() => {
     const columns = currentHandler.getColumns();
     const rowData = currentData.find(r => currentHandler.generateRowId(r) === rowId);
 
-    columns.filter(col => col.type === 'dropdown' && col.editable).forEach(col => {
+    // Restore custom display cells (image, textarea, date, dropdown)
+    columns.filter(col => col.editable).forEach(col => {
       const cell = row.querySelector(`td[data-field="${col.key}"]`);
       if (cell) {
-        const originalValue = originalValues[col.key];
+        const originalValue = originalValues[col.key] || '';
 
-        let displayValue = originalValue;
-        if (currentHandler.renderDisplayCell && rowData) {
-          const customDisplay = currentHandler.renderDisplayCell(col, originalValue, rowData);
-          if (customDisplay !== null) {
-            displayValue = customDisplay;
+        if (col.type === 'image' || col.type === 'textarea' || col.type === 'date' || col.type === 'dropdown') {
+          let displayValue = originalValue;
+          if (currentHandler.renderDisplayCell && rowData) {
+            const customDisplay = currentHandler.renderDisplayCell(col, originalValue, rowData);
+            if (customDisplay !== null) {
+              displayValue = customDisplay;
+            }
+          } else {
+            // Fallback for images if no custom display
+            if (col.type === 'image') {
+              if (originalValue && originalValue.trim() !== '') {
+                displayValue = `<img src="${escapeHtml(originalValue)}" alt="Image" style="max-width: 100px; max-height: 100px; cursor: pointer; display: block; border: 1px solid #ddd; border-radius: 4px;">`;
+              } else {
+                displayValue = '<span style="color: #999; font-size: 12px;">No image</span>';
+              }
+            }
+          }
+          cell.innerHTML = displayValue;
+          if (col.type === 'dropdown') {
+            cell.dataset.value = originalValue;
           }
         }
-        cell.innerHTML = displayValue;
-        cell.dataset.value = originalValue;
       }
     });
 
+    // Restore regular input fields
     inputs.forEach(input => {
       const field = input.dataset.field;
       if (originalValues[field] !== undefined) {
@@ -719,7 +731,7 @@ const ConfigManager = (() => {
       showMessage('Delete operation not supported', 'error');
       return;
     }
-    // Store the rowId and show modal
+    
     pendingDeleteRowId = rowId;
     
     const confirmDialog = document.getElementById('confirmDialog');
@@ -741,7 +753,6 @@ const ConfigManager = (() => {
     if (confirmDialog) {
       confirmDialog.classList.add('hidden');
     }
-
 
     try {
       showLoading(true);
@@ -766,7 +777,7 @@ const ConfigManager = (() => {
       showMessage(error.message, 'error');
     } finally {
       showLoading(false);
-       pendingDeleteRowId = null;
+      pendingDeleteRowId = null;
     }
   }
 
