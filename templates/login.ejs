@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="/css/login.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <label for="username">Username</label>
+            <input type="text" id="username" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" required>
+
+            <button type="submit">Login</button>
+
+            <div id="loginMessage" class="message" style="display: none;"></div>
+        </form>
+    </div>
+
+    <script>
+        const BASE_URL = '';
+        const loginForm = document.getElementById('loginForm');
+        const loginMessage = document.getElementById('loginMessage');
+
+        loginForm.addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+
+            loginMessage.style.display = 'none';
+            loginMessage.textContent = '';
+            loginMessage.className = 'message';
+
+            try {
+                const response = await fetch(`${BASE_URL}/api/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const result = await response.json();
+
+                if (result.success) {
+                    sessionStorage.setItem('modUsr', username);
+                    window.location.href = '/config';
+                } else {
+                    loginMessage.textContent = result.error || "Login failed.";
+                    loginMessage.classList.add('error');
+                    loginMessage.style.display = 'block';
+                }
+            } catch (err) {
+                loginMessage.textContent = "Error: " + err.message;
+                loginMessage.classList.add('error');
+                loginMessage.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+
+</html>
