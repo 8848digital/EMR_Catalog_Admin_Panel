@@ -52,7 +52,4 @@ router.post('/deleteFile', deleteFile);
 router.post('/replaceFile', upload.array('files'), replaceFile);
 router.get('/getBasePath', getBasePath);
 
-const { getAdvEvents } = require('../controllers/getAdvEvents');
-router.get('/getAdvEvents', transactionalControllerWrapper(getAdvEvents));
-
 module.exports = router;
