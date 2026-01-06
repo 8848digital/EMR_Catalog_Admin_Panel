@@ -58,7 +58,5 @@ router.get('/getBasePath', getBasePath);
 const { getAdvEvents } = require('../controllers/getAdvEvents');
 router.get('/getAdvEvents', transactionalControllerWrapper(getAdvEvents));
 
-const { getYPOS } = require('../controllers/yPosController');
-router.get('/getYPOS', transactionalControllerWrapper(getYPOS));
 
 module.exports = router;
