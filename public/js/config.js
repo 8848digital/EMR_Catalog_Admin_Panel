@@ -24,6 +24,7 @@ const ConfigManager = (() => {
     'add_ctg_filter': ctgFilterOperation,
     'add_rg_filter': rgFilterOperation,
     'add_adv_event': advEventOperation,
+    'add_PosCTA': PosCTAOperation,
   };
 
   // Helper function to escape HTML

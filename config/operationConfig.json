@@ -89,6 +89,12 @@
       "label": "Manage Advertisement",
       "visible": true,
       "order": 15
+    },
+    {
+      "key": "add_PosCTA",
+      "label": "Manage Buttons",
+      "visible": true,
+      "order": 16
     }
   ]
 }
