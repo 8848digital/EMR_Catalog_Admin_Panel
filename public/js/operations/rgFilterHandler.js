@@ -25,7 +25,6 @@ const rgFilterOperation = (() => {
 
   // Clear PMCd cache
   function clearPMCdCache() {
-    console.log('Clearing PMCd cache...');
     pmcdListCache = null;
   }
 

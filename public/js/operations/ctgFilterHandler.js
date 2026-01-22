@@ -21,18 +21,15 @@ const ctgFilterOperation = (() => {
 
   // Clear PMCd cache to force refresh
   function clearPMCdCache() {
-    console.log('Clearing PMCd cache...');
     pmcdListCache = null;
   }
 
   async function loadPMCdList(BASE_URL, operation, forceRefresh = false) {
     if (pmcdListCache && !forceRefresh) {
-      console.log('Using cached PMCd list');
       return pmcdListCache;
     }
 
     try {
-      console.log('Fetching fresh PMCd list from server...');
       const response = await fetch(`${BASE_URL}/pmcdList?operation=${operation}`);
       
       const contentType = response.headers.get('content-type');
@@ -47,7 +44,6 @@ const ctgFilterOperation = (() => {
       }
       
       pmcdListCache = result.data || [];
-      console.log('Loaded Category list (PMCd):', pmcdListCache);
       return pmcdListCache;
     } catch (error) {
       console.error('Error loading PMCd list:', error);
@@ -93,8 +89,6 @@ const ctgFilterOperation = (() => {
     const parts = uniqueId.split('_');
     const oldPMCd = parts[0];
     const oldPValue3 = parts.slice(1).join('_'); // Handle cases where PValue3 might contain underscores
-
-    console.log('Parsed uniqueId:', { uniqueId, oldPMCd, oldPValue3 });
 
     // Get all field values
     const fields = ['PSCd', 'PDesc', 'PDesc225', 'PValue', 'PNum', 'PValue1', 'PNum1', 'PValue2', 'PValidYn', 'PPrtKey'];
@@ -145,9 +139,7 @@ const ctgFilterOperation = (() => {
       OldPValue3: oldPValue3,
       modUsr: modUsr
     };
-
-    console.log('Saving category filter:', requestBody);
-    
+  
     const response = await fetch(`${BASE_URL}/updateData`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -261,8 +253,6 @@ const ctgFilterOperation = (() => {
       modUsr: modUsr
     };
 
-    console.log('Adding new category filter:', requestBody);
-    
     const response = await fetch(`${BASE_URL}/addData`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

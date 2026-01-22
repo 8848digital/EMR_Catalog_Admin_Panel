@@ -38,7 +38,6 @@ const slsPrsnOperation = (() => {
       }
       
       pmcdListCache = result.data || [];
-      console.log('Loaded Sales Person list (PMCd):', pmcdListCache);
       return pmcdListCache;
     } catch (error) {
       console.error('Error loading PMCd list:', error);
@@ -66,7 +65,6 @@ const slsPrsnOperation = (() => {
       }
       
       pscdListCache = result.data || [];
-      console.log('Loaded User list (PSCd):', pscdListCache);
       return pscdListCache;
     } catch (error) {
       console.error('Error loading PSCd list:', error);
@@ -149,7 +147,6 @@ const slsPrsnOperation = (() => {
         // Proper comparison for selection
         if (itemValue === value || itemValue?.trim() === value?.trim()) {
           option.selected = true;
-          console.log('Pre-selected:', col.key, '=', itemValue);
         }
         
         select.appendChild(option);
@@ -208,8 +205,6 @@ const slsPrsnOperation = (() => {
     
     // Split uniqueId to get both old values
     const [OldPMCd, OldPSCd] = uniqueId.split('|');
-    
-    console.log('Saving row:', { PMCd, PSCd, PDesc225, OldPMCd, OldPSCd });
     
     const response = await fetch(`${BASE_URL}/updateData`, {
       method: 'PUT',

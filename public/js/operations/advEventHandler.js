@@ -324,7 +324,6 @@ const advEventOperation = (() => {
             });
 
             if (response.ok) {
-                console.log('Image deleted successfully');
             }
         } catch (err) {
             console.error('Error deleting image:', err);

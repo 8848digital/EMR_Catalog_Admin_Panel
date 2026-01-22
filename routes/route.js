@@ -39,7 +39,6 @@ router.get('/pscdList', transactionalControllerWrapper(getPSCdList));
 router.get('/newCategoryList', transactionalControllerWrapper(getNewCategoryList));
 router.post('/bulkSave', transactionalControllerWrapper(bulkSaveData));
 
-// File management routes
 const {
   uploadFile,
   deleteFile,

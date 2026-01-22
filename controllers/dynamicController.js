@@ -74,8 +74,6 @@ async function getPSCdList(conn) {
       inputValuesMap: customerConfig.inputValuesMap || {}
     };
 
-    console.log('Final query FROM clause:', queryStmts.from);
-
     const result = await exeQuery(conn, queryStmts);
     return result || [];
   } catch (error) {

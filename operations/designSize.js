@@ -89,8 +89,6 @@ module.exports = {
             const { sql, exeQuery } = conn;
             const { PMCd, PSCd, PDesc, OldPValue3 } = body;
 
-            console.log('Update body received:', body);
-
             const trimmedPMCd = PMCd.trim();
             const trimmedPSCd = PSCd.trim();
             const trimmedPDesc = PDesc.trim();

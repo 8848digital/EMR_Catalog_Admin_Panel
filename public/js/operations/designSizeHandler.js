@@ -22,18 +22,15 @@ const designSizeHandler = (() => {
 
   // Clear PMCd cache to force refresh
   function clearPMCdCache() {
-    console.log('Clearing PMCd cache...');
     pmcdListCache = null;
   }
 
   async function loadPMCdList(BASE_URL, operation, forceRefresh = false) {
     if (pmcdListCache && !forceRefresh) {
-      console.log('Using cached PMCd list');
       return pmcdListCache;
     }
 
     try {
-      console.log('Fetching fresh PMCd list from server...');
       const response = await fetch(`${BASE_URL}/pmcdList?operation=${operation}`);
       
       const contentType = response.headers.get('content-type');
@@ -48,7 +45,6 @@ const designSizeHandler = (() => {
       }
       
       pmcdListCache = result.data || [];
-      console.log('Loaded Design Category list (PMCd):', pmcdListCache);
       return pmcdListCache;
     } catch (error) {
       console.error('Error loading PMCd list:', error);
@@ -76,7 +72,6 @@ const designSizeHandler = (() => {
       }
       
       pscdListCache = result.data || [];
-      console.log('Loaded Size Code list (PSCd):', pscdListCache);
       return pscdListCache;
     } catch (error) {
       console.error('Error loading PSCd list:', error);
@@ -91,7 +86,6 @@ const designSizeHandler = (() => {
     }
 
     try {
-      console.log('Fetching new category list from server...');
       const response = await fetch(`${BASE_URL}/newCategoryList?operation=${operation}`);
       
       const contentType = response.headers.get('content-type');
@@ -106,7 +100,6 @@ const designSizeHandler = (() => {
       }
       
       newCategoryListCache = result.data || [];
-      console.log('Loaded New Category list:', newCategoryListCache);
       return newCategoryListCache;
     } catch (error) {
       console.error('Error loading new category list:', error);
@@ -213,9 +206,6 @@ const designSizeHandler = (() => {
       pdescField = row.querySelector('td[data-field="PDesc"]');
     }
     
-    console.log('PSCd field:', pscdField);
-    console.log('PDesc field:', pdescField);
-    
     let PSCd = '';
     let PDesc = '';
     
@@ -237,9 +227,6 @@ const designSizeHandler = (() => {
       }
     }
     
-    console.log('PSCd value:', PSCd);
-    console.log('PDesc value:', PDesc);
-    
     // Validate
     if (!PSCd) {
       throw new Error('Size Code (PSCd) is required');
@@ -255,9 +242,7 @@ const designSizeHandler = (() => {
     const PMCd = currentPMCd;
     const OldPMCd = oldPMCd || currentPMCd;
     const OldPValue3 = oldPValue3 || '';
-    
-    console.log('Saving design size:', { PMCd, PSCd, PDesc, OldPMCd, OldPValue3 });
-    
+
     const response = await fetch(`${BASE_URL}/updateData`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },

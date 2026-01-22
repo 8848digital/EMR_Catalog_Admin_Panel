@@ -37,7 +37,6 @@ const custMpOperation = (() => {
       }
       
       pmcdListCache = result.data || [];
-      console.log('Loaded Sales Person list (PMCd):', pmcdListCache);
       return pmcdListCache;
     } catch (error) {
       console.error('Error loading PMCd list:', error);
@@ -65,7 +64,6 @@ const custMpOperation = (() => {
       }
       
       pscdListCache = result.data || [];
-      console.log('Loaded Customer list (PSCd):', pscdListCache);
       return pscdListCache;
     } catch (error) {
       console.error('Error loading Customer list:', error);
@@ -158,7 +156,6 @@ const custMpOperation = (() => {
         // Proper comparison for selection
         if (itemValue === value || itemValue?.trim() === value?.trim()) {
           option.selected = true;
-          console.log('Pre-selected:', col.key, '=', itemValue);
         }
         
         select.appendChild(option);

@@ -37,7 +37,6 @@ const UsrMapHandler = (() => {
       }
       
       pmcdListCache = result.data || [];
-      console.log('Loaded PMCd list:', pmcdListCache);
       return pmcdListCache;
     } catch (error) {
       console.error('Error loading PMCd list:', error);
@@ -156,7 +155,6 @@ const UsrMapHandler = (() => {
         // Proper comparison for selection
         if (itemValue === value || itemValue?.trim() === value?.trim()) {
           option.selected = true;
-          console.log('Pre-selected:', col.key, '=', itemValue);
         }
         
         select.appendChild(option);
@@ -185,9 +183,6 @@ const UsrMapHandler = (() => {
       pscdField = row.querySelector('td[data-field="PSCd"]');
     }
     
-    console.log('PMCd field:', pmcdField);
-    console.log('PSCd field:', pscdField);
-    
     let PMCd = '';
     let PSCd = '';
     
@@ -207,9 +202,6 @@ const UsrMapHandler = (() => {
         PSCd = (pscdField.dataset.value || pscdField.textContent || '').trim();
       }
     }
-    
-    console.log('PMCd value:', PMCd);
-    console.log('PSCd value:', PSCd);
     
     // Validate
     if (!PMCd) {
@@ -232,9 +224,6 @@ const UsrMapHandler = (() => {
     
     const OldPMCd = (parts[0] || '').trim();
     const OldPSCd = (parts[1] || '').trim();
-    
-    console.log('OldPMCd:', OldPMCd);
-    console.log('OldPSCd:', OldPSCd);
     
     if (!OldPMCd || !OldPSCd) {
       throw new Error('Cannot determine original values');

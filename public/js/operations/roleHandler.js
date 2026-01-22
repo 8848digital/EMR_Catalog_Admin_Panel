@@ -38,7 +38,6 @@ const roleOperation = (() => {
       }
       
       pmcdListCache = result.data || [];
-      console.log('Loaded User list (PMCd):', pmcdListCache);
       return pmcdListCache;
     } catch (error) {
       console.error('Error loading PMCd list:', error);
@@ -67,7 +66,6 @@ const roleOperation = (() => {
       }
       
       pscdListCache = result.data || [];
-      console.log('Loaded Role Code list (PSCd):', pscdListCache);
       return pscdListCache;
     } catch (error) {
       console.error('Error loading PSCd list:', error);
@@ -268,8 +266,6 @@ const roleOperation = (() => {
     const [OldPMCd, OldPSCd] = uniqueId.split('|');
     
     const modUsr = sessionStorage.getItem('modUsr') || '';
-    
-    console.log('Saving row:', { PMCd, PSCd, PNum, OldPMCd, OldPSCd });
     
     const response = await fetch(`${BASE_URL}/updateData`, {
       method: 'PUT',

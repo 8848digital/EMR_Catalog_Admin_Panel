@@ -36,7 +36,6 @@ const csGrdOperation = (() => {
       }
       
       pmcdListCache = result.data || [];
-      console.log('Loaded PMCd list:', pmcdListCache);
       return pmcdListCache;
     } catch (error) {
       console.error('Error loading PMCd list:', error);
@@ -108,7 +107,6 @@ const csGrdOperation = (() => {
         
         if (itemValue === value || itemValue?.trim() === value?.trim()) {
           option.selected = true;
-          console.log('Pre-selected:', col.key, '=', itemValue);
         }
         
         select.appendChild(option);

@@ -39,7 +39,6 @@ const metColOperation = (() => {
       }
 
       pmcdListCache = result.data || [];
-      console.log('Loaded Metal Code list (PMCd):', pmcdListCache);
       return pmcdListCache;
     } catch (error) {
       console.error('Error loading PMCd list:', error);
@@ -67,7 +66,6 @@ const metColOperation = (() => {
       }
 
       pscdListCache = result.data || [];
-      console.log('Loaded Color list (PSCd):', pscdListCache);
       return pscdListCache;
     } catch (error) {
       console.error('Error loading PSCd list:', error);
@@ -160,7 +158,6 @@ const metColOperation = (() => {
         // Proper comparison for selection
         if (itemValue === value || itemValue?.trim() === value?.trim()) {
           option.selected = true;
-          console.log('Pre-selected:', col.key, '=', itemValue);
         }
 
         select.appendChild(option);
