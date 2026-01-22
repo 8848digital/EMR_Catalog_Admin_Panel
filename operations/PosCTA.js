@@ -136,6 +136,30 @@ module.exports = {
                 }
             });
 
+            // Check for duplicate: Same CTA with same screen column having a value
+            const checkDuplicateQuery = {
+                rawQuery: `
+                    SELECT COUNT(*) as Count
+                    FROM [${process.env.yDb}].[dbo].[yPosCTA]
+                    WHERE CTA = @CTA 
+                    AND ${activeColumn} IN ('True', 'False')
+                    AND yId != @yId
+                `,
+                inputTypeMap: {
+                    CTA: sql.VarChar(50),
+                    yId: sql.Int
+                },
+                inputValuesMap: {
+                    CTA: trimmedData.CTA,
+                    yId: parseInt(yId)
+                }
+            };
+
+            const duplicateResult = await exeQuery(conn, checkDuplicateQuery);
+            if (duplicateResult[0]?.Count > 0) {
+                throw new Error(`CTA "${trimmedData.CTA}" with ${activeColumn} already exists. Each CTA can have only one row per screen.`);
+            }
+
             // Update record in yPosCTA
             const updateQuery = {
                 rawQuery: `
@@ -325,12 +349,13 @@ module.exports = {
                 }
             });
 
-            // Check for duplicate CTA
+            // Check for duplicate: Same CTA with same screen column having a value
             const checkDuplicateQuery = {
                 rawQuery: `
                     SELECT COUNT(*) as Count
                     FROM [${process.env.yDb}].[dbo].[yPosCTA]
-                    WHERE CTA = @CTA
+                    WHERE CTA = @CTA 
+                    AND ${activeColumn} IN ('True', 'False')
                 `,
                 inputTypeMap: {
                     CTA: sql.VarChar(50)
@@ -342,7 +367,7 @@ module.exports = {
 
             const duplicateResult = await exeQuery(conn, checkDuplicateQuery);
             if (duplicateResult[0]?.Count > 0) {
-                throw new Error(`CTA "${trimmedData.CTA}" already exists`);
+                throw new Error(`CTA "${trimmedData.CTA}" with ${activeColumn} already exists. Each CTA can have only one row per screen.`);
             }
 
             const insertQuery = {
