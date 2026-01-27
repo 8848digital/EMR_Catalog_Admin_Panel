@@ -24,6 +24,10 @@ module.exports = {
             Invoice,
             Entry,
             Closing,
+            ClosingValidated,
+            HTranSearchJST,
+            HTranSearchJMR,
+            HTranSearchJMS,
             Position,
             ModUsr,
             ModDate,
@@ -32,7 +36,7 @@ module.exports = {
         `,
         from: `[${process.env.yDb}].[dbo].[yPosCTA]`,
         whereConditions: [],
-        orderByClause: "yId",
+        orderByClause: "CTA",
         inputTypeMap: {},
         inputValuesMap: {}
     },
@@ -55,7 +59,7 @@ module.exports = {
 
         customUpdate: async (conn, body, modUsr) => {
             const { sql, exeQuery } = conn;
-            const { 
+            const {
                 yId,
                 CTA,
                 HomeScreen,
@@ -75,6 +79,10 @@ module.exports = {
                 Invoice,
                 Entry,
                 Closing,
+                ClosingValidated,
+                HTranSearchJST,
+                HTranSearchJMR,
+                HTranSearchJMS,
                 Position
             } = body;
 
@@ -98,15 +106,19 @@ module.exports = {
                 Invoice: (Invoice || '').trim(),
                 Entry: (Entry || '').trim(),
                 Closing: (Closing || '').trim(),
+                ClosingValidated: (ClosingValidated || '').trim(),
+                HTranSearchJST: (HTranSearchJST || '').trim(),
+                HTranSearchJMR: (HTranSearchJMR || '').trim(),
+                HTranSearchJMS: (HTranSearchJMS || '').trim(),
                 Position: (Position || '').trim()
             };
 
             // Validate: Exactly one screen column should have 'True' or 'False', rest should be 'NA'
             const screenColumns = [
                 'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
-                'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch', 
+                'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
                 'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-                'Invoice', 'Entry', 'Closing'
+                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS'
             ];
 
             const nonNAColumns = screenColumns.filter(col => {
@@ -183,6 +195,10 @@ module.exports = {
                         Invoice = @Invoice,
                         Entry = @Entry,
                         Closing = @Closing,
+                        ClosingValidated = @ClosingValidated,
+                        HTranSearchJST = @HTranSearchJST,
+                        HTranSearchJMR = @HTranSearchJMR, 
+                        HTranSearchJMS = @HTranSearchJMS,
                         Position = @Position,
                         ModUsr = @ModUsr,
                         ModDate = GETDATE()
@@ -208,6 +224,10 @@ module.exports = {
                     Invoice: sql.VarChar(50),
                     Entry: sql.VarChar(50),
                     Closing: sql.VarChar(50),
+                    ClosingValidated: sql.VarChar(50),
+                    HTranSearchJST: sql.VarChar(50),
+                    HTranSearchJMR: sql.VarChar(50),
+                    HTranSearchJMS: sql.VarChar(50),
                     Position: sql.VarChar(50),
                     ModUsr: sql.VarChar(50)
                 },
@@ -231,6 +251,10 @@ module.exports = {
                     Invoice: trimmedData.Invoice,
                     Entry: trimmedData.Entry,
                     Closing: trimmedData.Closing,
+                    ClosingValidated: trimmedData.ClosingValidated,
+                    HTranSearchJST: trimmedData.HTranSearchJST,
+                    HTranSearchJMR: trimmedData.HTranSearchJMR,
+                    HTranSearchJMS: trimmedData.HTranSearchJMS,
                     Position: trimmedData.Position,
                     ModUsr: modUsr.substring(0, 50)
                 },
@@ -269,7 +293,7 @@ module.exports = {
 
         customAdd: async (conn, body, modUsr) => {
             const { sql, exeQuery } = conn;
-            const { 
+            const {
                 CTA,
                 HomeScreen,
                 HCustSelect,
@@ -288,6 +312,10 @@ module.exports = {
                 Invoice,
                 Entry,
                 Closing,
+                ClosingValidated,
+                HTranSearchJST,
+                HTranSearchJMR,
+                HTranSearchJMS,
                 Position
             } = body;
 
@@ -311,15 +339,19 @@ module.exports = {
                 Invoice: (Invoice || '').trim(),
                 Entry: (Entry || '').trim(),
                 Closing: (Closing || '').trim(),
+                ClosingValidated: (ClosingValidated || '').trim(),
+                HTranSearchJST: (HTranSearchJST || '').trim(),
+                HTranSearchJMR: (HTranSearchJMR || '').trim(),
+                HTranSearchJMS: (HTranSearchJMS || '').trim(),
                 Position: (Position || '').trim()
             };
 
             // Validate: Exactly one screen column should have 'True' or 'False', rest should be 'NA'
             const screenColumns = [
                 'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
-                'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch', 
+                'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
                 'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-                'Invoice', 'Entry', 'Closing'
+                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS'
             ];
 
             const nonNAColumns = screenColumns.filter(col => {
@@ -376,12 +408,12 @@ module.exports = {
                     (CTA, HomeScreen, HCustSelect, HItmSelect, HMulItmSelect, HStkCart, 
                      [Transaction], CustSearch, CustSearchSelect, ItemSearch, ItemSearchSelect, 
                      TransactionSearch, Checkout, CheckoutExit, ColHexCd, Invoice, Entry, 
-                     Closing, Position, ModUsr, ModDate, CreatedUsr, CreatedDate)
+                     Closing, ClosingValidated, HTranSearchJST, HTranSearchJMR, HTranSearchJMS, Position, ModUsr, ModDate, CreatedUsr, CreatedDate)
                     VALUES 
                     (@CTA, @HomeScreen, @HCustSelect, @HItmSelect, @HMulItmSelect, @HStkCart,
                      @Transaction, @CustSearch, @CustSearchSelect, @ItemSearch, @ItemSearchSelect,
                      @TransactionSearch, @Checkout, @CheckoutExit, @ColHexCd, @Invoice, @Entry,
-                     @Closing, @Position, @ModUsr, GETDATE(), @CreatedUsr, GETDATE())
+                     @Closing, @ClosingValidated, @HTranSearchJST, @HTranSearchJMR, @HTranSearchJMS, @Position, @ModUsr, GETDATE(), @CreatedUsr, GETDATE())
                 `,
                 inputTypeMap: {
                     CTA: sql.VarChar(50),
@@ -402,6 +434,10 @@ module.exports = {
                     Invoice: sql.VarChar(50),
                     Entry: sql.VarChar(50),
                     Closing: sql.VarChar(50),
+                    ClosingValidated: sql.VarChar(50),
+                    HTranSearchJST: sql.VarChar(50),
+                    HTranSearchJMR: sql.VarChar(50),
+                    HTranSearchJMS: sql.VarChar(50),
                     Position: sql.VarChar(50),
                     ModUsr: sql.VarChar(50),
                     CreatedUsr: sql.VarChar(50)
@@ -425,6 +461,10 @@ module.exports = {
                     Invoice: trimmedData.Invoice,
                     Entry: trimmedData.Entry,
                     Closing: trimmedData.Closing,
+                    ClosingValidated: trimmedData.ClosingValidated,
+                    HTranSearchJST: trimmedData.HTranSearchJST,
+                    HTranSearchJMR: trimmedData.HTranSearchJMR,
+                    HTranSearchJMS: trimmedData.HTranSearchJMS,
                     Position: trimmedData.Position,
                     ModUsr: modUsr.substring(0, 50),
                     CreatedUsr: modUsr.substring(0, 50)

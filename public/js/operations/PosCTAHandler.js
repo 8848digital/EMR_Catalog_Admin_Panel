@@ -19,6 +19,10 @@ const PosCTAOperation = (() => {
     { key: 'Invoice', label: 'Invoice', editable: true, type: 'text', width: '120px', maxlength: 50 },
     { key: 'Entry', label: 'Entry', editable: true, type: 'text', width: '120px', maxlength: 50 },
     { key: 'Closing', label: 'Closing', editable: true, type: 'text', width: '120px', maxlength: 50 },
+    { key: 'ClosingValidated', label: 'ClosingValidated', editable: true, type: 'text', width: '120px', maxlength: 50 },
+    { key: 'HTranSearchJST', label: 'HTranSearchJST', editable: true, type: 'text', width: '120px', maxlength: 50 },
+    { key: 'HTranSearchJMR', label: 'HTranSearchJMR', editable: true, type: 'text', width: '120px', maxlength: 50 },
+    { key: 'HTranSearchJMS', label: 'HTranSearchJMS', editable: true, type: 'text', width: '120px', maxlength: 50 },
     { key: 'Position', label: 'Position', editable: true, type: 'text', width: '120px', maxlength: 50 },
     { key: 'ModUsr', label: 'Modified By', hidden: true },
     { key: 'ModDate', label: 'Modified Date', hidden: true }
@@ -27,12 +31,12 @@ const PosCTAOperation = (() => {
   function validateScreenColumns(row) {
     // Clear existing validation messages
     row.querySelectorAll('.validation-message').forEach(msg => msg.remove());
-    
+
     const screenColumns = [
       'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
-      'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch', 
+      'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
       'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-      'Invoice', 'Entry', 'Closing'
+      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS'
     ];
 
     const showFieldError = (fieldName, message) => {
@@ -90,10 +94,10 @@ const PosCTAOperation = (() => {
   function validateFieldsRealtime(row) {
     // Clear existing validation messages
     row.querySelectorAll('.validation-message').forEach(msg => msg.remove());
-    
+
     const fieldData = {};
     const editableColumns = COLUMNS.filter(col => col.editable);
-    
+
     // Get all field values
     for (const col of editableColumns) {
       let field = row.querySelector(`[data-field="${col.key}"]`);
@@ -104,7 +108,7 @@ const PosCTAOperation = (() => {
         fieldData[col.key] = field.value ? field.value.trim() : '';
       }
     }
-    
+
     // Helper function to show validation message below field
     const showFieldError = (fieldName, message) => {
       let field = row.querySelector(`[data-field="${fieldName}"]`);
@@ -119,26 +123,26 @@ const PosCTAOperation = (() => {
         field.parentElement.appendChild(errorDiv);
       }
     };
-    
+
     // Validate required fields
     if (fieldData.CTA !== undefined && !fieldData.CTA) {
       showFieldError('CTA', 'CTA is required');
     }
-    
+
     if (fieldData.ColHexCd !== undefined && !fieldData.ColHexCd) {
       showFieldError('ColHexCd', 'Required');
     }
-    
+
     if (fieldData.Position !== undefined && !fieldData.Position) {
       showFieldError('Position', 'Required');
     }
-    
+
     // Validate screen columns
     const screenColumns = [
       'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
-      'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch', 
+      'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
       'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-      'Invoice', 'Entry', 'Closing'
+      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS'
     ];
 
     const nonNAColumns = screenColumns.filter(col => {
@@ -179,36 +183,36 @@ const PosCTAOperation = (() => {
 
   async function loadData(BASE_URL, operation) {
     const response = await fetch(`${BASE_URL}/getData?operation=${operation}`);
-    
+
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       throw new Error('Server returned non-JSON response. Please check API endpoint.');
     }
-    
+
     const result = await response.json();
-    
+
     if (!result.success) {
       throw new Error(result.error || 'Failed to load Button Configuration data');
     }
-    
+
     return result.data || [];
   }
 
   async function saveRow(row, uniqueId, BASE_URL, operation) {
     // Clear any existing validation messages
     row.querySelectorAll('.validation-message').forEach(msg => msg.remove());
-    
+
     // Get all editable field values
     const fieldData = {};
     const editableColumns = COLUMNS.filter(col => col.editable);
-    
+
     for (const col of editableColumns) {
       const field = row.querySelector(`[data-field="${col.key}"]`);
       if (field) {
         fieldData[col.key] = field.value ? field.value.trim() : '';
       }
     }
-    
+
     // Helper function to show validation message below field
     const showFieldError = (fieldName, message) => {
       const field = row.querySelector(`[data-field="${fieldName}"]`);
@@ -220,31 +224,31 @@ const PosCTAOperation = (() => {
         field.parentElement.appendChild(errorDiv);
       }
     };
-    
+
     // Validate required fields
     let hasError = false;
-    
+
     if (!fieldData.CTA) {
       showFieldError('CTA', 'CTA is required');
       hasError = true;
     }
-    
+
     if (!fieldData.ColHexCd) {
       showFieldError('ColHexCd', 'Required');
       hasError = true;
     }
-    
+
     if (!fieldData.Position) {
       showFieldError('Position', 'Required');
       hasError = true;
     }
-    
+
     // Validate: Exactly one screen column should have 'True' or 'False', rest should be 'NA'
     const screenColumns = [
       'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
-      'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch', 
+      'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
       'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-      'Invoice', 'Entry', 'Closing'
+      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS'
     ];
 
     const nonNAColumns = screenColumns.filter(col => {
@@ -282,31 +286,31 @@ const PosCTAOperation = (() => {
         fieldData[col] = 'NA';
       }
     });
-    
+
     const modUsr = sessionStorage.getItem('modUsr') || '';
-    
+
     const response = await fetch(`${BASE_URL}/updateData`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         operation: operation,
         yId: uniqueId,
         ...fieldData,
-        modUsr: modUsr 
+        modUsr: modUsr
       })
     });
-    
+
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       throw new Error('Server returned non-JSON response. Please check API endpoint.');
     }
-    
+
     const result = await response.json();
-    
+
     if (!result.success) {
       throw new Error(result.error || 'Failed to update Button Configuration');
     }
-    
+
     return result.data;
   }
 
@@ -318,10 +322,10 @@ const PosCTAOperation = (() => {
     }
 
     const visibleColumns = COLUMNS.filter(col => !col.hidden);
-    
+
     const cells = visibleColumns.map(col => {
       const widthStyle = col.width ? `style="min-width: ${col.width};"` : '';
-      
+
       if (col.editable && col.type === 'text') {
         const maxlength = col.maxlength ? `maxlength="${col.maxlength}"` : '';
         return `<td ${widthStyle}>
@@ -334,22 +338,22 @@ const PosCTAOperation = (() => {
       }
       return `<td ${widthStyle}></td>`;
     }).join('');
-    
+
     const newRow = `<tr data-is-new="true" style="background-color: #e8e6dfff;">${cells}
       <td class="action-cell">
         <button class="action-btn save-btn" onclick="ConfigManager.saveNewRow()" title="Save">💾</button>
         <button class="action-btn cancel-btn" onclick="ConfigManager.cancelNewRow()" title="Cancel">❌</button>
       </td></tr>`;
-    
+
     tableBody.insertAdjacentHTML('afterbegin', newRow);
-    
+
     const newRowElement = tableBody.querySelector('tr[data-is-new="true"]');
-    
+
     // Attach real-time validation to the new row
     if (newRowElement) {
       attachRealtimeValidation(newRowElement);
     }
-    
+
     const firstInput = tableBody.querySelector('tr[data-is-new="true"] .edit-field');
     if (firstInput) {
       firstInput.focus();
@@ -359,18 +363,18 @@ const PosCTAOperation = (() => {
   async function saveNewRow(row, BASE_URL, operation) {
     // Clear any existing validation messages
     row.querySelectorAll('.validation-message').forEach(msg => msg.remove());
-    
+
     // Get all editable field values
     const fieldData = {};
     const editableColumns = COLUMNS.filter(col => col.editable);
-    
+
     for (const col of editableColumns) {
       const input = row.querySelector(`input[data-field="${col.key}"]`);
       if (input) {
         fieldData[col.key] = input.value ? input.value.trim() : '';
       }
     }
-    
+
     // Helper function to show validation message below field
     const showFieldError = (fieldName, message) => {
       const field = row.querySelector(`input[data-field="${fieldName}"]`);
@@ -382,31 +386,31 @@ const PosCTAOperation = (() => {
         field.parentElement.appendChild(errorDiv);
       }
     };
-    
+
     // Validate required fields
     let hasError = false;
-    
+
     if (!fieldData.CTA) {
       showFieldError('CTA', 'CTA is required');
       hasError = true;
     }
-    
+
     if (!fieldData.ColHexCd) {
       showFieldError('ColHexCd', 'Required');
       hasError = true;
     }
-    
+
     if (!fieldData.Position) {
       showFieldError('Position', 'Required');
       hasError = true;
     }
-    
+
     // Validate: Exactly one screen column should have 'True' or 'False', rest should be 'NA'
     const screenColumns = [
       'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
-      'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch', 
+      'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
       'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-      'Invoice', 'Entry', 'Closing'
+      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS'
     ];
 
     const nonNAColumns = screenColumns.filter(col => {
@@ -444,57 +448,57 @@ const PosCTAOperation = (() => {
         fieldData[col] = 'NA';
       }
     });
-    
+
     const modUsr = sessionStorage.getItem('modUsr') || '';
-    
+
     const response = await fetch(`${BASE_URL}/addData`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         operation: operation,
         ...fieldData,
-        modUsr: modUsr 
+        modUsr: modUsr
       })
     });
-    
+
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       throw new Error('Server returned non-JSON response. Please check API endpoint.');
     }
-    
+
     const result = await response.json();
-    
+
     if (!result.success) {
       throw new Error(result.error || 'Failed to add Button Configuration');
     }
-    
+
     return result.data;
   }
 
   async function deleteRow(uniqueId, BASE_URL, operation) {
     const modUsr = sessionStorage.getItem('modUsr') || '';
-    
+
     const response = await fetch(`${BASE_URL}/deleteData`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         operation: operation,
         yId: uniqueId,
-        modUsr: modUsr 
+        modUsr: modUsr
       })
     });
-    
+
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       throw new Error('Server returned non-JSON response. Please check API endpoint.');
     }
-    
+
     const result = await response.json();
-    
+
     if (!result.success) {
       throw new Error(result.error || 'Failed to delete Button Configuration');
     }
-    
+
     return result.data;
   }
 
