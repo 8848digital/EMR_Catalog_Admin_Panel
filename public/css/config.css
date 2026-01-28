@@ -7,13 +7,15 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f8fafc;
-  padding: 20px;
+  padding: 20px 0;
   min-height: 100vh;
 }
 
 .container {
   width: 100%;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 16px;
 }
 
 /* Filter Section */
@@ -185,12 +187,13 @@ button:disabled {
 }
 
 table {
-  width: max-content;
+  width: 100%;
+  min-width: 1400px; /* or more, based on columns */
   border-collapse: collapse;
   background: white;
   table-layout: auto;
-  min-width: 100%;
 }
+
 
 th {
   background: #f8fafc;
@@ -534,8 +537,8 @@ tr.editing-row {
 /* Results section width */
 #resultsSection {
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
 }
 
 /* Responsive Design */
@@ -652,4 +655,12 @@ tr.editing-row {
 .delete-btn:hover i {
   color: #b91c1c;
 }
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 10px; /* visible scrollbar */
+}
+
 
