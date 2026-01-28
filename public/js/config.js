@@ -64,7 +64,7 @@ const ConfigManager = (() => {
     if (logoutBtn) {
       logoutBtn.addEventListener('click', handleLogout);
     }
-    
+
     const saveAllBtn = document.getElementById('saveAllBtn');
     if (saveAllBtn) {
       saveAllBtn.addEventListener('click', handleSaveAll);
@@ -72,11 +72,11 @@ const ConfigManager = (() => {
 
     const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
     const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
-    
+
     if (confirmDeleteBtn) {
       confirmDeleteBtn.addEventListener('click', confirmDelete);
     }
-    
+
     if (cancelDeleteBtn) {
       cancelDeleteBtn.addEventListener('click', cancelDelete);
     }
@@ -542,11 +542,26 @@ const ConfigManager = (() => {
 
       return `<tr data-id="${rowIdValue}">${cells}
         <td class="action-cell">
-          <button class="action-btn edit-btn" onclick="ConfigManager.toggleEdit('${rowIdValue}')" title="Edit">✏️</button>
-          <button class="action-btn save-btn hidden" onclick="ConfigManager.saveRow('${rowIdValue}')" title="Save">💾</button>
-          <button class="action-btn cancel-btn hidden" onclick="ConfigManager.cancelEdit('${rowIdValue}')" title="Cancel">❌</button>
-          ${deleteBtn}
-        </td></tr>`;
+  <button class="action-btn edit-btn" onclick="ConfigManager.toggleEdit('${rowIdValue}')" title="Edit">
+    <i class="fa-solid fa-pen-to-square"></i>
+  </button>
+
+  <button class="action-btn save-btn hidden" onclick="ConfigManager.saveRow('${rowIdValue}')" title="Save">
+    <i class="fa-solid fa-floppy-disk"></i>
+  </button>
+
+  <button class="action-btn cancel-btn hidden" onclick="ConfigManager.cancelEdit('${rowIdValue}')" title="Cancel">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+
+  ${supportsDelete
+          ? `<button class="action-btn delete-btn" onclick="ConfigManager.deleteRow('${rowIdValue}')" title="Delete">
+           <i class="fa-solid fa-trash"></i>
+         </button>`
+          : ''
+        }
+</td>
+</tr>`;
     }).join('');
   }
 
@@ -573,18 +588,18 @@ const ConfigManager = (() => {
     // Handle ALL editable fields including textarea, date, and image
     columns.filter(col => col.editable).forEach(col => {
       const cell = row.querySelector(`td[data-field="${col.key}"]`);
-      
+
       if (cell) {
         // Get original value from data-original-value attribute
         const originalValue = cell.getAttribute('data-original-value') || cell.dataset.originalValue || '';
         originalValues[col.key] = originalValue;
-        
+
         // For fields that need special edit controls (image, textarea, date)
         if (col.type === 'image' || col.type === 'textarea' || col.type === 'date') {
           if (currentHandler.createEditControl) {
             // Call createEditControl even without rowData - it doesn't actually need it
             const editControl = currentHandler.createEditControl(col, originalValue, rowData || {});
-            
+
             if (editControl) {
               cell.innerHTML = '';
               cell.appendChild(editControl);
@@ -732,16 +747,16 @@ const ConfigManager = (() => {
       showMessage('Delete operation not supported', 'error');
       return;
     }
-    
+
     pendingDeleteRowId = rowId;
-    
+
     const confirmDialog = document.getElementById('confirmDialog');
     const confirmMessage = document.getElementById('confirmMessage');
-    
+
     if (confirmMessage) {
       confirmMessage.textContent = 'Are you sure you want to delete this record?';
     }
-    
+
     if (confirmDialog) {
       confirmDialog.classList.remove('hidden');
     }
@@ -891,7 +906,7 @@ const ConfigManager = (() => {
     validateInput,
     saveNewRow,
     cancelNewRow,
-    handleSaveAll  
+    handleSaveAll
   };
 })();
 
