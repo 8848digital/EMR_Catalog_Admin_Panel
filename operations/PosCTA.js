@@ -154,7 +154,7 @@ module.exports = {
                     SELECT COUNT(*) as Count
                     FROM [${process.env.yDb}].[dbo].[yPosCTA]
                     WHERE CTA = @CTA 
-                    AND ${activeColumn} IN ('True', 'False')
+                    AND [${activeColumn}] IN ('True', 'False')
                     AND yId != @yId
                 `,
                 inputTypeMap: {
@@ -387,7 +387,7 @@ module.exports = {
                     SELECT COUNT(*) as Count
                     FROM [${process.env.yDb}].[dbo].[yPosCTA]
                     WHERE CTA = @CTA 
-                    AND ${activeColumn} IN ('True', 'False')
+                    AND [${activeColumn}] IN ('True', 'False')
                 `,
                 inputTypeMap: {
                     CTA: sql.VarChar(50)
