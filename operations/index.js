@@ -14,6 +14,7 @@ const ctgFilterOperation = require('./ctgFilter');
 const rgFilterOperation = require('./rgFilter');
 const advEventOperation = require('./advEvent');
 const PosCTAOperation = require('./PosCTA');
+const usersOperation = require('./users');
 
 module.exports = {
     add_custMst: custMstOperation,
@@ -31,5 +32,6 @@ module.exports = {
     add_ctg_filter: ctgFilterOperation,
     add_rg_filter: rgFilterOperation,
     add_adv_event: advEventOperation,
-    add_PosCTA: PosCTAOperation
+    add_PosCTA: PosCTAOperation,
+    add_Users: usersOperation
 };

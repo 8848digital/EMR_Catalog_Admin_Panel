@@ -95,6 +95,12 @@
       "label": "Manage Buttons",
       "visible": false,
       "order": 16
+    },
+    {
+      "key": "add_Users",
+      "label": "Manage Users",
+      "visible": true,
+      "order": 17
     }
   ]
 }

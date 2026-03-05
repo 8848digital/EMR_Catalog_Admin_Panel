@@ -25,6 +25,7 @@ const ConfigManager = (() => {
     'add_rg_filter': rgFilterOperation,
     'add_adv_event': advEventOperation,
     'add_PosCTA': PosCTAOperation,
+    'add_Users': usersOperation,
   };
 
   // Helper function to escape HTML
