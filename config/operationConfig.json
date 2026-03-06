@@ -9,13 +9,13 @@
     {
       "key": "add_cs_grd",
       "label": "Manage Colour Stone Grade",
-      "visible": true,
+      "visible": false,
       "order": 2
     },
     {
       "key": "add_cust_mp",
       "label": "Manage Customer Mapping",
-      "visible": true,
+      "visible": false,
       "order": 3
     },
     {
@@ -33,7 +33,7 @@
     {
       "key": "add_dia_grd",
       "label": "Manage Diamond Grade",
-      "visible": true,
+      "visible": false,
       "order": 6
     },
     {
@@ -45,19 +45,19 @@
     {
       "key": "add_met_cd",
       "label": "Manage Metal Code",
-      "visible": true,
+      "visible": false,
       "order": 8
     },
     {
       "key": "add_met_col",
       "label": "Manage Metal Color",
-      "visible": true,
+      "visible": false,
       "order": 9
     },
     {
       "key": "add_met_kt",
       "label": "Manage Metal purity",
-      "visible": true,
+      "visible": false,
       "order": 10
     },
     {
@@ -75,13 +75,13 @@
     {
       "key": "add_sls_prsn",
       "label": "Manage Sales Person",
-      "visible": true,
+      "visible": false,
       "order": 13
     },
     {
       "key": "add_usr_map",
       "label": "Manage User Mapping",
-      "visible": true,
+      "visible": false,
       "order": 14
     },
     {
@@ -93,13 +93,13 @@
     {
       "key": "add_PosCTA",
       "label": "Manage Buttons",
-      "visible": false,
+      "visible": true,
       "order": 16
     },
     {
       "key": "add_Users",
       "label": "Manage Users",
-      "visible": true,
+      "visible": false,
       "order": 17
     }
   ]
