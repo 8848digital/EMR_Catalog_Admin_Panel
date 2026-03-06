@@ -3,91 +3,91 @@
     {
       "key": "add_ctg_filter",
       "label": "Manage Category Filter",
-      "visible": false,
+      "visible": true,
       "order": 1
     },
     {
       "key": "add_cs_grd",
       "label": "Manage Colour Stone Grade",
-      "visible": false,
+      "visible": true,
       "order": 2
     },
     {
       "key": "add_cust_mp",
       "label": "Manage Customer Mapping",
-      "visible": false,
+      "visible": true,
       "order": 3
     },
     {
       "key": "add_custMst",
       "label": "Manage Customer Multiplier",
-      "visible": false,
+      "visible": true,
       "order": 4
     },
     {
       "key": "add_design_size",
       "label": "Manage Design Size",
-      "visible": false,
+      "visible": true,
       "order": 5
     },
     {
       "key": "add_dia_grd",
       "label": "Manage Diamond Grade",
-      "visible": false,
+      "visible": true,
       "order": 6
     },
     {
       "key": "add_email",
       "label": "Manage Email Configuration",
-      "visible": false,
+      "visible": true,
       "order": 7
     },
     {
       "key": "add_met_cd",
       "label": "Manage Metal Code",
-      "visible": false,
+      "visible": true,
       "order": 8
     },
     {
       "key": "add_met_col",
       "label": "Manage Metal Color",
-      "visible": false,
+      "visible": true,
       "order": 9
     },
     {
       "key": "add_met_kt",
       "label": "Manage Metal purity",
-      "visible": false,
+      "visible": true,
       "order": 10
     },
     {
       "key": "add_rg_filter",
       "label": "Manage Range Filter",
-      "visible": false,
+      "visible": true,
       "order": 11
     },
     {
       "key": "add_role",
       "label": "Manage Roles",
-      "visible": false,
+      "visible": true,
       "order": 12
     },
     {
       "key": "add_sls_prsn",
       "label": "Manage Sales Person",
-      "visible": false,
+      "visible": true,
       "order": 13
     },
     {
       "key": "add_usr_map",
       "label": "Manage User Mapping",
-      "visible": false,
+      "visible": true,
       "order": 14
     },
     {
       "key": "add_adv_event",
       "label": "Manage Advertisement",
-      "visible": false,
+      "visible": true,
       "order": 15
     },
     {
@@ -99,7 +99,7 @@
     {
       "key": "add_Users",
       "label": "Manage Users",
-      "visible": false,
+      "visible": true,
       "order": 17
     }
   ]
