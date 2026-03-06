@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Configuration Management</title>
     <link rel="stylesheet" href="/css/config.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+
 <body>
     <div class="container">
         <!-- Filter Section -->
@@ -23,7 +25,7 @@
                             <option value="">--Select Operation--</option>
                         </select>
                     </div>
-                    
+
                     <!-- PMCd Filter (hidden by default, shown for Design Size) -->
                     <div class="form-group hidden" id="pmcdFilterGroup">
                         <label for="pmcdSelect"> Category (PMCd):</label>
@@ -37,7 +39,7 @@
                         <label for="newPMCdInput">New Category Name:</label>
                         <input type="text" id="newPMCdInput" placeholder="Enter new category" maxlength="30">
                     </div>
-                    
+
                     <div class="form-group submit-group">
                         <label>&nbsp;</label>
                         <button type="submit" id="submitBtn">Submit</button>
@@ -54,7 +56,8 @@
                 <h3 id="dataTitle">Records</h3>
                 <div class="button-group">
                     <button type="button" id="addBtn" class="btn-primary hidden">Add Data</button>
-                    <button type="button" id="saveAllBtn" class="btn-success hidden" onclick="ConfigManager.handleSaveAll()">Save All</button>
+                    <button type="button" id="saveAllBtn" class="btn-success hidden"
+                        onclick="ConfigManager.handleSaveAll()">Save All</button>
                 </div>
             </div>
             <div class="table-container">
@@ -101,6 +104,8 @@
     <script src="/js/operations/rgFilterHandler.js"></script>
     <script src="/js/operations/advEventHandler.js"></script>
     <script src="/js/operations/PosCTAHandler.js"></script>
+    <script src="/js/operations/usersHandler.js"></script>
     <script src="/js/config.js"></script>
 </body>
+
 </html>

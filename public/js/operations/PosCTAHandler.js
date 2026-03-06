@@ -23,6 +23,7 @@ const PosCTAOperation = (() => {
     { key: 'HTranSearchJST', label: 'HTranSearchJST', editable: true, type: 'text', width: '120px', maxlength: 50 },
     { key: 'HTranSearchJMR', label: 'HTranSearchJMR', editable: true, type: 'text', width: '120px', maxlength: 50 },
     { key: 'HTranSearchJMS', label: 'HTranSearchJMS', editable: true, type: 'text', width: '120px', maxlength: 50 },
+    { key: 'tranSearchTranSelected', label: 'tranSearchTranSelected', editable: true, type: 'text', width: '120px', maxlength: 50 },
     { key: 'Position', label: 'Position', editable: true, type: 'text', width: '120px', maxlength: 50 },
     { key: 'ModUsr', label: 'Modified By', hidden: true },
     { key: 'ModDate', label: 'Modified Date', hidden: true }
@@ -36,7 +37,7 @@ const PosCTAOperation = (() => {
       'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
       'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
       'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS'
+      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS','tranSearchTranSelected'
     ];
 
     const showFieldError = (fieldName, message) => {
@@ -142,7 +143,7 @@ const PosCTAOperation = (() => {
       'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
       'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
       'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS'
+      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'tranSearchTranSelected'
     ];
 
     const nonNAColumns = screenColumns.filter(col => {
@@ -248,7 +249,7 @@ const PosCTAOperation = (() => {
       'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
       'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
       'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS'
+      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'tranSearchTranSelected'
     ];
 
     const nonNAColumns = screenColumns.filter(col => {
@@ -410,7 +411,7 @@ const PosCTAOperation = (() => {
       'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
       'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
       'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS'
+      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'tranSearchTranSelected'
     ];
 
     const nonNAColumns = screenColumns.filter(col => {

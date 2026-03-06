@@ -22,7 +22,7 @@ module.exports = {
         selectClause: `
             CmCd
         `,
-        from: `[${process.env.yDb}].[dbo].[CustMst]`,
+        from: `[${process.env.DB_DATABASE}].[dbo].[CustMst]`,
         whereConditions: [],
         orderByClause: "CmCd",
         inputTypeMap: {},

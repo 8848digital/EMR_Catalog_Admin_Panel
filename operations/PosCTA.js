@@ -28,6 +28,7 @@ module.exports = {
             HTranSearchJST,
             HTranSearchJMR,
             HTranSearchJMS,
+            tranSearchTranSelected,
             Position,
             ModUsr,
             ModDate,
@@ -83,6 +84,7 @@ module.exports = {
                 HTranSearchJST,
                 HTranSearchJMR,
                 HTranSearchJMS,
+                tranSearchTranSelected,
                 Position
             } = body;
 
@@ -110,6 +112,7 @@ module.exports = {
                 HTranSearchJST: (HTranSearchJST || '').trim(),
                 HTranSearchJMR: (HTranSearchJMR || '').trim(),
                 HTranSearchJMS: (HTranSearchJMS || '').trim(),
+                tranSearchTranSelected: (tranSearchTranSelected || '').trim(),
                 Position: (Position || '').trim()
             };
 
@@ -118,7 +121,7 @@ module.exports = {
                 'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
                 'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
                 'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS'
+                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS','tranSearchTranSelected'
             ];
 
             const nonNAColumns = screenColumns.filter(col => {
@@ -199,6 +202,7 @@ module.exports = {
                         HTranSearchJST = @HTranSearchJST,
                         HTranSearchJMR = @HTranSearchJMR, 
                         HTranSearchJMS = @HTranSearchJMS,
+                        tranSearchTranSelected = @tranSearchTranSelected,
                         Position = @Position,
                         ModUsr = @ModUsr,
                         ModDate = GETDATE()
@@ -228,6 +232,7 @@ module.exports = {
                     HTranSearchJST: sql.VarChar(50),
                     HTranSearchJMR: sql.VarChar(50),
                     HTranSearchJMS: sql.VarChar(50),
+                    tranSearchTranSelected: sql.VarChar(50),
                     Position: sql.VarChar(50),
                     ModUsr: sql.VarChar(50)
                 },
@@ -255,6 +260,7 @@ module.exports = {
                     HTranSearchJST: trimmedData.HTranSearchJST,
                     HTranSearchJMR: trimmedData.HTranSearchJMR,
                     HTranSearchJMS: trimmedData.HTranSearchJMS,
+                    tranSearchTranSelected: trimmedData.tranSearchTranSelected,
                     Position: trimmedData.Position,
                     ModUsr: modUsr.substring(0, 50)
                 },
@@ -316,6 +322,7 @@ module.exports = {
                 HTranSearchJST,
                 HTranSearchJMR,
                 HTranSearchJMS,
+                tranSearchTranSelected,
                 Position
             } = body;
 
@@ -343,6 +350,7 @@ module.exports = {
                 HTranSearchJST: (HTranSearchJST || '').trim(),
                 HTranSearchJMR: (HTranSearchJMR || '').trim(),
                 HTranSearchJMS: (HTranSearchJMS || '').trim(),
+                tranSearchTranSelected: (tranSearchTranSelected || '').trim(),
                 Position: (Position || '').trim()
             };
 
@@ -351,7 +359,7 @@ module.exports = {
                 'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
                 'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
                 'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS'
+                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'tranSearchTranSelected'
             ];
 
             const nonNAColumns = screenColumns.filter(col => {
@@ -408,12 +416,12 @@ module.exports = {
                     (CTA, HomeScreen, HCustSelect, HItmSelect, HMulItmSelect, HStkCart, 
                      [Transaction], CustSearch, CustSearchSelect, ItemSearch, ItemSearchSelect, 
                      TransactionSearch, Checkout, CheckoutExit, ColHexCd, Invoice, Entry, 
-                     Closing, ClosingValidated, HTranSearchJST, HTranSearchJMR, HTranSearchJMS, Position, ModUsr, ModDate, CreatedUsr, CreatedDate)
+                     Closing, ClosingValidated, HTranSearchJST, HTranSearchJMR, HTranSearchJMS,tranSearchTranSelected, Position, ModUsr, ModDate, CreatedUsr, CreatedDate)
                     VALUES 
                     (@CTA, @HomeScreen, @HCustSelect, @HItmSelect, @HMulItmSelect, @HStkCart,
                      @Transaction, @CustSearch, @CustSearchSelect, @ItemSearch, @ItemSearchSelect,
                      @TransactionSearch, @Checkout, @CheckoutExit, @ColHexCd, @Invoice, @Entry,
-                     @Closing, @ClosingValidated, @HTranSearchJST, @HTranSearchJMR, @HTranSearchJMS, @Position, @ModUsr, GETDATE(), @CreatedUsr, GETDATE())
+                     @Closing, @ClosingValidated, @HTranSearchJST, @HTranSearchJMR, @HTranSearchJMS, @tranSearchTranSelected, @Position, @ModUsr, GETDATE(), @CreatedUsr, GETDATE())
                 `,
                 inputTypeMap: {
                     CTA: sql.VarChar(50),
@@ -438,6 +446,7 @@ module.exports = {
                     HTranSearchJST: sql.VarChar(50),
                     HTranSearchJMR: sql.VarChar(50),
                     HTranSearchJMS: sql.VarChar(50),
+                    tranSearchTranSelected: sql.VarChar(50),
                     Position: sql.VarChar(50),
                     ModUsr: sql.VarChar(50),
                     CreatedUsr: sql.VarChar(50)
@@ -465,6 +474,7 @@ module.exports = {
                     HTranSearchJST: trimmedData.HTranSearchJST,
                     HTranSearchJMR: trimmedData.HTranSearchJMR,
                     HTranSearchJMS: trimmedData.HTranSearchJMS,
+                    tranSearchTranSelected: trimmedData.tranSearchTranSelected,
                     Position: trimmedData.Position,
                     ModUsr: modUsr.substring(0, 50),
                     CreatedUsr: modUsr.substring(0, 50)

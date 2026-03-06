@@ -7,14 +7,15 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background-color: #f8fafc;
-  padding: 20px;
+  padding: 20px 0;
   min-height: 100vh;
 }
 
 .container {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 16px;
 }
 
 /* Filter Section */
@@ -178,18 +179,21 @@ button:disabled {
 
 /* Table Styles */
 .table-container {
-  overflow-x: auto;
   width: 100%;
-  margin: 20px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
 }
 
 table {
   width: 100%;
+  min-width: 1400px; /* or more, based on columns */
   border-collapse: collapse;
   background: white;
   table-layout: auto;
-  min-width: 800px;
 }
+
 
 th {
   background: #f8fafc;
@@ -448,7 +452,7 @@ tr.editing-row {
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
 }
 
-.cancel-btn {
+.confirm-dialog .cancel-btn {
   background: #94a3b8;
   color: white;
   border: none;
@@ -461,11 +465,12 @@ tr.editing-row {
   height: auto;
 }
 
-.cancel-btn:hover {
+.confirm-dialog .cancel-btn:hover {
   background: #64748b;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
 }
+
 
 /* Messages */
 #messageContainer {
@@ -532,8 +537,8 @@ tr.editing-row {
 /* Results section width */
 #resultsSection {
   width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
+  max-width: 100%;
+  margin: 0;
 }
 
 /* Responsive Design */
@@ -612,3 +617,50 @@ tr.editing-row {
     width: 100%;
   }
 }
+.action-btn i {
+  font-size: 16px;
+  line-height: 1;
+  display: block;
+}
+
+/* Softer action icon colors */
+.edit-btn i {
+  color: #3b82f6; /* soft blue */
+}
+
+.save-btn i {
+  color: #10b981; /* soft green */
+}
+
+.cancel-btn i {
+  color: #ef4444; /* soft red */
+}
+
+.delete-btn i {
+  color: #f87171; /* light red */
+}
+
+.edit-btn:hover i {
+  color: #2563eb;
+}
+
+.save-btn:hover i {
+  color: #059669;
+}
+
+.cancel-btn:hover i {
+  color: #dc2626;
+}
+
+.delete-btn:hover i {
+  color: #b91c1c;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 10px; /* visible scrollbar */
+}
+
+
