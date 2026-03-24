@@ -29,6 +29,10 @@ module.exports = {
             HTranSearchJMR,
             HTranSearchJMS,
             tranSearchTranSelected,
+            TranVoucher,
+            TVchrItmSelected,
+            CPayNotCredit,
+            CPayCredit,
             Position,
             ModUsr,
             ModDate,
@@ -85,6 +89,10 @@ module.exports = {
                 HTranSearchJMR,
                 HTranSearchJMS,
                 tranSearchTranSelected,
+                TranVoucher,
+                TVchrItmSelected,
+                CPayNotCredit,
+                CPayCredit,
                 Position
             } = body;
 
@@ -113,6 +121,10 @@ module.exports = {
                 HTranSearchJMR: (HTranSearchJMR || '').trim(),
                 HTranSearchJMS: (HTranSearchJMS || '').trim(),
                 tranSearchTranSelected: (tranSearchTranSelected || '').trim(),
+                TranVoucher: (TranVoucher || '').trim(),
+                TVchrItmSelected: (TVchrItmSelected || '').trim(),
+                CPayNotCredit: (CPayNotCredit || '').trim(),
+                CPayCredit: (CPayCredit || '').trim(),
                 Position: (Position || '').trim()
             };
 
@@ -121,7 +133,8 @@ module.exports = {
                 'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
                 'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
                 'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS','tranSearchTranSelected'
+                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'tranSearchTranSelected',
+                'TranVoucher', 'TVchrItmSelected', 'CPayNotCredit', 'CPayCredit'
             ];
 
             const nonNAColumns = screenColumns.filter(col => {
@@ -203,6 +216,10 @@ module.exports = {
                         HTranSearchJMR = @HTranSearchJMR, 
                         HTranSearchJMS = @HTranSearchJMS,
                         tranSearchTranSelected = @tranSearchTranSelected,
+                        TranVoucher = @TranVoucher,
+                        TVchrItmSelected = @TVchrItmSelected,
+                        CPayNotCredit = @CPayNotCredit,
+                        CPayCredit = @CPayCredit,
                         Position = @Position,
                         ModUsr = @ModUsr,
                         ModDate = GETDATE()
@@ -233,6 +250,10 @@ module.exports = {
                     HTranSearchJMR: sql.VarChar(50),
                     HTranSearchJMS: sql.VarChar(50),
                     tranSearchTranSelected: sql.VarChar(50),
+                    TranVoucher: sql.VarChar(50),
+                    TVchrItmSelected: sql.VarChar(50),
+                    CPayNotCredit: sql.VarChar(50),
+                    CPayCredit: sql.VarChar(50),
                     Position: sql.VarChar(50),
                     ModUsr: sql.VarChar(50)
                 },
@@ -261,6 +282,10 @@ module.exports = {
                     HTranSearchJMR: trimmedData.HTranSearchJMR,
                     HTranSearchJMS: trimmedData.HTranSearchJMS,
                     tranSearchTranSelected: trimmedData.tranSearchTranSelected,
+                    TranVoucher: trimmedData.TranVoucher,
+                    TVchrItmSelected: trimmedData.TVchrItmSelected,
+                    CPayNotCredit: trimmedData.CPayNotCredit,
+                    CPayCredit: trimmedData.CPayCredit,
                     Position: trimmedData.Position,
                     ModUsr: modUsr.substring(0, 50)
                 },
@@ -323,6 +348,10 @@ module.exports = {
                 HTranSearchJMR,
                 HTranSearchJMS,
                 tranSearchTranSelected,
+                TranVoucher,
+                TVchrItmSelected,
+                CPayNotCredit,
+                CPayCredit,
                 Position
             } = body;
 
@@ -351,6 +380,10 @@ module.exports = {
                 HTranSearchJMR: (HTranSearchJMR || '').trim(),
                 HTranSearchJMS: (HTranSearchJMS || '').trim(),
                 tranSearchTranSelected: (tranSearchTranSelected || '').trim(),
+                TranVoucher: (TranVoucher || '').trim(),
+                TVchrItmSelected: (TVchrItmSelected || '').trim(),
+                CPayNotCredit: (CPayNotCredit || '').trim(),
+                CPayCredit: (CPayCredit || '').trim(),
                 Position: (Position || '').trim()
             };
 
@@ -359,7 +392,8 @@ module.exports = {
                 'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
                 'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
                 'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'tranSearchTranSelected'
+                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'tranSearchTranSelected',
+                'TranVoucher', 'TVchrItmSelected', 'CPayNotCredit', 'CPayCredit'
             ];
 
             const nonNAColumns = screenColumns.filter(col => {
@@ -416,12 +450,14 @@ module.exports = {
                     (CTA, HomeScreen, HCustSelect, HItmSelect, HMulItmSelect, HStkCart, 
                      [Transaction], CustSearch, CustSearchSelect, ItemSearch, ItemSearchSelect, 
                      TransactionSearch, Checkout, CheckoutExit, ColHexCd, Invoice, Entry, 
-                     Closing, ClosingValidated, HTranSearchJST, HTranSearchJMR, HTranSearchJMS,tranSearchTranSelected, Position, ModUsr, ModDate, CreatedUsr, CreatedDate)
+                     Closing, ClosingValidated, HTranSearchJST, HTranSearchJMR, HTranSearchJMS,tranSearchTranSelected, 
+                     TranVoucher, TVchrItmSelected, CPayNotCredit, CPayCredit, Position, ModUsr, ModDate, CreatedUsr, CreatedDate)
                     VALUES 
                     (@CTA, @HomeScreen, @HCustSelect, @HItmSelect, @HMulItmSelect, @HStkCart,
                      @Transaction, @CustSearch, @CustSearchSelect, @ItemSearch, @ItemSearchSelect,
                      @TransactionSearch, @Checkout, @CheckoutExit, @ColHexCd, @Invoice, @Entry,
-                     @Closing, @ClosingValidated, @HTranSearchJST, @HTranSearchJMR, @HTranSearchJMS, @tranSearchTranSelected, @Position, @ModUsr, GETDATE(), @CreatedUsr, GETDATE())
+                     @Closing, @ClosingValidated, @HTranSearchJST, @HTranSearchJMR, @HTranSearchJMS, @tranSearchTranSelected, 
+                     @TranVoucher, @TVchrItmSelected, @CPayNotCredit, @CPayCredit, @Position, @ModUsr, GETDATE(), @CreatedUsr, GETDATE())
                 `,
                 inputTypeMap: {
                     CTA: sql.VarChar(50),
@@ -447,6 +483,10 @@ module.exports = {
                     HTranSearchJMR: sql.VarChar(50),
                     HTranSearchJMS: sql.VarChar(50),
                     tranSearchTranSelected: sql.VarChar(50),
+                    TranVoucher: sql.VarChar(50),
+                    TVchrItmSelected: sql.VarChar(50),
+                    CPayNotCredit: sql.VarChar(50),
+                    CPayCredit: sql.VarChar(50),
                     Position: sql.VarChar(50),
                     ModUsr: sql.VarChar(50),
                     CreatedUsr: sql.VarChar(50)
@@ -475,6 +515,10 @@ module.exports = {
                     HTranSearchJMR: trimmedData.HTranSearchJMR,
                     HTranSearchJMS: trimmedData.HTranSearchJMS,
                     tranSearchTranSelected: trimmedData.tranSearchTranSelected,
+                    TranVoucher: trimmedData.TranVoucher,
+                    TVchrItmSelected: trimmedData.TVchrItmSelected,
+                    CPayNotCredit: trimmedData.CPayNotCredit,
+                    CPayCredit: trimmedData.CPayCredit,
                     Position: trimmedData.Position,
                     ModUsr: modUsr.substring(0, 50),
                     CreatedUsr: modUsr.substring(0, 50)

@@ -1,120 +1,116 @@
 const PosCTAOperation = (() => {
+  // Add sticky styles for CTA column
+  const styleId = 'pos-cta-sticky-styles';
+  if (typeof document !== 'undefined' && !document.getElementById(styleId)) {
+    const style = document.createElement('style');
+    style.id = styleId;
+    style.textContent = `
+      #resultsTable th:first-child,
+      #resultsTable td:first-child {
+        position: sticky;
+        left: 0;
+        background-color: white;
+        z-index: 10;
+        box-shadow: 2px 0 5px -2px rgba(0,0,0,0.2);
+        border-right: 1px solid #ddd;
+      }
+      #resultsTable th:first-child {
+        z-index: 20;
+        background-color: #f8fafc !important;
+      }
+      #resultsTable tr:hover td:first-child {
+        background-color: #f1f5f9;
+      }
+      #resultsTable tr.editing-row td:first-child {
+        background-color: #fff;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  const SCREEN_MAPPING = {
+    'HomeScreen': 'Home Screen',
+    'HCustSelect': 'Home Customer Select',
+    'HItmSelect': 'Home Item Select',
+    'HMulItmSelect': 'Home Multiple Item Select',
+    'HStkCart': 'Home Stk Cart',
+    'Transaction': 'Transaction',
+    'CustSearch': 'Cust Search',
+    'CustSearchSelect': 'Cust Search Select',
+    'ItemSearch': 'Item Search',
+    'ItemSearchSelect': 'Item Search Select',
+    'TransactionSearch': 'Transaction Search',
+    'Checkout': 'Checkout',
+    'CheckoutExit': 'Checkout Exit',
+    'Invoice': 'Invoice',
+    'Entry': 'Entry',
+    'Closing': 'Closing',
+    'ClosingValidated': 'Closing Validated',
+    'HTranSearchJST': 'HTranSearchJST',
+    'HTranSearchJMR': 'HTranSearchJMR',
+    'HTranSearchJMS': 'HTranSearchJMS',
+    'tranSearchTranSelected': 'tranSearchTranSelected',
+    'TranVoucher': 'TranVoucher',
+    'TVchrItmSelected': 'TVchrItmSelected',
+    'CPayNotCredit': 'CPayNotCredit',
+    'CPayCredit': 'CPayCredit'
+  };
+
+  const SCREEN_KEYS = Object.keys(SCREEN_MAPPING);
+
   const COLUMNS = [
     { key: 'yId', label: 'ID', hidden: true },
-    { key: 'CTA', label: 'CTA', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'HomeScreen', label: 'Home Screen', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'HCustSelect', label: 'Home Customer Select', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'HItmSelect', label: 'Home Item Select', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'HMulItmSelect', label: 'Home Multiple Item Select', editable: true, type: 'text', width: '140px', maxlength: 50 },
-    { key: 'HStkCart', label: 'Home Stk Cart', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'Transaction', label: 'Transaction', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'CustSearch', label: 'Cust Search', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'CustSearchSelect', label: 'Cust Search Select', editable: true, type: 'text', width: '150px', maxlength: 50 },
-    { key: 'ItemSearch', label: 'Item Search', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'ItemSearchSelect', label: 'Item Search Select', editable: true, type: 'text', width: '150px', maxlength: 50 },
-    { key: 'TransactionSearch', label: 'Transaction Search', editable: true, type: 'text', width: '150px', maxlength: 50 },
-    { key: 'Checkout', label: 'Checkout', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'CheckoutExit', label: 'Checkout Exit', editable: true, type: 'text', width: '130px', maxlength: 50 },
+    { key: 'CTA', label: 'CTA', editable: true, type: 'text', width: '150px', maxlength: 50 },
+    {
+      key: 'Screen',
+      label: 'Screen Name',
+      editable: true,
+      type: 'select',
+      options: Object.values(SCREEN_MAPPING),
+      width: '200px'
+    },
+    {
+      key: 'Value',
+      label: 'Value',
+      editable: true,
+      type: 'select',
+      options: ['True', 'False'],
+      width: '100px'
+    },
     { key: 'ColHexCd', label: 'Color Hex Code', editable: true, type: 'text', width: '130px', maxlength: 50 },
-    { key: 'Invoice', label: 'Invoice', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'Entry', label: 'Entry', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'Closing', label: 'Closing', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'ClosingValidated', label: 'ClosingValidated', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'HTranSearchJST', label: 'HTranSearchJST', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'HTranSearchJMR', label: 'HTranSearchJMR', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'HTranSearchJMS', label: 'HTranSearchJMS', editable: true, type: 'text', width: '120px', maxlength: 50 },
-    { key: 'tranSearchTranSelected', label: 'tranSearchTranSelected', editable: true, type: 'text', width: '120px', maxlength: 50 },
     { key: 'Position', label: 'Position', editable: true, type: 'text', width: '120px', maxlength: 50 },
     { key: 'ModUsr', label: 'Modified By', hidden: true },
     { key: 'ModDate', label: 'Modified Date', hidden: true }
   ];
 
-  function validateScreenColumns(row) {
-    // Clear existing validation messages
-    row.querySelectorAll('.validation-message').forEach(msg => msg.remove());
-
-    const screenColumns = [
-      'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
-      'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
-      'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS','tranSearchTranSelected'
-    ];
-
-    const showFieldError = (fieldName, message) => {
-      const field = row.querySelector(`[data-field="${fieldName}"]`);
-      if (field && field.parentElement) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'validation-message';
-        errorDiv.style.cssText = 'color: #dc2626; font-size: 12px; margin-top: 2px;';
-        errorDiv.textContent = message;
-        field.parentElement.appendChild(errorDiv);
-      }
-    };
-
-    // Get values from all screen columns
-    const fieldData = {};
-    screenColumns.forEach(col => {
-      const field = row.querySelector(`[data-field="${col}"]`);
-      if (field) {
-        fieldData[col] = field.value ? field.value.trim() : '';
-      }
-    });
-
-    // Check which columns have non-NA values
-    const nonNAColumns = screenColumns.filter(col => {
-      const value = fieldData[col];
-      return value && value !== '' && value.toUpperCase() !== 'NA';
-    });
-
-    // Validate based on number of filled columns
-    if (nonNAColumns.length > 1) {
-      // Show error on all columns that have values
-      nonNAColumns.forEach(col => {
-        showFieldError(col, 'Only one screen allowed');
-      });
-    } else if (nonNAColumns.length === 1) {
-      // Validate that the value is either 'True' or 'False'
-      const activeColumn = nonNAColumns[0];
-      const activeValue = fieldData[activeColumn].toLowerCase();
-      if (activeValue !== 'true' && activeValue !== 'false') {
-        showFieldError(activeColumn, 'Must be "True" or "False"');
-      }
-    }
-  }
-
   function getColumns() {
     return COLUMNS;
   }
 
-  // Generate unique ID using yId
   function generateRowId(row) {
     return row.yId;
   }
 
-  // Real-time validation function
   function validateFieldsRealtime(row) {
-    // Clear existing validation messages
     row.querySelectorAll('.validation-message').forEach(msg => msg.remove());
 
     const fieldData = {};
     const editableColumns = COLUMNS.filter(col => col.editable);
 
-    // Get all field values
     for (const col of editableColumns) {
       let field = row.querySelector(`[data-field="${col.key}"]`);
       if (!field) {
-        field = row.querySelector(`input[data-field="${col.key}"]`);
+        field = row.querySelector(`input[data-field="${col.key}"], select[data-field="${col.key}"]`);
       }
       if (field) {
         fieldData[col.key] = field.value ? field.value.trim() : '';
       }
     }
 
-    // Helper function to show validation message below field
     const showFieldError = (fieldName, message) => {
       let field = row.querySelector(`[data-field="${fieldName}"]`);
       if (!field) {
-        field = row.querySelector(`input[data-field="${fieldName}"]`);
+        field = row.querySelector(`input[data-field="${fieldName}"], select[data-field="${fieldName}"]`);
       }
       if (field && field.parentElement) {
         const errorDiv = document.createElement('div');
@@ -125,85 +121,52 @@ const PosCTAOperation = (() => {
       }
     };
 
-    // Validate required fields
-    if (fieldData.CTA !== undefined && !fieldData.CTA) {
-      showFieldError('CTA', 'CTA is required');
-    }
-
-    if (fieldData.ColHexCd !== undefined && !fieldData.ColHexCd) {
-      showFieldError('ColHexCd', 'Required');
-    }
-
-    if (fieldData.Position !== undefined && !fieldData.Position) {
-      showFieldError('Position', 'Required');
-    }
-
-    // Validate screen columns
-    const screenColumns = [
-      'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
-      'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
-      'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'tranSearchTranSelected'
-    ];
-
-    const nonNAColumns = screenColumns.filter(col => {
-      const value = fieldData[col];
-      return value && value !== '' && value.toUpperCase() !== 'NA';
-    });
-
-    if (nonNAColumns.length === 0 && screenColumns.some(col => fieldData[col] === '')) {
-      // Show error only if at least one field has been touched
-      showFieldError('HomeScreen', 'At least one screen must have True/False');
-    } else if (nonNAColumns.length > 1) {
-      // Show error on all columns that have values
-      nonNAColumns.forEach(col => {
-        showFieldError(col, 'Only one screen allowed');
-      });
-    } else if (nonNAColumns.length === 1) {
-      // Validate that the non-NA value is either 'True' or 'False'
-      const activeColumn = nonNAColumns[0];
-      const activeValue = fieldData[activeColumn].toLowerCase();
-      if (activeValue !== 'true' && activeValue !== 'false') {
-        showFieldError(activeColumn, 'Must be "True" or "False"');
-      }
-    }
+    if (!fieldData.CTA) showFieldError('CTA', 'Required');
+    if (!fieldData.Screen) showFieldError('Screen', 'Required');
+    if (!fieldData.Value) showFieldError('Value', 'Required');
+    if (!fieldData.ColHexCd) showFieldError('ColHexCd', 'Required');
+    if (!fieldData.Position) showFieldError('Position', 'Required');
   }
 
-  // Attach real-time validation to input fields
   function attachRealtimeValidation(row) {
-    const inputs = row.querySelectorAll('input.edit-field, select.edit-field, textarea.edit-field');
+    const inputs = row.querySelectorAll('input.edit-field, select.edit-field');
     inputs.forEach(input => {
-      input.addEventListener('input', () => {
-        validateFieldsRealtime(row);
-      });
-      input.addEventListener('blur', () => {
-        validateFieldsRealtime(row);
-      });
+      input.addEventListener('input', () => validateFieldsRealtime(row));
+      input.addEventListener('change', () => validateFieldsRealtime(row));
+      input.addEventListener('blur', () => validateFieldsRealtime(row));
     });
   }
 
   async function loadData(BASE_URL, operation) {
     const response = await fetch(`${BASE_URL}/getData?operation=${operation}`);
-
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      throw new Error('Server returned non-JSON response. Please check API endpoint.');
-    }
-
     const result = await response.json();
 
     if (!result.success) {
-      throw new Error(result.error || 'Failed to load Button Configuration data');
+      throw new Error(result.error || 'Failed to load data');
     }
 
-    return result.data || [];
+    const data = result.data || [];
+
+    // Map database columns to virtual UI columns
+    return data.map(row => {
+      const activeScreenKey = SCREEN_KEYS.find(key =>
+        row[key] && row[key].trim().toUpperCase() !== 'NA'
+      );
+
+      if (activeScreenKey) {
+        row.Screen = SCREEN_MAPPING[activeScreenKey];
+        row.Value = (row[activeScreenKey] || 'True').charAt(0).toUpperCase() + (row[activeScreenKey] || 'True').slice(1).toLowerCase();
+      } else {
+        row.Screen = 'Home Screen';
+        row.Value = 'NA';
+      }
+      return row;
+    });
   }
 
   async function saveRow(row, uniqueId, BASE_URL, operation) {
-    // Clear any existing validation messages
     row.querySelectorAll('.validation-message').forEach(msg => msg.remove());
 
-    // Get all editable field values
     const fieldData = {};
     const editableColumns = COLUMNS.filter(col => col.editable);
 
@@ -214,292 +177,135 @@ const PosCTAOperation = (() => {
       }
     }
 
-    // Helper function to show validation message below field
-    const showFieldError = (fieldName, message) => {
-      const field = row.querySelector(`[data-field="${fieldName}"]`);
-      if (field && field.parentElement) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'validation-message';
-        errorDiv.style.cssText = 'color: #dc2626; font-size: 12px; margin-top: 2px;';
-        errorDiv.textContent = message;
-        field.parentElement.appendChild(errorDiv);
-      }
+    if (!fieldData.CTA || !fieldData.Screen || !fieldData.Value || !fieldData.ColHexCd || !fieldData.Position) {
+      throw new Error('Please fill all required fields');
+    }
+
+    // Map virtual columns back to database columns
+    const payload = {
+      operation: operation,
+      yId: uniqueId,
+      CTA: fieldData.CTA,
+      ColHexCd: fieldData.ColHexCd,
+      Position: fieldData.Position,
+      modUsr: sessionStorage.getItem('modUsr') || ''
     };
 
-    // Validate required fields
-    let hasError = false;
-
-    if (!fieldData.CTA) {
-      showFieldError('CTA', 'CTA is required');
-      hasError = true;
-    }
-
-    if (!fieldData.ColHexCd) {
-      showFieldError('ColHexCd', 'Required');
-      hasError = true;
-    }
-
-    if (!fieldData.Position) {
-      showFieldError('Position', 'Required');
-      hasError = true;
-    }
-
-    // Validate: Exactly one screen column should have 'True' or 'False', rest should be 'NA'
-    const screenColumns = [
-      'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
-      'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
-      'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'tranSearchTranSelected'
-    ];
-
-    const nonNAColumns = screenColumns.filter(col => {
-      const value = fieldData[col];
-      return value && value !== '' && value.toUpperCase() !== 'NA';
+    // Set all screen columns to NA first
+    SCREEN_KEYS.forEach(key => {
+      payload[key] = 'NA';
     });
 
-    if (nonNAColumns.length === 0) {
-      // Show error on first screen column
-      showFieldError('HomeScreen', 'At least one screen must have True/False');
-      hasError = true;
-    } else if (nonNAColumns.length > 1) {
-      // Show error on all columns that have values
-      nonNAColumns.forEach(col => {
-        showFieldError(col, 'Only one screen allowed');
-      });
-      hasError = true;
-    } else {
-      // Validate that the non-NA value is either 'True' or 'False'
-      const activeColumn = nonNAColumns[0];
-      const activeValue = fieldData[activeColumn].toLowerCase();
-      if (activeValue !== 'true' && activeValue !== 'false') {
-        showFieldError(activeColumn, 'Must be "True" or "False"');
-        hasError = true;
-      }
+    // Find the original key for the selected screen label
+    const selectedScreenKey = Object.keys(SCREEN_MAPPING).find(key =>
+      SCREEN_MAPPING[key] === fieldData.Screen
+    );
+
+    if (selectedScreenKey) {
+      payload[selectedScreenKey] = fieldData.Value;
     }
-
-    if (hasError) {
-      throw new Error('Please fix the validation errors');
-    }
-
-    // Set all other screen columns to 'NA'
-    screenColumns.forEach(col => {
-      if (!nonNAColumns.includes(col)) {
-        fieldData[col] = 'NA';
-      }
-    });
-
-    const modUsr = sessionStorage.getItem('modUsr') || '';
 
     const response = await fetch(`${BASE_URL}/updateData`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        operation: operation,
-        yId: uniqueId,
-        ...fieldData,
-        modUsr: modUsr
-      })
+      body: JSON.stringify(payload)
     });
 
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      throw new Error('Server returned non-JSON response. Please check API endpoint.');
-    }
-
     const result = await response.json();
-
-    if (!result.success) {
-      throw new Error(result.error || 'Failed to update Button Configuration');
-    }
-
+    if (!result.success) throw new Error(result.error || 'Update failed');
     return result.data;
   }
 
   async function addNewRow(tableBody, showMessage, BASE_URL, operation) {
     const existingNewRow = document.querySelector('tr[data-is-new="true"]');
     if (existingNewRow) {
-      showMessage('Please save or cancel the current new row first', 'error');
+      showMessage('Please save or cancel the current row first', 'error');
       return;
     }
 
-    const visibleColumns = COLUMNS.filter(col => !col.hidden);
-
-    const cells = visibleColumns.map(col => {
+    const cells = COLUMNS.filter(col => !col.hidden).map(col => {
       const widthStyle = col.width ? `style="min-width: ${col.width};"` : '';
-
       if (col.editable && col.type === 'text') {
         const maxlength = col.maxlength ? `maxlength="${col.maxlength}"` : '';
+        return `<td ${widthStyle}><input type="text" class="edit-field" data-field="${col.key}" ${maxlength} style="width: 100%;"></td>`;
+      } else if (col.editable && col.type === 'select') {
         return `<td ${widthStyle}>
-                  <input type="text" class="edit-field" data-field="${col.key}" 
-                    ${maxlength} style="width: 100%; background-color: white;">
+                  <select class="edit-field" data-field="${col.key}" style="width: 100%;">
+                    ${col.options.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                  </select>
                 </td>`;
-      } else if (!col.editable) {
-        // For non-editable fields like ModUsr, ModDate, show empty or auto
-        return `<td ${widthStyle} style="color: #64748b; font-style: italic;">${col.key === 'yId' ? 'Auto' : ''}</td>`;
       }
-      return `<td ${widthStyle}></td>`;
+      return `<td ${widthStyle} style="color: #64748b; font-style: italic;">Auto</td>`;
     }).join('');
 
-    const newRow = `<tr data-is-new="true" style="background-color: #e8e6dfff;">${cells}
+    const newRowHtml = `<tr data-is-new="true" style="background-color: #f8fafc;">${cells}
       <td class="action-cell">
         <button class="action-btn save-btn" onclick="ConfigManager.saveNewRow()" title="Save">💾</button>
         <button class="action-btn cancel-btn" onclick="ConfigManager.cancelNewRow()" title="Cancel">❌</button>
       </td></tr>`;
 
-    tableBody.insertAdjacentHTML('afterbegin', newRow);
-
-    const newRowElement = tableBody.querySelector('tr[data-is-new="true"]');
-
-    // Attach real-time validation to the new row
-    if (newRowElement) {
-      attachRealtimeValidation(newRowElement);
-    }
-
-    const firstInput = tableBody.querySelector('tr[data-is-new="true"] .edit-field');
-    if (firstInput) {
-      firstInput.focus();
-    }
+    tableBody.insertAdjacentHTML('afterbegin', newRowHtml);
+    const newRow = tableBody.querySelector('tr[data-is-new="true"]');
+    attachRealtimeValidation(newRow);
+    newRow.querySelector('.edit-field').focus();
   }
 
   async function saveNewRow(row, BASE_URL, operation) {
-    // Clear any existing validation messages
     row.querySelectorAll('.validation-message').forEach(msg => msg.remove());
 
-    // Get all editable field values
     const fieldData = {};
     const editableColumns = COLUMNS.filter(col => col.editable);
 
     for (const col of editableColumns) {
-      const input = row.querySelector(`input[data-field="${col.key}"]`);
+      const input = row.querySelector(`[data-field="${col.key}"]`);
       if (input) {
         fieldData[col.key] = input.value ? input.value.trim() : '';
       }
     }
 
-    // Helper function to show validation message below field
-    const showFieldError = (fieldName, message) => {
-      const field = row.querySelector(`input[data-field="${fieldName}"]`);
-      if (field && field.parentElement) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'validation-message';
-        errorDiv.style.cssText = 'color: #dc2626; font-size: 12px; margin-top: 2px;';
-        errorDiv.textContent = message;
-        field.parentElement.appendChild(errorDiv);
-      }
+    if (!fieldData.CTA || !fieldData.Screen || !fieldData.Value || !fieldData.ColHexCd || !fieldData.Position) {
+      throw new Error('Please fill all required fields');
+    }
+
+    const payload = {
+      operation: operation,
+      CTA: fieldData.CTA,
+      ColHexCd: fieldData.ColHexCd,
+      Position: fieldData.Position,
+      modUsr: sessionStorage.getItem('modUsr') || ''
     };
 
-    // Validate required fields
-    let hasError = false;
-
-    if (!fieldData.CTA) {
-      showFieldError('CTA', 'CTA is required');
-      hasError = true;
-    }
-
-    if (!fieldData.ColHexCd) {
-      showFieldError('ColHexCd', 'Required');
-      hasError = true;
-    }
-
-    if (!fieldData.Position) {
-      showFieldError('Position', 'Required');
-      hasError = true;
-    }
-
-    // Validate: Exactly one screen column should have 'True' or 'False', rest should be 'NA'
-    const screenColumns = [
-      'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
-      'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
-      'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-      'Invoice', 'Entry', 'Closing', 'ClosingValidated','HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'tranSearchTranSelected'
-    ];
-
-    const nonNAColumns = screenColumns.filter(col => {
-      const value = fieldData[col];
-      return value && value !== '' && value.toUpperCase() !== 'NA';
+    SCREEN_KEYS.forEach(key => {
+      payload[key] = 'NA';
     });
 
-    if (nonNAColumns.length === 0) {
-      // Show error on first screen column
-      showFieldError('HomeScreen', 'At least one screen must have True/False');
-      hasError = true;
-    } else if (nonNAColumns.length > 1) {
-      // Show error on all columns that have values
-      nonNAColumns.forEach(col => {
-        showFieldError(col, 'Only one screen allowed');
-      });
-      hasError = true;
-    } else {
-      // Validate that the non-NA value is either 'True' or 'False'
-      const activeColumn = nonNAColumns[0];
-      const activeValue = fieldData[activeColumn].toLowerCase();
-      if (activeValue !== 'true' && activeValue !== 'false') {
-        showFieldError(activeColumn, 'Must be "True" or "False"');
-        hasError = true;
-      }
+    const selectedScreenKey = Object.keys(SCREEN_MAPPING).find(key =>
+      SCREEN_MAPPING[key] === fieldData.Screen
+    );
+
+    if (selectedScreenKey) {
+      payload[selectedScreenKey] = fieldData.Value;
     }
-
-    if (hasError) {
-      throw new Error('Please fix the validation errors');
-    }
-
-    // Set all other screen columns to 'NA'
-    screenColumns.forEach(col => {
-      if (!nonNAColumns.includes(col)) {
-        fieldData[col] = 'NA';
-      }
-    });
-
-    const modUsr = sessionStorage.getItem('modUsr') || '';
 
     const response = await fetch(`${BASE_URL}/addData`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        operation: operation,
-        ...fieldData,
-        modUsr: modUsr
-      })
+      body: JSON.stringify(payload)
     });
 
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      throw new Error('Server returned non-JSON response. Please check API endpoint.');
-    }
-
     const result = await response.json();
-
-    if (!result.success) {
-      throw new Error(result.error || 'Failed to add Button Configuration');
-    }
-
+    if (!result.success) throw new Error(result.error || 'Failed to add');
     return result.data;
   }
 
   async function deleteRow(uniqueId, BASE_URL, operation) {
-    const modUsr = sessionStorage.getItem('modUsr') || '';
-
     const response = await fetch(`${BASE_URL}/deleteData`, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        operation: operation,
-        yId: uniqueId,
-        modUsr: modUsr
-      })
+      body: JSON.stringify({ operation, yId: uniqueId })
     });
-
-    const contentType = response.headers.get('content-type');
-    if (!contentType || !contentType.includes('application/json')) {
-      throw new Error('Server returned non-JSON response. Please check API endpoint.');
-    }
-
     const result = await response.json();
-
-    if (!result.success) {
-      throw new Error(result.error || 'Failed to delete Button Configuration');
-    }
-
+    if (!result.success) throw new Error(result.error || 'Delete failed');
     return result.data;
   }
 
@@ -513,10 +319,7 @@ const PosCTAOperation = (() => {
     deleteRow,
     supportsAdd: true,
     supportsDelete: true,
-    // Called by config.js after enabling edit mode on a row
-    enableEditMode: (row) => {
-      attachRealtimeValidation(row);
-    }
+    enableEditMode: (row) => attachRealtimeValidation(row)
   };
 })();
 
