@@ -79,18 +79,24 @@ class OperationRegistry {
 
   getAllOperations() {
     const result = [];
-    
+
     // Create a map for quick config lookup
     const configMap = new Map();
     this.config.operations.forEach(cfg => {
       configMap.set(cfg.key, cfg);
     });
 
+    const currentSystem = process.env.System || '';
+
     this.operations.forEach((operation, key) => {
       const config = configMap.get(key);
-      
-      // Only include visible operations
-      if (!config || config.visible !== false) {
+
+      // Strict filtering: visible must be true and system must match env.System
+      const isVisible = config && config.visible === true;
+      const systemMatches = config && config.system &&
+        (Array.isArray(config.system) ? config.system.includes(currentSystem) : config.system === currentSystem);
+
+      if (isVisible && systemMatches) {
         result.push({
           value: key,
           label: operation.label,
@@ -101,7 +107,7 @@ class OperationRegistry {
 
     // Sort by order
     result.sort((a, b) => a.order - b.order);
-    
+
     return result;
   }
 
@@ -111,7 +117,10 @@ class OperationRegistry {
 
   isOperationVisible(operationName) {
     const config = this.config.operations.find(op => op.key === operationName);
-    return !config || config.visible !== false;
+    const currentSystem = process.env.System || '';
+    const systemMatches = config && config.system &&
+      (Array.isArray(config.system) ? config.system.includes(currentSystem) : config.system === currentSystem);
+    return config && config.visible === true && systemMatches;
   }
 }
 
