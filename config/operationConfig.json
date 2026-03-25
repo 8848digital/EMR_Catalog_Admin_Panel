@@ -3,7 +3,7 @@
     {
       "key": "add_adv_event",
       "label": "Manage Advertisement",
-      "visible": true,
+      "visible": false,
       "order": 1,
       "system": "Euro"
     },
@@ -17,98 +17,98 @@
     {
       "key": "add_ctg_filter",
       "label": "Manage Category Filter",
-      "visible": true,
+      "visible": false,
       "order": 3,
       "system": "KC"
     },
     {
       "key": "add_cs_grd",
       "label": "Manage Colour Stone Grade",
-      "visible": true,
+      "visible": false,
       "order": 4,
       "system": "KC"
     },
     {
       "key": "add_cust_mp",
       "label": "Manage Customer Mapping",
-      "visible": true,
+      "visible": false,
       "order": 5,
       "system": "KC"
     },
     {
       "key": "add_custMst",
       "label": "Manage Customer Multiplier",
-      "visible": true,
+      "visible": false,
       "order": 6,
       "system": "Euro"
     },
     {
       "key": "add_design_size",
       "label": "Manage Design Size",
-      "visible": true,
+      "visible": false,
       "order": 7,
       "system": "KC"
     },
     {
       "key": "add_dia_grd",
       "label": "Manage Diamond Grade",
-      "visible": true,
+      "visible": false,
       "order": 8,
       "system": "KC"
     },
     {
       "key": "add_email",
       "label": "Manage Email Configuration",
-      "visible": true,
+      "visible": false,
       "order": 9,
       "system": "Euro"
     },
     {
       "key": "add_met_cd",
       "label": "Manage Metal Code",
-      "visible": true,
+      "visible": false,
       "order": 10,
       "system": "KC"
     },
     {
       "key": "add_met_col",
       "label": "Manage Metal Color",
-      "visible": true,
+      "visible": false,
       "order": 11,
       "system": "KC"
     },
     {
       "key": "add_met_kt",
       "label": "Manage Metal purity",
-      "visible": true,
+      "visible": false,
       "order": 12,
       "system": "KC"
     },
     {
       "key": "add_rg_filter",
       "label": "Manage Range Filter",
-      "visible": true,
+      "visible": false,
       "order": 13,
       "system": "KC"
     },
     {
       "key": "add_role",
       "label": "Manage Roles",
-      "visible": true,
+      "visible": false,
       "order": 14,
       "system": "KC"
     },
     {
       "key": "add_sls_prsn",
       "label": "Manage Sales Person",
-      "visible": true,
+      "visible": false,
       "order": 15,
       "system": "KC"
     },
     {
       "key": "add_usr_map",
       "label": "Manage User Mapping",
-      "visible": true,
+      "visible": false,
       "order": 16,
       "system": "KC"
     },
