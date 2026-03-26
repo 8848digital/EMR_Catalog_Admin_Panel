@@ -26,6 +26,8 @@ const ConfigManager = (() => {
     'add_adv_event': advEventOperation,
     'add_PosCTA': PosCTAOperation,
     'add_Users': usersOperation,
+    'add_pos_invoice': posInvoiceOperation,
+    'add_pos': posOperation,
   };
 
   // Helper function to escape HTML
@@ -473,16 +475,19 @@ const ConfigManager = (() => {
     const tableBody = document.getElementById('tableBody');
 
     const visibleColumns = columns.filter(col => !col.hidden);
-
+    const supportsEdit = currentHandler.supportsEdit !== false;
+    const supportsDelete = currentHandler.supportsDelete === true;
+    const showActionColumn = supportsEdit || supportsDelete;
     tableHeader.innerHTML = '<tr>' +
       visibleColumns.map(col => {
         const widthStyle = col.width ? `style="min-width: ${col.width}; width: ${col.width};"` : '';
         return `<th ${widthStyle}>${col.label}</th>`;
       }).join('') +
-      '<th style="width: 120px;">Action</th></tr>';
+      (showActionColumn ? '<th style="width: 120px;">Action</th>' : '') + '</tr>';
 
     if (!data || data.length === 0) {
-      tableBody.innerHTML = `<tr><td colspan="${visibleColumns.length + 1}" style="text-align: center;">No data available</td></tr>`;
+      const colSpan = visibleColumns.length + (showActionColumn ? 1 : 0);
+      tableBody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align: center;">No data available</td></tr>`;
       return;
     }
 
@@ -536,33 +541,28 @@ const ConfigManager = (() => {
         return `<td ${widthStyle}>${escapeHtml(value)}</td>`;
       }).join('');
 
-      const supportsDelete = currentHandler.supportsDelete;
-      const deleteBtn = supportsDelete
-        ? `<button class="action-btn delete-btn" onclick="ConfigManager.deleteRow('${rowIdValue}')" title="Delete">🗑️</button>`
-        : '';
-
-      return `<tr data-id="${rowIdValue}">${cells}
+      let actionCell = '';
+      if (showActionColumn) {
+        actionCell = `
         <td class="action-cell">
-  <button class="action-btn edit-btn" onclick="ConfigManager.toggleEdit('${rowIdValue}')" title="Edit">
-    <i class="fa-solid fa-pen-to-square"></i>
-  </button>
+          ${supportsEdit ? `
+          <button class="action-btn edit-btn" onclick="ConfigManager.toggleEdit('${rowIdValue}')" title="Edit">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </button>
+          <button class="action-btn save-btn hidden" onclick="ConfigManager.saveRow('${rowIdValue}')" title="Save">
+            <i class="fa-solid fa-floppy-disk"></i>
+          </button>
+          <button class="action-btn cancel-btn hidden" onclick="ConfigManager.cancelEdit('${rowIdValue}')" title="Cancel">
+            <i class="fa-solid fa-xmark"></i>
+          </button>` : ''}
+          ${supportsDelete ? `
+          <button class="action-btn delete-btn" onclick="ConfigManager.deleteRow('${rowIdValue}')" title="Delete">
+            <i class="fa-solid fa-trash"></i>
+          </button>` : ''}
+        </td>`;
+      }
 
-  <button class="action-btn save-btn hidden" onclick="ConfigManager.saveRow('${rowIdValue}')" title="Save">
-    <i class="fa-solid fa-floppy-disk"></i>
-  </button>
-
-  <button class="action-btn cancel-btn hidden" onclick="ConfigManager.cancelEdit('${rowIdValue}')" title="Cancel">
-    <i class="fa-solid fa-xmark"></i>
-  </button>
-
-  ${supportsDelete
-          ? `<button class="action-btn delete-btn" onclick="ConfigManager.deleteRow('${rowIdValue}')" title="Delete">
-           <i class="fa-solid fa-trash"></i>
-         </button>`
-          : ''
-        }
-</td>
-</tr>`;
+      return `<tr data-id="${rowIdValue}">${cells}${actionCell}</tr>`;
     }).join('');
   }
 

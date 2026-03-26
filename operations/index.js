@@ -15,6 +15,8 @@ const rgFilterOperation = require('./rgFilter');
 const advEventOperation = require('./advEvent');
 const PosCTAOperation = require('./PosCTA');
 const usersOperation = require('./users');
+const posInvoiceOperation = require('./posInvoice');
+const posOperation = require('./pos');
 
 module.exports = {
     add_custMst: custMstOperation,
@@ -33,5 +35,7 @@ module.exports = {
     add_rg_filter: rgFilterOperation,
     add_adv_event: advEventOperation,
     add_PosCTA: PosCTAOperation,
-    add_Users: usersOperation
+    add_Users: usersOperation,
+    add_pos_invoice: posInvoiceOperation,
+    add_pos: posOperation
 };

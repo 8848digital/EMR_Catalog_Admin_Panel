@@ -85,38 +85,52 @@
       "system": "KC"
     },
     {
+      "key": "add_pos",
+      "label": "Manage POS",
+      "visible": true,
+      "order": 13,
+      "system": "POS"
+    },
+    {
+      "key": "add_pos_invoice",
+      "label": "Manage POS Invoice",
+      "visible": true,
+      "order": 14,
+      "system": "POS"
+    },
+    {
       "key": "add_rg_filter",
       "label": "Manage Range Filter",
       "visible": true,
-      "order": 13,
+      "order": 15,
       "system": "KC"
     },
     {
       "key": "add_role",
       "label": "Manage Roles",
       "visible": true,
-      "order": 14,
+      "order": 16,
       "system": "KC"
     },
     {
       "key": "add_sls_prsn",
       "label": "Manage Sales Person",
       "visible": true,
-      "order": 15,
+      "order": 17,
       "system": "KC"
     },
     {
       "key": "add_usr_map",
       "label": "Manage User Mapping",
       "visible": true,
-      "order": 16,
+      "order": 18,
       "system": "KC"
     },
     {
       "key": "add_Users",
       "label": "Manage Users",
       "visible": true,
-      "order": 17,
+      "order": 19,
       "system": "POS"
     }
   ]

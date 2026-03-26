@@ -3,29 +3,15 @@ const sql = require('mssql');
 module.exports = {
     label: 'Manage Users',
 
-    getPMCdList: {
-        selectClause: `
-            PSCd,
-            PDesc
-        `,
-        from: () => `[${process.env.DB_DATABASE}].[dbo].[Param]`,
-        whereConditions: ["PTyp = @PTyp", "PMCd = @PMCd"],
-        orderByClause: "PSCd",
-        inputTypeMap: {
-            PTyp: sql.VarChar(50),
-            PMCd: sql.VarChar(50)
-        },
-        inputValuesMap: {
-            PTyp: 'daanacd',
-            PMCd: '7'
-        }
-    },
-
     getData: {
         selectClause: `
             UserName,
-            SyncStock,
-            Verticals
+            EmrMapUser,
+            UserAbbreviation,
+            location,
+            CoCd,
+            MaxItemDiscPer,
+            MaxSalesDiscPer
         `,
         from: () => `[${process.env.yDb}].[dbo].[Users]`,
         whereConditions: [],
@@ -36,13 +22,10 @@ module.exports = {
 
     updateData: {
         validate: (body) => {
-            const { UserName, SyncStock, OldUserName } = body;
+            const { UserName, OldUserName } = body;
 
             if (!UserName || UserName.trim() === '') {
                 throw new Error('UserName is required');
-            }
-            if (SyncStock === undefined || SyncStock === null) {
-                throw new Error('SyncStock is required');
             }
             if (!OldUserName) {
                 throw new Error('Original UserName (OldUserName) is required');
@@ -52,12 +35,18 @@ module.exports = {
 
         customUpdate: async (conn, body, modUsr) => {
             const { sql, exeQuery } = conn;
-            const { UserName, SyncStock, Verticals, OldUserName } = body;
+            const {
+                UserName,
+                EmrMapUser,
+                location,
+                CoCd,
+                MaxItemDiscPer,
+                MaxSalesDiscPer,
+                OldUserName
+            } = body;
 
             const newUserName = UserName.trim();
             const oldUserName = OldUserName.trim();
-            const newSyncStock = SyncStock ? 1 : 0;
-            const newVerticals = Verticals ? Verticals.trim() : null;
 
             const isUserNameChanged = newUserName !== oldUserName;
 
@@ -87,21 +76,30 @@ module.exports = {
                     UPDATE [${process.env.yDb}].[dbo].[Users]
                     SET 
                         UserName = @NewUserName,
-                        SyncStock = @SyncStock,
-                        Verticals = @Verticals,
+                        EmrMapUser = @EmrMapUser,
+                        location = @location,
+                        CoCd = @CoCd,
+                        MaxItemDiscPer = @MaxItemDiscPer,
+                        MaxSalesDiscPer = @MaxSalesDiscPer,
                         ModDt = GETDATE()
                     WHERE UserName = @OldUserName
                 `,
                 inputTypeMap: {
                     NewUserName: sql.VarChar(50),
-                    SyncStock: sql.Bit,
-                    Verticals: sql.VarChar(255),
+                    EmrMapUser: sql.VarChar(50),
+                    location: sql.VarChar(15),
+                    CoCd: sql.VarChar(5),
+                    MaxItemDiscPer: sql.VarChar(10),
+                    MaxSalesDiscPer: sql.VarChar(10),
                     OldUserName: sql.VarChar(50)
                 },
                 inputValuesMap: {
                     NewUserName: newUserName,
-                    SyncStock: newSyncStock,
-                    Verticals: newVerticals,
+                    EmrMapUser: EmrMapUser || null,
+                    location: location || null,
+                    CoCd: CoCd || null,
+                    MaxItemDiscPer: MaxItemDiscPer || null,
+                    MaxSalesDiscPer: MaxSalesDiscPer || null,
                     OldUserName: oldUserName
                 },
                 returnRaw: true
@@ -115,9 +113,7 @@ module.exports = {
 
             return {
                 message: 'User updated successfully',
-                UserName: newUserName,
-                SyncStock: newSyncStock,
-                Verticals: newVerticals
+                UserName: newUserName
             };
         }
     },
@@ -133,11 +129,16 @@ module.exports = {
 
         customAdd: async (conn, body, modUsr) => {
             const { sql, exeQuery } = conn;
-            const { UserName, SyncStock, Verticals } = body;
+            const {
+                UserName,
+                EmrMapUser,
+                location,
+                CoCd,
+                MaxItemDiscPer,
+                MaxSalesDiscPer
+            } = body;
 
             const trimmedUserName = UserName.trim();
-            const syncStockVal = SyncStock ? 1 : 0;
-            const trimmedVerticals = Verticals ? Verticals.trim() : null;
 
             // Check duplicate
             const checkDuplicateQuery = {
@@ -158,19 +159,25 @@ module.exports = {
             const insertQuery = {
                 rawQuery: `
                     INSERT INTO [${process.env.yDb}].[dbo].[Users]
-                    (UserName, SyncStock, Verticals, CreatedAt, ModDt)
+                    (UserName, EmrMapUser, location, CoCd, MaxItemDiscPer, MaxSalesDiscPer, CreatedAt, ModDt, SyncStock)
                     VALUES
-                    (@UserName, @SyncStock, @Verticals, GETDATE(), GETDATE())
+                    (@UserName, @EmrMapUser, @location, @CoCd, @MaxItemDiscPer, @MaxSalesDiscPer, GETDATE(), GETDATE(), 1)
                 `,
                 inputTypeMap: {
                     UserName: sql.VarChar(50),
-                    SyncStock: sql.Bit,
-                    Verticals: sql.VarChar(255)
+                    EmrMapUser: sql.VarChar(50),
+                    location: sql.VarChar(15),
+                    CoCd: sql.VarChar(5),
+                    MaxItemDiscPer: sql.VarChar(10),
+                    MaxSalesDiscPer: sql.VarChar(10)
                 },
                 inputValuesMap: {
                     UserName: trimmedUserName,
-                    SyncStock: syncStockVal,
-                    Verticals: trimmedVerticals
+                    EmrMapUser: EmrMapUser || null,
+                    location: location || null,
+                    CoCd: CoCd || null,
+                    MaxItemDiscPer: MaxItemDiscPer || null,
+                    MaxSalesDiscPer: MaxSalesDiscPer || null
                 },
                 returnRaw: true
             };
