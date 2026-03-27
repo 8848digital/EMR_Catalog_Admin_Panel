@@ -51,9 +51,15 @@ const ConfigManager = (() => {
 
     loadOperations();
 
+    // Initial custom select setup
+    initCustomSelects();
+
     const operationSelect = document.getElementById('operation');
     if (operationSelect) {
-      operationSelect.addEventListener('change', handleOperationChange);
+      operationSelect.addEventListener('change', (e) => {
+        handleOperationChange(e);
+        updateCustomSelect(operationSelect);
+      });
     }
 
     document.getElementById('filterForm')?.addEventListener('submit', handleFormSubmit);
@@ -109,6 +115,9 @@ const ConfigManager = (() => {
           option.textContent = op.label;
           operationSelect.appendChild(option);
         });
+
+        // Refresh custom select after options are loaded
+        updateCustomSelect(operationSelect);
       }
     } catch (error) {
       console.error('Error loading operations:', error);
@@ -155,7 +164,10 @@ const ConfigManager = (() => {
     if (newPMCdGroup) newPMCdGroup.classList.add('hidden');
 
     const pmcdSelect = document.getElementById('pmcdSelect');
-    if (pmcdSelect) pmcdSelect.innerHTML = '<option value="">--Select Category--</option>';
+    if (pmcdSelect) {
+      pmcdSelect.innerHTML = '<option value="">--Select Category--</option>';
+      updateCustomSelect(pmcdSelect);
+    }
 
     const newPMCdInput = document.getElementById('newPMCdInput');
     if (newPMCdInput) {
@@ -165,11 +177,102 @@ const ConfigManager = (() => {
         newInput.type = 'text';
         newInput.id = 'newPMCdInput';
         newInput.placeholder = 'Enter new category';
-        newInput.style.cssText = 'padding: 8px; border: 1px solid #ddd; border-radius: 4px; width: 100%;';
+        newInput.className = 'edit-field'; // Standardize class
         parent.replaceChild(newInput, newPMCdInput);
       } else {
         newPMCdInput.value = '';
       }
+    }
+  }
+
+  /**
+   * Custom Select Implementation
+   */
+  function initCustomSelects() {
+    const selects = document.querySelectorAll('select:not(.hidden-select):not(table select)');
+    selects.forEach(wrapSelect);
+
+    // Close all custom selects when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('.custom-select')) {
+        document.querySelectorAll('.custom-select.open').forEach(el => {
+          el.classList.remove('open');
+        });
+      }
+    });
+  }
+
+  function wrapSelect(select) {
+    if (select.parentElement.classList.contains('custom-select-wrapper')) return;
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'custom-select-wrapper';
+    select.parentNode.insertBefore(wrapper, select);
+    wrapper.appendChild(select);
+    select.classList.add('hidden-select');
+
+    const customSelect = document.createElement('div');
+    customSelect.className = 'custom-select';
+
+    const trigger = document.createElement('div');
+    trigger.className = 'custom-select-trigger';
+    trigger.innerHTML = `<span>${select.options[select.selectedIndex]?.text || '--Select--'}</span>`;
+
+    const optionsContainer = document.createElement('div');
+    optionsContainer.className = 'custom-options';
+
+    customSelect.appendChild(trigger);
+    customSelect.appendChild(optionsContainer);
+    wrapper.appendChild(customSelect);
+
+    trigger.addEventListener('click', () => {
+      // Close other open selects
+      document.querySelectorAll('.custom-select.open').forEach(el => {
+        if (el !== customSelect) el.classList.remove('open');
+      });
+      customSelect.classList.toggle('open');
+      if (customSelect.classList.contains('open')) {
+        renderCustomOptions(select, optionsContainer, trigger, customSelect);
+      }
+    });
+
+    // Listen for programatic changes to the native select
+    select.addEventListener('change', () => {
+      trigger.querySelector('span').textContent = select.options[select.selectedIndex]?.text || '--Select--';
+    });
+  }
+
+  function renderCustomOptions(select, container, trigger, customSelect) {
+    container.innerHTML = '';
+    Array.from(select.options).forEach((option, index) => {
+      const opt = document.createElement('div');
+      opt.className = `custom-option${index === select.selectedIndex ? ' selected' : ''}`;
+      opt.textContent = option.textContent;
+      opt.dataset.value = option.value;
+
+      opt.addEventListener('click', () => {
+        select.selectedIndex = index;
+        trigger.querySelector('span').textContent = option.textContent;
+        customSelect.classList.remove('open');
+
+        // Trigger native change event
+        const event = new Event('change', { bubbles: true });
+        select.dispatchEvent(event);
+      });
+
+      container.appendChild(opt);
+    });
+  }
+
+  function updateCustomSelect(select) {
+    const wrapper = select.closest('.custom-select-wrapper');
+    if (!wrapper) {
+      wrapSelect(select);
+      return;
+    }
+    const trigger = wrapper.querySelector('.custom-select-trigger span');
+    if (trigger) {
+      trigger.textContent = select.options[select.selectedIndex]?.text || '--Select--';
     }
   }
 

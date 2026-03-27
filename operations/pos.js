@@ -13,7 +13,8 @@ module.exports = {
             ExpectedAmount,
             ClosingAmount,
             Difference,
-            closingStatus
+            closingStatus,
+            ModUsr
         `,
 
         from: `[${process.env.yDb}].[dbo].[ypos]`,

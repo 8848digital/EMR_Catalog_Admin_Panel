@@ -44,7 +44,7 @@ h2::after {
     transform: translateX(-50%);
     width: 50px;
     height: 2px;
-    background: #059669;
+    background: #2F7474;
     border-radius: 1px;
 }
 
@@ -70,14 +70,14 @@ input {
 input:focus {
     outline: none;
     border-color: #0f766e;
-    box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.25);
+    box-shadow: 0 0 0 2px rgba(47, 116, 116, 0.25);
 }
 
 button {
     width: 100%;
     padding: 12px;
     margin-top: 20px;
-    background: #059669;
+    background: #2F7474;
     color: white;
     border: none;
     border-radius: 6px;
@@ -88,7 +88,7 @@ button {
 }
 
 button:hover {
-    background: #047857;
+    background: #265d5d;
 }
 
 button:disabled {

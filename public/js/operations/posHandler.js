@@ -7,7 +7,8 @@ const posOperation = (() => {
         { key: 'ExpectedAmount', label: 'Expected Amount', editable: false, type: 'number', width: '150px' },
         { key: 'ClosingAmount', label: 'Closing Amount', editable: false, type: 'number', width: '150px' },
         { key: 'Difference', label: 'Difference', editable: false, type: 'number', width: '150px' },
-        { key: 'closingStatus', label: 'Closing Status', editable: false, type: 'text', width: '120px' }
+        { key: 'closingStatus', label: 'Closing Status', editable: false, type: 'text', width: '120px' },
+        { key: 'ModUsr', label: 'User', editable: false, type: 'text', width: '150px' }
     ];
 
     function getColumns() {

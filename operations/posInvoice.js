@@ -9,7 +9,8 @@ module.exports = {
             CONVERT(VARCHAR(10), [Date], 120) AS [Date],
             InvNo,
             ModeOfPayment,
-            Amount
+            Amount,
+            ModUsr
         `,
 
         from: `[${process.env.yDb}].[dbo].[yPosInvoice]`,

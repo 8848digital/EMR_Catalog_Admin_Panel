@@ -57,7 +57,8 @@ h2 {
   text-align: center;
   font-size: 1.75rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #111827;
+  /* Near black */
   margin-bottom: 32px;
   position: relative;
 }
@@ -70,7 +71,7 @@ h2::after {
   transform: translateX(-50%);
   width: 50px;
   height: 2px;
-  background: #059669;
+  background: #2F7474;
   border-radius: 1px;
 }
 
@@ -104,19 +105,31 @@ label {
 input,
 select {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 6px;
-  font-size: 14px;
-  border: 1px solid #cbd5e1;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 15px;
+  border: 1.5px solid #e2e8f0;
   background-color: #fff;
-  transition: border-color 0.2s ease;
+  color: #1e293b;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232F7474' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 14px;
+  padding-right: 40px;
 }
 
 input:focus,
 select:focus {
   outline: none;
-  border-color: #0f766e;
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+  border-color: #2F7474;
+  /* Use primary teal on focus */
+  box-shadow: 0 0 0 3px rgba(47, 116, 116, 0.1);
 }
 
 input[readonly] {
@@ -125,20 +138,36 @@ input[readonly] {
 }
 
 button {
-  background: #059669;
+  background: #2F7474;
   color: white;
   border: none;
   padding: 10px 16px;
-  border-radius: 6px;
+  border-radius: 8px;
+  /* Slightly more rounded */
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: all 0.2s ease;
   height: 42px;
 }
 
+select option {
+  padding: 10px;
+  background-color: #ffffff;
+  color: #111827;
+}
+
+/* For browsers that support it, style the hover/checked state of options */
+select option:checked,
+select option:hover {
+  background-color: #E8F2F2 !important;
+  color: #2F7474 !important;
+}
+
+
 button:hover {
-  background: #047857;
+  background: #265d5d;
+  box-shadow: 0 2px 8px rgba(47, 116, 116, 0.3);
 }
 
 button:disabled {
@@ -169,7 +198,7 @@ button:disabled {
 .section-header h3 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #111827;
 }
 
 .button-group {
@@ -188,7 +217,8 @@ button:disabled {
 
 table {
   width: 100%;
-  min-width: 1400px; /* or more, based on columns */
+  min-width: 1400px;
+  /* or more, based on columns */
   border-collapse: collapse;
   background: white;
   table-layout: auto;
@@ -231,6 +261,12 @@ td select {
   margin: 0;
 }
 
+td select {
+  padding-right: 40px;
+  /* Increased clearance for arrows */
+}
+
+
 td input[readonly] {
   background-color: #f1f5f9;
   color: #64748b;
@@ -241,11 +277,13 @@ tr:last-child td {
 }
 
 tr:hover {
-  background: #f8fafc;
+  background: #E8F2F2;
+  /* Light mint tint for hover */
 }
 
 tr.editing-row {
-  background: #e0f2fe;
+  background: #E8F2F2;
+  /* Use theme mint for editing row */
 }
 
 /* Editable Fields */
@@ -265,6 +303,10 @@ tr.editing-row {
   border-color: transparent;
   cursor: default;
   color: #334155;
+  background-image: none;
+  /* Hide arrow in read-only mode */
+  padding-right: 8px;
+  /* Reset padding to align with other fields */
 }
 
 .edit-field.editing {
@@ -359,7 +401,7 @@ tr.editing-row {
   width: 40px;
   height: 40px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #059669;
+  border-top: 4px solid #2F7474;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -368,6 +410,7 @@ tr.editing-row {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -407,6 +450,7 @@ tr.editing-row {
     transform: translateY(-50px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -415,14 +459,15 @@ tr.editing-row {
 
 .confirm-content h3 {
   font-size: 1.5rem;
-  color: #1e293b;
+  color: #111827;
   margin-bottom: 15px;
   font-weight: 600;
 }
 
 .confirm-content p {
   font-size: 1rem;
-  color: #475569;
+  color: #4b5563;
+  /* Gray */
   margin-bottom: 25px;
   line-height: 1.5;
 }
@@ -434,41 +479,42 @@ tr.editing-row {
 }
 
 .confirm-btn {
-  background: #dc2626;
+  background: #2F7474;
+  /* Use primary teal for confirm */
   color: white;
   border: none;
   padding: 10px 24px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  height: auto;
 }
 
 .confirm-btn:hover {
-  background: #b91c1c;
+  background: #265d5d;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 4px 12px rgba(47, 116, 116, 0.3);
 }
 
 .confirm-dialog .cancel-btn {
-  background: #94a3b8;
-  color: white;
-  border: none;
+  background: white;
+  color: #ff5e5e;
+  /* Salmon/red text */
+  border: 1px solid #ff5e5e;
+  /* Salmon/red border */
   padding: 10px 24px;
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  height: auto;
 }
 
 .confirm-dialog .cancel-btn:hover {
-  background: #64748b;
+  background: #fff5f5;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
+  box-shadow: 0 4px 12px rgba(255, 94, 94, 0.2);
 }
 
 
@@ -546,7 +592,7 @@ tr.editing-row {
   .table-container {
     overflow-x: scroll;
   }
-  
+
   table {
     min-width: 100%;
   }
@@ -617,6 +663,7 @@ tr.editing-row {
     width: 100%;
   }
 }
+
 .action-btn i {
   font-size: 16px;
   line-height: 1;
@@ -625,23 +672,27 @@ tr.editing-row {
 
 /* Softer action icon colors */
 .edit-btn i {
-  color: #3b82f6; /* soft blue */
+  color: #2F7474;
+  /* Use primary teal */
 }
 
 .save-btn i {
-  color: #10b981; /* soft green */
+  color: #10b981;
+  /* soft green */
 }
 
 .cancel-btn i {
-  color: #ef4444; /* soft red */
+  color: #ef4444;
+  /* soft red */
 }
 
 .delete-btn i {
-  color: #f87171; /* light red */
+  color: #f87171;
+  /* light red */
 }
 
 .edit-btn:hover i {
-  color: #2563eb;
+  color: #265d5d;
 }
 
 .save-btn:hover i {
@@ -660,7 +711,125 @@ tr.editing-row {
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
-  padding-bottom: 10px; /* visible scrollbar */
+  padding-bottom: 10px;
+  /* visible scrollbar */
 }
 
+/* Custom Select Styles */
+.custom-select-wrapper {
+  position: relative;
+  width: 100%;
+  user-select: none;
+}
 
+.custom-select {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+.custom-select-trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1e293b;
+  height: 46px;
+  line-height: 22px;
+  background: #ffffff;
+  cursor: pointer;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.custom-select-trigger:after {
+  content: "";
+  width: 14px;
+  height: 14px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%232F7474' stroke-width='2.5'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: center;
+  transition: transform 0.3s ease;
+}
+
+.custom-select.open .custom-select-trigger {
+  border-color: #2F7474;
+  box-shadow: 0 0 0 3px rgba(47, 116, 116, 0.1);
+}
+
+.custom-select.open .custom-select-trigger:after {
+  transform: rotate(180deg);
+}
+
+.custom-options {
+  position: absolute;
+  display: block;
+  top: 100%;
+  left: 0;
+  right: 0;
+  border: 1.5px solid #e2e8f0;
+  border-top: 0;
+  background: #fff;
+  transition: all 0.23s ease;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-10px);
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.custom-select.open .custom-options {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: all;
+  transform: translateY(0);
+  border-color: #2F7474;
+}
+
+.custom-option {
+  position: relative;
+  display: block;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.custom-option:hover {
+  cursor: pointer;
+  background-color: #D7F1ED;
+  /* Softer light mint highlight to match POS app */
+  color: #2F7474;
+  /* Primary teal text */
+}
+
+.custom-option.selected {
+  background-color: #E8F2F2;
+  /* Slightly different highlight for current selection */
+  color: #2F7474;
+  font-weight: 600;
+}
+
+.custom-option.selected:hover {
+  background-color: #D7F1ED;
+}
+
+/* Hide original select but keep it functional for the form */
+.custom-select-wrapper select.hidden-select {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}

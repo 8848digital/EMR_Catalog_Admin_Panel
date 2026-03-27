@@ -3,7 +3,8 @@ const posInvoiceOperation = (() => {
         { key: 'Date', label: 'Date', editable: false, type: 'date', width: '150px' },
         { key: 'InvNo', label: 'Invoice No', editable: false, type: 'text', width: '200px' },
         { key: 'ModeOfPayment', label: 'Mode of Payment', editable: false, type: 'text', width: '200px' },
-        { key: 'Amount', label: 'Amount', editable: false, type: 'number', width: '150px' }
+        { key: 'Amount', label: 'Amount', editable: false, type: 'number', width: '150px' },
+        { key: 'ModUsr', label: 'User', editable: false, type: 'text', width: '150px' }
     ];
 
     function getColumns() {

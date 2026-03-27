@@ -67,7 +67,8 @@ const PosCTAOperation = (() => {
       editable: true,
       type: 'select',
       options: Object.values(SCREEN_MAPPING),
-      width: '200px'
+      width: '300px',
+      maxlength: 50
     },
     {
       key: 'Value',
@@ -75,7 +76,8 @@ const PosCTAOperation = (() => {
       editable: true,
       type: 'select',
       options: ['True', 'False'],
-      width: '100px'
+      width: '120px'
+
     },
     { key: 'ColHexCd', label: 'Color Hex Code', editable: true, type: 'text', width: '130px', maxlength: 50 },
     { key: 'Position', label: 'Position', editable: true, type: 'text', width: '120px', maxlength: 50 },
