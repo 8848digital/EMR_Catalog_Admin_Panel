@@ -28,6 +28,22 @@ const ConfigManager = (() => {
     'add_Users': usersOperation,
     'add_pos_invoice': posInvoiceOperation,
     'add_pos': posOperation,
+    'add_yDisc': yDiscOperation,
+    'add_voucherBatch': voucherBatchOperation,
+    'add_voucher': voucherOperation,
+    'add_yPromo': yPromoOperation,
+    'add_yEcheMap': yEcheMapOperation,
+    'add_yDiscSlb': yDiscSlbOperation,
+    'add_yEchelon': yEchelonOperation,
+    'add_yDiscTyp': yDiscTypOperation,
+    'add_yIngTrgt': yIngTrgtOperation,
+    'add_ySlabBas': ySlabBasOperation,
+    'add_yStckGrp': yStckGrpOperation,
+    'add_yValMode': yValModeOperation,
+    'add_yDStore': yDStoreOperation,
+    'add_yOrdLvl': yOrdLvlOperation,
+    'add_yDiscFoc': yDiscFocOperation,
+    'add_yEmpCeil': yEmpCeilOperation
   };
 
   // Helper function to escape HTML
@@ -616,7 +632,11 @@ const ConfigManager = (() => {
         if (col.editable) {
           if (col.type === 'dropdown') {
             let displayValue = value;
-            return `<td ${widthStyle} data-field="${col.key}" data-value="${escapeHtml(value)}" data-original-value="${escapeHtml(value)}">${displayValue}</td>`;
+            if (currentHandler.renderDisplayCell) {
+              const customDisplay = currentHandler.renderDisplayCell(col, value, row);
+              if (customDisplay !== null) displayValue = customDisplay;
+            }
+            return `<td ${widthStyle} data-field="${col.key}" data-type="dropdown" data-value="${escapeHtml(value)}" data-original-value="${escapeHtml(value)}">${displayValue}</td>`;
           } else if (col.type === 'number') {
             return `<td ${widthStyle}><input type="text" class="edit-field" 
                       data-field="${col.key}" value="${escapeHtml(value)}" 
@@ -699,7 +719,7 @@ const ConfigManager = (() => {
         originalValues[col.key] = originalValue;
 
         // For fields that need special edit controls (image, textarea, date)
-        if (col.type === 'image' || col.type === 'textarea' || col.type === 'date') {
+        if (col.type === 'image' || col.type === 'textarea' || col.type === 'date' || col.type === 'dropdown') {
           if (currentHandler.createEditControl) {
             // Call createEditControl even without rowData - it doesn't actually need it
             const editControl = currentHandler.createEditControl(col, originalValue, rowData || {});

@@ -6,7 +6,7 @@ const { loginUser } = require('../controllers/authController');
 const router = express.Router();
 
 // Multer configuration for file uploads
-const upload = multer({ 
+const upload = multer({
   dest: 'uploads/',
   limits: {
     fileSize: 10 * 1024 * 1024 // 10MB limit
@@ -15,17 +15,18 @@ const upload = multer({
 
 router.post('/login', transactionalControllerWrapper(loginUser));
 
-const { 
+const {
   getPMCdList,
-  getPSCdList, 
+  getPSCdList,
   getNewCategoryList,
-  getData, 
-  updateData, 
-  addData, 
-  getOperations, 
-  deleteData, 
-  validateSize, 
-  bulkSaveData 
+  getData,
+  updateData,
+  addData,
+  getOperations,
+  deleteData,
+  validateSize,
+  bulkSaveData,
+  getLookupData
 } = require('../controllers/dynamicController');
 
 router.get('/getOperations', transactionalControllerWrapper(getOperations));
@@ -38,6 +39,7 @@ router.get('/pmcdList', transactionalControllerWrapper(getPMCdList));
 router.get('/pscdList', transactionalControllerWrapper(getPSCdList));
 router.get('/newCategoryList', transactionalControllerWrapper(getNewCategoryList));
 router.post('/bulkSave', transactionalControllerWrapper(bulkSaveData));
+router.get('/lookupData', transactionalControllerWrapper(getLookupData));
 
 const {
   uploadFile,

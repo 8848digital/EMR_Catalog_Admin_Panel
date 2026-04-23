@@ -17,6 +17,22 @@ const PosCTAOperation = require('./PosCTA');
 const usersOperation = require('./users');
 const posInvoiceOperation = require('./posInvoice');
 const posOperation = require('./pos');
+const yDiscOperation = require('./yDisc');
+const voucherBatchOperation = require('./voucherBatch');
+const voucherOperation = require('./voucher');
+const yPromoOperation = require('./yPromo');
+const yEcheMapOperation = require('./yEcheMap');
+const yDiscSlbOperation = require('./yDiscSlb');
+const yEchelonOperation = require('./yEchelon');
+const yDiscTypOperation = require('./yDiscTyp');
+const yIngTrgtOperation = require('./yIngTrgt');
+const ySlabBasOperation = require('./ySlabBas');
+const yStckGrpOperation = require('./yStckGrp');
+const yValModeOperation = require('./yValMode');
+const yDStoreOperation = require('./yDStore');
+const yOrdLvlOperation = require('./yOrdLvl');
+const yDiscFocOperation = require('./yDiscFoc');
+const yEmpCeilOperation = require('./yEmpCeil');
 
 module.exports = {
     add_custMst: custMstOperation,
@@ -37,5 +53,21 @@ module.exports = {
     add_PosCTA: PosCTAOperation,
     add_Users: usersOperation,
     add_pos_invoice: posInvoiceOperation,
-    add_pos: posOperation
+    add_pos: posOperation,
+    add_yDisc: yDiscOperation,
+    add_voucherBatch: voucherBatchOperation,
+    add_voucher: voucherOperation,
+    add_yPromo: yPromoOperation,
+    add_yEcheMap: yEcheMapOperation,
+    add_yDiscSlb: yDiscSlbOperation,
+    add_yEchelon: yEchelonOperation,
+    add_yDiscTyp: yDiscTypOperation,
+    add_yIngTrgt: yIngTrgtOperation,
+    add_ySlabBas: ySlabBasOperation,
+    add_yStckGrp: yStckGrpOperation,
+    add_yValMode: yValModeOperation,
+    add_yDStore: yDStoreOperation,
+    add_yOrdLvl: yOrdLvlOperation,
+    add_yDiscFoc: yDiscFocOperation,
+    add_yEmpCeil: yEmpCeilOperation
 };

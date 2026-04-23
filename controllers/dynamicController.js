@@ -14,23 +14,23 @@ async function getPMCdList(conn) {
   try {
     const { req } = conn;
     const { operation } = req.query;
-    
+
     if (!operation) {
       throw new Error('Operation parameter is required');
     }
 
     const config = operationRegistry.getOperation(operation);
-    
+
     if (!config.getPMCdList) {
       throw new Error(`Operation does not support PMCd list: ${operation}`);
     }
 
     const pmcdConfig = config.getPMCdList;
-    
+
     const queryStmts = {
       selectClause: pmcdConfig.selectClause,
-      from: typeof pmcdConfig.from === 'function' 
-        ? pmcdConfig.from() 
+      from: typeof pmcdConfig.from === 'function'
+        ? pmcdConfig.from()
         : pmcdConfig.from,
       whereConditions: pmcdConfig.whereConditions || [],
       orderByClause: pmcdConfig.orderByClause || '',
@@ -50,13 +50,13 @@ async function getPSCdList(conn) {
   try {
     const { req } = conn;
     const { operation } = req.query;
-    
+
     if (!operation) {
       throw new Error('Operation parameter is required');
     }
 
     const config = operationRegistry.getOperation(operation);
-    
+
     if (!config.getPSCdList) {
       throw new Error(`Operation does not support Customer list: ${operation}`);
     }
@@ -65,8 +65,8 @@ async function getPSCdList(conn) {
 
     const queryStmts = {
       selectClause: customerConfig.selectClause,
-      from: typeof customerConfig.from === 'function' 
-        ? customerConfig.from() 
+      from: typeof customerConfig.from === 'function'
+        ? customerConfig.from()
         : customerConfig.from,
       whereConditions: customerConfig.whereConditions || [],
       orderByClause: customerConfig.orderByClause || '',
@@ -86,13 +86,13 @@ async function getNewCategoryList(conn) {
   try {
     const { req } = conn;
     const { operation } = req.query;
-    
+
     if (!operation) {
       throw new Error('Operation parameter is required');
     }
 
     const config = operationRegistry.getOperation(operation);
-    
+
     if (!config.getNewCategoryList) {
       throw new Error(`Operation does not support new category list: ${operation}`);
     }
@@ -101,8 +101,8 @@ async function getNewCategoryList(conn) {
 
     const queryStmts = {
       selectClause: categoryConfig.selectClause,
-      from: typeof categoryConfig.from === 'function' 
-        ? categoryConfig.from() 
+      from: typeof categoryConfig.from === 'function'
+        ? categoryConfig.from()
         : categoryConfig.from,
       whereConditions: categoryConfig.whereConditions || [],
       orderByClause: categoryConfig.orderByClause || '',
@@ -122,27 +122,27 @@ async function getData(conn) {
   try {
     const { req } = conn;
     const { operation, PMCd } = req.query;
-    
+
     if (!operation) {
       throw new Error('Operation parameter is required');
     }
 
     const config = operationRegistry.getOperation(operation);
-    
+
     if (!config.getData) {
       throw new Error(`Operation does not support getData: ${operation}`);
     }
-    
+
     const getDataConfig = config.getData;
 
     const inputValuesMap = { ...getDataConfig.inputValuesMap };
-    
-    const requiresPMCd = getDataConfig.whereConditions && 
-                         getDataConfig.whereConditions.some(cond => 
-                           cond.includes('PMCd = @PMCd') || cond.includes('PMCd=@PMCd')
-                         ) &&
-                         !inputValuesMap.PMCd;
-    
+
+    const requiresPMCd = getDataConfig.whereConditions &&
+      getDataConfig.whereConditions.some(cond =>
+        cond.includes('PMCd = @PMCd') || cond.includes('PMCd=@PMCd')
+      ) &&
+      !inputValuesMap.PMCd;
+
     if (requiresPMCd) {
       if (PMCd && PMCd.trim() !== '') {
         inputValuesMap.PMCd = PMCd;
@@ -153,8 +153,8 @@ async function getData(conn) {
 
     const queryStmts = {
       selectClause: getDataConfig.selectClause,
-      from: typeof getDataConfig.from === 'function' 
-        ? getDataConfig.from() 
+      from: typeof getDataConfig.from === 'function'
+        ? getDataConfig.from()
         : getDataConfig.from,
       whereConditions: getDataConfig.whereConditions || [],
       orderByClause: getDataConfig.orderByClause || '',
@@ -174,13 +174,13 @@ async function updateData(conn) {
   try {
     const { req } = conn;
     const { operation } = req.body;
-    
+
     if (!operation) {
       throw new Error('Operation parameter is required');
     }
 
     const config = operationRegistry.getOperation(operation);
-    
+
     if (!config.updateData) {
       throw new Error(`Operation does not support update: ${operation}`);
     }
@@ -194,8 +194,8 @@ async function updateData(conn) {
 
     if (updateConfig.customUpdate) {
       return await updateConfig.customUpdate(
-        { ...conn, exeQuery }, 
-        req.body, 
+        { ...conn, exeQuery },
+        req.body,
         modUsr
       );
     }
@@ -215,7 +215,7 @@ async function updateData(conn) {
       throw new Error('Record not found or no changes made');
     }
 
-    return { 
+    return {
       message: updateConfig.successMessage || 'Record updated successfully'
     };
   } catch (error) {
@@ -228,13 +228,13 @@ async function addData(conn) {
   try {
     const { req } = conn;
     const { operation } = req.body;
-    
+
     if (!operation) {
       throw new Error('Operation parameter is required');
     }
 
     const config = operationRegistry.getOperation(operation);
-    
+
     if (!config.addData) {
       throw new Error(`Operation does not support add: ${operation}`);
     }
@@ -248,8 +248,8 @@ async function addData(conn) {
 
     if (addConfig.customAdd) {
       return await addConfig.customAdd(
-        { ...conn, exeQuery }, 
-        req.body, 
+        { ...conn, exeQuery },
+        req.body,
         modUsr
       );
     }
@@ -269,7 +269,7 @@ async function addData(conn) {
       throw new Error('Failed to add record');
     }
 
-    return { 
+    return {
       message: addConfig.successMessage || 'Record added successfully'
     };
   } catch (error) {
@@ -282,13 +282,13 @@ async function deleteData(conn) {
   try {
     const { req } = conn;
     const { operation } = req.body;
-    
+
     if (!operation) {
       throw new Error('Operation parameter is required');
     }
 
     const config = operationRegistry.getOperation(operation);
-    
+
     if (!config.deleteData) {
       throw new Error(`Operation does not support delete: ${operation}`);
     }
@@ -298,8 +298,8 @@ async function deleteData(conn) {
 
     if (deleteConfig.customDelete) {
       return await deleteConfig.customDelete(
-        { ...conn, exeQuery }, 
-        req.body, 
+        { ...conn, exeQuery },
+        req.body,
         modUsr
       );
     }
@@ -319,7 +319,7 @@ async function deleteData(conn) {
       throw new Error('Record not found');
     }
 
-    return { 
+    return {
       message: deleteConfig.successMessage || 'Record deleted successfully'
     };
   } catch (error) {
@@ -332,7 +332,7 @@ async function bulkSaveData(conn) {
   try {
     const { req } = conn;
     const { operation, records } = req.body;
-    
+
     if (!operation) {
       throw new Error('Operation parameter is required');
     }
@@ -342,7 +342,7 @@ async function bulkSaveData(conn) {
     }
 
     const config = operationRegistry.getOperation(operation);
-    
+
     if (!config.bulkSave) {
       throw new Error(`Operation does not support bulk save: ${operation}`);
     }
@@ -351,7 +351,7 @@ async function bulkSaveData(conn) {
     const modUsr = req.body.modUsr || '';
 
     return await bulkSaveConfig.customBulkSave(
-      { ...conn, exeQuery }, 
+      { ...conn, exeQuery },
       records,
       req.body.PMCd,
       modUsr
@@ -366,11 +366,11 @@ async function validateSize(conn) {
   try {
     const { req, sql } = conn;
     const { PSCd } = req.query;
-    
+
     if (!PSCd) {
       throw new Error('PSCd parameter is required');
     }
-    
+
     const queryStmts = {
       rawQuery: `
         SELECT COUNT(*) as count
@@ -390,12 +390,103 @@ async function validateSize(conn) {
 
     return {
       exists: exists,
-      message: exists 
-        ? `Size "${PSCd}" is valid` 
+      message: exists
+        ? `Size "${PSCd}" is valid`
         : `Size "${PSCd}" does not exist in master sizes`
     };
   } catch (error) {
     console.error("Error in validateSize:", error);
+    throw error;
+  }
+}
+
+async function getLookupData(conn) {
+  try {
+    const { req, sql } = conn;
+    const { source } = req.query;
+
+    if (!source) {
+      throw new Error('source parameter is required');
+    }
+
+    const yDb = process.env.yDb;
+
+    // Lookup configurations
+    const lookupConfigs = {
+      yPromo: {
+        selectClause: `PMCd AS value, PMCd + ' - ' + PDesc AS label`,
+        from: `[${yDb}].[dbo].[yParam]`,
+        whereConditions: ["PTyp = 'yPromo'", "PValidYn = 'Y'"],
+        orderByClause: 'PMCd'
+      },
+      yEchelon: {
+        selectClause: `PMCd AS value, PMCd + ' - ' + PDesc AS label`,
+        from: `[${yDb}].[dbo].[yParam]`,
+        whereConditions: ["PTyp = 'yEchelon'"],
+        orderByClause: 'PNum'
+      },
+      ySlabBas: {
+        selectClause: `PMCd AS value, PMCd + ' - ' + PDesc AS label`,
+        from: `[${yDb}].[dbo].[yParam]`,
+        whereConditions: ["PTyp = 'ySlabBas'"],
+        orderByClause: 'PMCd'
+      },
+      yIngTrgt: {
+        selectClause: `PMCd AS value, PMCd + ' - ' + PDesc AS label`,
+        from: `[${yDb}].[dbo].[yParam]`,
+        whereConditions: ["PTyp = 'yIngTrgt'"],
+        orderByClause: 'PMCd'
+      },
+      yStckGrp: {
+        selectClause: `PMCd AS value, PMCd + ' - ' + PDesc AS label`,
+        from: `[${yDb}].[dbo].[yParam]`,
+        whereConditions: ["PTyp = 'yStckGrp'"],
+        orderByClause: 'PMCd'
+      },
+      yValMode: {
+        selectClause: `PMCd AS value, PMCd + ' - ' + PDesc AS label`,
+        from: `[${yDb}].[dbo].[yParam]`,
+        whereConditions: ["PTyp = 'yValMode'"],
+        orderByClause: 'PMCd'
+      },
+      yDiscTyp: {
+        selectClause: `PMCd AS value, PMCd + ' - ' + PDesc AS label`,
+        from: `[${yDb}].[dbo].[yParam]`,
+        whereConditions: ["PTyp = 'yDiscTyp'"],
+        orderByClause: 'PMCd'
+      },
+      yDisc: {
+        selectClause: `CAST(dcIdNo AS VARCHAR(20)) AS value, dcRuleCd + ' (' + dcPrmCd + ')' AS label`,
+        from: `[${yDb}].[dbo].[yDisc]`,
+        whereConditions: ["dcValidYN = 'Y'"],
+        orderByClause: 'dcIdNo DESC'
+      },
+      voucherBatch: {
+        selectClause: `CAST(VbIdNo AS VARCHAR(20)) AS value, VbCd + ' (ID:' + CAST(VbIdNo AS VARCHAR(10)) + ')' AS label`,
+        from: `[${yDb}].[dbo].[voucherBatch]`,
+        whereConditions: ["VbValidYN = 'Y'"],
+        orderByClause: 'VbIdNo DESC'
+      }
+    };
+
+    const config = lookupConfigs[source];
+    if (!config) {
+      throw new Error(`Unknown lookup source: ${source}`);
+    }
+
+    const queryStmts = {
+      selectClause: config.selectClause,
+      from: config.from,
+      whereConditions: config.whereConditions || [],
+      orderByClause: config.orderByClause || '',
+      inputTypeMap: {},
+      inputValuesMap: {}
+    };
+
+    const result = await exeQuery(conn, queryStmts);
+    return result || [];
+  } catch (error) {
+    console.error("Error in getLookupData:", error);
     throw error;
   }
 }
@@ -409,6 +500,7 @@ module.exports = {
   getOperations,
   getPMCdList,
   getPSCdList,
-  getNewCategoryList, 
-  validateSize
+  getNewCategoryList,
+  validateSize,
+  getLookupData
 };

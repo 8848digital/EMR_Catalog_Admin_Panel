@@ -132,6 +132,119 @@
       "visible": true,
       "order": 19,
       "system": "POS"
+    },
+    {
+      "key": "add_yPromo",
+      "label": "Manage Promotions",
+      "visible": true,
+      "order": 20,
+      "system": "POS"
+    },
+    {
+      "key": "add_yEchelon",
+      "label": "Manage Echelon Definitions",
+      "visible": true,
+      "order": 21,
+      "system": "POS"
+    },
+    {
+      "key": "add_yEcheMap",
+      "label": "Manage Echelon Mappings",
+      "visible": true,
+      "order": 22,
+      "system": "POS"
+    },
+    {
+      "key": "add_ySlabBas",
+      "label": "Manage Slab Basis",
+      "visible": true,
+      "order": 23,
+      "system": "POS"
+    },
+    {
+      "key": "add_yDiscSlb",
+      "label": "Manage Discount Slabs",
+      "visible": true,
+      "order": 24,
+      "system": "POS"
+    },
+    {
+      "key": "add_yIngTrgt",
+      "label": "Manage Ingredient Targets",
+      "visible": true,
+      "order": 25,
+      "system": "POS"
+    },
+    {
+      "key": "add_yStckGrp",
+      "label": "Manage Stock Groups",
+      "visible": true,
+      "order": 26,
+      "system": "POS"
+    },
+    {
+      "key": "add_yDisc",
+      "label": "Manage Discounts",
+      "visible": true,
+      "order": 27,
+      "system": "POS"
+    },
+
+    {
+      "key": "add_voucher",
+      "label": "Manage Vouchers",
+      "visible": true,
+      "order": 28,
+      "system": "POS"
+    },
+    {
+      "key": "add_voucherBatch",
+      "label": "Manage Voucher Batches",
+      "visible": true,
+      "order": 29,
+      "system": "POS"
+    },
+    {
+      "key": "add_yDiscFoc",
+      "label": "Manage Discount Focus",
+      "visible": true,
+      "order": 30,
+      "system": "POS"
+    },
+    {
+      "key": "add_yEmpCeil",
+      "label": "Manage Employee Ceilings",
+      "visible": true,
+      "order": 31,
+      "system": "POS"
+    },
+    {
+      "key": "add_yDiscTyp",
+      "label": "Manage Discount Types",
+      "visible": true,
+      "order": 32,
+      "system": "POS"
+    },
+    {
+      "key": "add_yValMode",
+      "label": "Manage Value Modes",
+      "visible": true,
+      "order": 33,
+      "system": "POS"
+    },
+    {
+      "key": "add_yOrdLvl",
+      "label": "Manage Order Levels",
+      "visible": true,
+      "order": 34,
+      "system": "POS"
+    },
+    {
+      "key": "add_yDStore",
+      "label": "Manage Stores",
+      "visible": true,
+      "order": 35,
+      "system": "POS"
     }
   ]
 }
