@@ -43,10 +43,10 @@ module.exports = {
         },
 
         prepareInputValues: (body, modUsr) => ({
-            EchelonName: body.EchelonName,
-            ColumnMapping: body.ColumnMapping,
+            EchelonName: body.EchelonName || '',
+            ColumnMapping: body.ColumnMapping || '',
             Description: body.Description || '',
-            ModUsr: modUsr.substring(0, 5)
+            ModUsr: modUsr ? modUsr.substring(0, 5) : 'SYS'
         })
     },
 
@@ -63,6 +63,7 @@ module.exports = {
                 PMCd = @EchelonName,
                 PValue = @ColumnMapping,
                 PDesc = @Description,
+                PNum = 0,
                 ModUsr = @ModUsr,
                 ModDt = GETDATE(),
                 ModTime = 0
@@ -78,11 +79,11 @@ module.exports = {
         },
 
         prepareInputValues: (body, modUsr) => ({
-            EchelonName: body.EchelonName,
-            ColumnMapping: body.ColumnMapping,
+            EchelonName: body.EchelonName || '',
+            ColumnMapping: body.ColumnMapping || '',
             Description: body.Description || '',
-            OldEchelonName: body.OldEchelonName,
-            ModUsr: modUsr.substring(0, 5)
+            OldEchelonName: body.OldEchelonName || '',
+            ModUsr: modUsr ? modUsr.substring(0, 5) : 'SYS'
         })
     },
 

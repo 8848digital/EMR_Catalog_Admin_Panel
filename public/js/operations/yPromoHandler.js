@@ -54,6 +54,25 @@ const yPromoOperation = (() => {
             select.dataset.originalValue = value || '';
             return select;
         }
+        if (col.type === 'date') {
+            const input = document.createElement('input');
+            input.type = 'date';
+            input.className = 'edit-field';
+            input.dataset.field = col.key;
+            // Ensure value is in YYYY-MM-DD format for <input type="date">
+            if (value) {
+                const date = new Date(value);
+                if (!isNaN(date.getTime())) {
+                    input.value = date.toISOString().split('T')[0];
+                } else {
+                    input.value = value;
+                }
+            }
+            input.dataset.originalValue = input.value;
+            input.style.width = '100%';
+            input.style.height = '30px';
+            return input;
+        }
         return null;
     }
 

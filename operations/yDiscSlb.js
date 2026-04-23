@@ -55,23 +55,26 @@ module.exports = {
         },
 
         prepareInputValues: (body, modUsr) => ({
-            RuleCode: body.RuleCode,
-            ValueMode: body.ValueMode,
+            RuleCode: body.RuleCode || '',
+            ValueMode: body.ValueMode || '',
             TierName: body.TierName || '',
-            MinValue: body.MinValue.toString(),
-            TierOrder: parseFloat(body.TierOrder),
-            MaxValue: body.MaxValue.toString(),
-            DiscountValue: parseFloat(body.DiscountValue),
-            ModUsr: modUsr.substring(0, 5)
+            MinValue: (body.MinValue ?? '').toString(),
+            TierOrder: parseFloat(body.TierOrder || 0),
+            MaxValue: (body.MaxValue ?? '').toString(),
+            DiscountValue: parseFloat(body.DiscountValue || 0),
+            ModUsr: (modUsr || 'SYS').substring(0, 5)
         })
     },
 
     updateData: {
         validate: (body) => {
             if (!body.RuleCode) throw new Error('Rule Code is required');
-            if (body.TierOrder === undefined) throw new Error('Tier Order is required');
+            if (body.MinValue === undefined || body.MinValue === null) throw new Error('Min Value (PValue) is required');
+            if (body.TierOrder === undefined || body.TierOrder === null) throw new Error('Tier Order (PNum) is required');
+            if (body.MaxValue === undefined || body.MaxValue === null) throw new Error('Max Value (PValue1) is required');
+            if (body.DiscountValue === undefined || body.DiscountValue === null) throw new Error('Discount Value (PNum1) is required');
             if (!body.OldRuleCode) throw new Error('Original Rule Code is required');
-            if (body.OldTierOrder === undefined) throw new Error('Original Tier Order is required');
+            if (body.OldTierOrder === undefined || body.OldTierOrder === null) throw new Error('Original Tier Order is required');
             return true;
         },
 
@@ -105,16 +108,16 @@ module.exports = {
         },
 
         prepareInputValues: (body, modUsr) => ({
-            RuleCode: body.RuleCode,
-            ValueMode: body.ValueMode,
+            RuleCode: body.RuleCode || '',
+            ValueMode: body.ValueMode || '',
             TierName: body.TierName || '',
-            MinValue: body.MinValue.toString(),
-            TierOrder: parseFloat(body.TierOrder),
-            MaxValue: body.MaxValue.toString(),
-            DiscountValue: parseFloat(body.DiscountValue),
-            OldRuleCode: body.OldRuleCode,
-            OldTierOrder: parseFloat(body.OldTierOrder),
-            ModUsr: modUsr.substring(0, 5)
+            MinValue: (body.MinValue ?? '').toString(),
+            TierOrder: parseFloat(body.TierOrder || 0),
+            MaxValue: (body.MaxValue ?? '').toString(),
+            DiscountValue: parseFloat(body.DiscountValue || 0),
+            OldRuleCode: body.OldRuleCode || '',
+            OldTierOrder: parseFloat(body.OldTierOrder || 0),
+            ModUsr: (modUsr || 'SYS').substring(0, 5)
         })
     },
 

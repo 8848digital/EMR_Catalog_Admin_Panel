@@ -46,17 +46,18 @@ module.exports = {
         },
 
         prepareInputValues: (body, modUsr) => ({
-            RuleCode: body.RuleCode,
-            EchelonType: body.EchelonType,
+            RuleCode: body.RuleCode || '',
+            EchelonType: body.EchelonType || '',
             Description: body.Description || '',
-            TargetValue: body.TargetValue,
-            ModUsr: modUsr.substring(0, 5)
+            TargetValue: body.TargetValue || '',
+            ModUsr: (modUsr || 'SYS').substring(0, 5)
         })
     },
 
     updateData: {
         validate: (body) => {
             if (!body.RuleCode) throw new Error('Rule Code is required');
+            if (!body.EchelonType) throw new Error('Echelon Type is required');
             if (!body.TargetValue) throw new Error('Target Value is required');
             if (!body.OldRuleCode) throw new Error('Original Rule Code is required');
             if (!body.OldTargetValue) throw new Error('Original Target Value is required');
@@ -87,13 +88,13 @@ module.exports = {
         },
 
         prepareInputValues: (body, modUsr) => ({
-            RuleCode: body.RuleCode,
-            EchelonType: body.EchelonType,
-            TargetValue: body.TargetValue,
+            RuleCode: body.RuleCode || '',
+            EchelonType: body.EchelonType || '',
+            TargetValue: body.TargetValue || '',
             Description: body.Description || '',
-            OldRuleCode: body.OldRuleCode,
-            OldTargetValue: body.OldTargetValue,
-            ModUsr: modUsr.substring(0, 5)
+            OldRuleCode: body.OldRuleCode || '',
+            OldTargetValue: body.OldTargetValue || '',
+            ModUsr: (modUsr || 'SYS').substring(0, 5)
         })
     },
 

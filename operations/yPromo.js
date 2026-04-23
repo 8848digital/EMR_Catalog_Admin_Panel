@@ -49,24 +49,27 @@ module.exports = {
         },
 
         prepareInputValues: (body, modUsr) => ({
-            PMCd: body.PMCd,
-            PDesc: body.PDesc,
-            StartDate: body.StartDate,
-            EndDate: body.EndDate,
+            PMCd: body.PMCd || '',
+            PDesc: body.PDesc || '',
+            StartDate: body.StartDate || '',
+            EndDate: body.EndDate || '',
             PValidYn: body.PValidYn || 'Y',
-            ModUsr: modUsr.substring(0, 5)
+            ModUsr: (modUsr || 'SYS').substring(0, 5)
         })
     },
 
     updateData: {
         validate: (body) => {
             if (!body.PMCd) throw new Error('Promotion Code (PMCd) is required');
+            if (!body.StartDate) throw new Error('Start Date (PValue) is required');
+            if (!body.EndDate) throw new Error('End Date (PValue1) is required');
             return true;
         },
 
         rawQuery: `
             UPDATE [${process.env.yDb}].[dbo].[yParam]
             SET 
+                PSCd = '',
                 PDesc = @PDesc,
                 PValue = @StartDate,
                 PValue1 = @EndDate,
@@ -87,12 +90,12 @@ module.exports = {
         },
 
         prepareInputValues: (body, modUsr) => ({
-            PMCd: body.PMCd,
-            PDesc: body.PDesc,
-            StartDate: body.StartDate,
-            EndDate: body.EndDate,
+            PMCd: body.PMCd || '',
+            PDesc: body.PDesc || '',
+            StartDate: body.StartDate || '',
+            EndDate: body.EndDate || '',
             PValidYn: body.PValidYn || 'Y',
-            ModUsr: modUsr.substring(0, 5)
+            ModUsr: (modUsr || 'SYS').substring(0, 5)
         })
     },
 
