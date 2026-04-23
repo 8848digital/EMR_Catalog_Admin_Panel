@@ -456,10 +456,16 @@ async function getLookupData(conn) {
         orderByClause: 'PMCd'
       },
       yDisc: {
-        selectClause: `CAST(dcIdNo AS VARCHAR(20)) AS value, dcRuleCd + ' (' + dcPrmCd + ')' AS label`,
+        selectClause: `CAST(dcIdNo AS VARCHAR(20)) AS value, dcRuleCd AS label`,
         from: `[${yDb}].[dbo].[yDisc]`,
         whereConditions: ["dcValidYN = 'Y'"],
         orderByClause: 'dcIdNo DESC'
+      },
+      yDiscRule: {
+        selectClause: `dcRuleCd AS value, dcRuleCd AS label`,
+        from: `[${yDb}].[dbo].[yDisc]`,
+        whereConditions: ["dcValidYN = 'Y'"],
+        orderByClause: 'dcRuleCd'
       },
       voucherBatch: {
         selectClause: `CAST(VbIdNo AS VARCHAR(20)) AS value, VbCd + ' (ID:' + CAST(VbIdNo AS VARCHAR(10)) + ')' AS label`,

@@ -2,7 +2,7 @@ const yEcheMapOperation = (() => {
     let lookupCache = {};
 
     const COLUMNS = [
-        { key: 'RuleCode', label: 'Rule Code', editable: true, type: 'dropdown', lookupSource: 'yDisc', width: '150px' },
+        { key: 'RuleCode', label: 'Rule Code', editable: true, type: 'dropdown', lookupSource: 'yDiscRule', width: '150px' },
         { key: 'EchelonType', label: 'Echelon Type', editable: true, type: 'dropdown', lookupSource: 'yEchelon', width: '120px' },
         { key: 'TargetValue', label: 'Target Value', editable: true, type: 'text', width: '120px' },
         { key: 'Description', label: 'Description', editable: true, type: 'text', width: '200px' }
@@ -14,7 +14,7 @@ const yEcheMapOperation = (() => {
 
     // Use RuleCode + TargetValue as the unique key for the UI
     function generateRowId(row) {
-        return `${row.RuleCode}_${row.TargetValue}`;
+        return `${row.RuleCode}|${row.TargetValue}`;
     }
 
     // Fetch lookup data from server
@@ -162,8 +162,8 @@ const yEcheMapOperation = (() => {
     }
 
     async function deleteRow(uniqueId, BASE_URL, operation) {
-        // uniqueId is RuleCode_TargetValue
-        const [ruleCode, targetValue] = uniqueId.split('_');
+        // uniqueId is RuleCode|TargetValue
+        const [ruleCode, targetValue] = uniqueId.split('|');
         const response = await fetch(`${BASE_URL}/deleteData`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },

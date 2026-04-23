@@ -1,7 +1,9 @@
 const yDiscSlbOperation = (() => {
+    let lookupCache = {};
+
     const COLUMNS = [
-        { key: 'RuleCode', label: 'Rule Code', editable: true, type: 'text', width: '150px' },
-        { key: 'ValueMode', label: 'Value Mode', editable: true, type: 'text', width: '100px' },
+        { key: 'RuleCode', label: 'Rule Code', editable: true, type: 'dropdown', lookupSource: 'yDiscRule', width: '150px' },
+        { key: 'ValueMode', label: 'Value Mode', editable: true, type: 'dropdown', lookupSource: 'yValMode', width: '120px' },
         { key: 'TierName', label: 'Tier Name', editable: true, type: 'text', width: '150px' },
         { key: 'TierOrder', label: 'Order', editable: true, type: 'number', width: '60px' },
         { key: 'MinValue', label: 'Min Val', editable: true, type: 'number', width: '100px' },
@@ -14,10 +16,72 @@ const yDiscSlbOperation = (() => {
     }
 
     function generateRowId(row) {
-        return `${row.RuleCode}_${row.TierOrder}`;
+        return `${row.RuleCode}|${row.TierOrder}`;
+    }
+
+    // Fetch lookup data from server
+    async function fetchLookup(BASE_URL, source) {
+        if (lookupCache[source]) return lookupCache[source];
+        try {
+            const response = await fetch(`${BASE_URL}/lookupData?source=${source}`);
+            const result = await response.json();
+            if (result.success) {
+                lookupCache[source] = result.data || [];
+                return lookupCache[source];
+            }
+        } catch (e) {
+            console.error(`Failed to load lookup: ${source}`, e);
+        }
+        return [];
+    }
+
+    // Load all lookups needed
+    async function loadAllLookups(BASE_URL) {
+        const sources = [...new Set(COLUMNS.filter(c => c.lookupSource).map(c => c.lookupSource))];
+        await Promise.all(sources.map(s => fetchLookup(BASE_URL, s)));
+    }
+
+    // Get options for a column
+    function getOptionsForColumn(col) {
+        if (col.lookupSource && lookupCache[col.lookupSource]) {
+            return lookupCache[col.lookupSource];
+        }
+        return [];
+    }
+
+    // Build a <select> element
+    function buildSelect(col, currentValue) {
+        const options = getOptionsForColumn(col);
+        let html = `<select class="edit-field" data-field="${col.key}" style="width:100%;height:30px;">`;
+        html += `<option value="">--Select--</option>`;
+        options.forEach(opt => {
+            const sel = (opt.value == currentValue || opt.value === (currentValue || '').trim()) ? ' selected' : '';
+            html += `<option value="${opt.value}"${sel}>${opt.label}</option>`;
+        });
+        html += `</select>`;
+        return html;
+    }
+
+    // Render display cell
+    function renderDisplayCell(col, value) {
+        if (col.type === 'dropdown') return value || '';
+        return null;
+    }
+
+    // Create edit control
+    function createEditControl(col, value) {
+        if (col.type === 'dropdown') {
+            const wrapper = document.createElement('span');
+            wrapper.innerHTML = buildSelect(col, value);
+            const select = wrapper.firstChild;
+            select.dataset.originalValue = value || '';
+            return select;
+        }
+        return null;
     }
 
     async function loadData(BASE_URL, operation) {
+        await loadAllLookups(BASE_URL);
         const response = await fetch(`${BASE_URL}/getData?operation=${operation}`);
         const result = await response.json();
         if (!result.success) throw new Error(result.error || 'Failed to load Discount Slab data');
@@ -54,12 +118,17 @@ const yDiscSlbOperation = (() => {
             return;
         }
 
+        await loadAllLookups(BASE_URL);
+
         const visibleColumns = COLUMNS.filter(col => !col.hidden);
         const cells = visibleColumns.map(col => {
             const widthStyle = col.width ? `style="min-width: ${col.width};"` : '';
             if (col.editable) {
-                const type = col.type || 'text';
-                return `<td ${widthStyle}><input type="${type}" class="edit-field" data-field="${col.key}" style="width: 100%; height: 30px;"></td>`;
+                if (col.type === 'dropdown') {
+                    return `<td ${widthStyle}>${buildSelect(col, '')}</td>`;
+                }
+                const inputType = col.type || 'text';
+                return `<td ${widthStyle}><input type="${inputType}" class="edit-field" data-field="${col.key}" style="width: 100%; height: 30px;"></td>`;
             }
             return `<td ${widthStyle}></td>`;
         }).join('');
@@ -95,7 +164,8 @@ const yDiscSlbOperation = (() => {
     }
 
     async function deleteRow(uniqueId, BASE_URL, operation) {
-        const [ruleCode, tierOrder] = uniqueId.split('_');
+        // uniqueId is RuleCode|TierOrder
+        const [ruleCode, tierOrder] = uniqueId.split('|');
         const response = await fetch(`${BASE_URL}/deleteData`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
@@ -119,6 +189,8 @@ const yDiscSlbOperation = (() => {
         addNewRow,
         saveNewRow,
         deleteRow,
+        renderDisplayCell,
+        createEditControl,
         supportsAdd: true,
         supportsDelete: true
     };
