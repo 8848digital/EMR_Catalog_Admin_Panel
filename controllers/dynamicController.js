@@ -468,7 +468,7 @@ async function getLookupData(conn) {
         orderByClause: 'dcRuleCd'
       },
       voucherBatch: {
-        selectClause: `CAST(VbIdNo AS VARCHAR(20)) AS value, VbCd + ' (ID:' + CAST(VbIdNo AS VARCHAR(10)) + ')' AS label`,
+        selectClause: `CAST(VbIdNo AS VARCHAR(20)) AS value, VbCd AS label`,
         from: `[${yDb}].[dbo].[voucherBatch]`,
         whereConditions: ["VbValidYN = 'Y'"],
         orderByClause: 'VbIdNo DESC'

@@ -25,8 +25,8 @@ module.exports = {
     addData: {
         validate: (body) => {
             const { PMCd, PDesc, StartDate, EndDate } = body;
-            if (!PMCd) throw new Error('Promotion Code (PMCd) is required');
-            if (!PDesc) throw new Error('Description (PDesc) is required');
+            if (!PMCd) throw new Error('Promotion Code is required');
+            if (!PDesc) throw new Error('Description is required');
             if (!StartDate) throw new Error('Start Date is required');
             if (!EndDate) throw new Error('End Date is required');
             return true;
@@ -48,21 +48,21 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             PMCd: body.PMCd || '',
             PDesc: body.PDesc || '',
             StartDate: body.StartDate || '',
             EndDate: body.EndDate || '',
             PValidYn: body.PValidYn || 'Y',
-            ModUsr: (modUsr || 'SYS').substring(0, 5)
+            ModUsr: 'ADM'
         })
     },
 
     updateData: {
         validate: (body) => {
-            if (!body.PMCd) throw new Error('Promotion Code (PMCd) is required');
-            if (!body.StartDate) throw new Error('Start Date (PValue) is required');
-            if (!body.EndDate) throw new Error('End Date (PValue1) is required');
+            if (!body.PMCd) throw new Error('Promotion Code is required');
+            if (!body.StartDate) throw new Error('Start Date is required');
+            if (!body.EndDate) throw new Error('End Date is required');
             return true;
         },
 
@@ -89,13 +89,13 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             PMCd: body.PMCd || '',
             PDesc: body.PDesc || '',
             StartDate: body.StartDate || '',
             EndDate: body.EndDate || '',
             PValidYn: body.PValidYn || 'Y',
-            ModUsr: (modUsr || 'SYS').substring(0, 5)
+            ModUsr: 'ADM'
         })
     },
 

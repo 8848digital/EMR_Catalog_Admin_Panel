@@ -23,8 +23,8 @@ module.exports = {
     addData: {
         validate: (body) => {
             const { EchelonName, ColumnMapping } = body;
-            if (!EchelonName) throw new Error('Echelon Name (PMCd) is required');
-            if (!ColumnMapping) throw new Error('Column Mapping (PValue) is required');
+            if (!EchelonName) throw new Error('Echelon Name is required');
+            if (!ColumnMapping) throw new Error('Column Mapping is required');
             return true;
         },
 
@@ -42,11 +42,11 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             EchelonName: body.EchelonName || '',
             ColumnMapping: body.ColumnMapping || '',
             Description: body.Description || '',
-            ModUsr: modUsr ? modUsr.substring(0, 5) : 'SYS'
+            ModUsr: 'ADM'
         })
     },
 
@@ -78,12 +78,12 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             EchelonName: body.EchelonName || '',
             ColumnMapping: body.ColumnMapping || '',
             Description: body.Description || '',
             OldEchelonName: body.OldEchelonName || '',
-            ModUsr: modUsr ? modUsr.substring(0, 5) : 'SYS'
+            ModUsr: 'ADM'
         })
     },
 

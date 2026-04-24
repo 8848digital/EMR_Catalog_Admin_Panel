@@ -31,14 +31,14 @@ module.exports = {
     addData: {
         validate: (body) => {
             const { dcPrmCd, dcRuleCd, dcTyp, dcValMode, dcEchelon, dcExcYN, dcPriority, dcValidYN } = body;
-            if (!dcPrmCd) throw new Error('Promotion Code (dcPrmCd) is required');
-            if (!dcRuleCd) throw new Error('Rule Code (dcRuleCd) is required');
-            if (!dcTyp) throw new Error('Type (dcTyp) is required');
-            if (!dcValMode) throw new Error('Value Mode (dcValMode) is required');
-            if (!dcEchelon) throw new Error('Echelon (dcEchelon) is required');
-            if (!dcExcYN) throw new Error('Exclusive Y/N (dcExcYN) is required');
-            if (dcPriority === undefined) throw new Error('Priority (dcPriority) is required');
-            if (!dcValidYN) throw new Error('Valid Y/N (dcValidYN) is required');
+            if (!dcPrmCd) throw new Error('Promotion Code is required');
+            if (!dcRuleCd) throw new Error('Rule Code is required');
+            if (!dcTyp) throw new Error('Type is required');
+            if (!dcValMode) throw new Error('Value Mode is required');
+            if (!dcEchelon) throw new Error('Echelon is required');
+            if (!dcExcYN) throw new Error('Exclusive Y/N is required');
+            if (dcPriority === undefined) throw new Error('Priority is required');
+            if (!dcValidYN) throw new Error('Valid Y/N status is required');
             return true;
         },
 
@@ -67,7 +67,7 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             dcPrmCd: body.dcPrmCd,
             dcRuleCd: body.dcRuleCd,
             dcTyp: body.dcTyp,
@@ -77,18 +77,18 @@ module.exports = {
             dcSlabBas: body.dcSlabBas || '',
             dcEchelon: body.dcEchelon,
             dcExcYN: body.dcExcYN,
-            dcPriority: parseInt(body.dcPriority),
+            dcPriority: parseInt(body.dcPriority) || 0,
             dcStkGrp: body.dcStkGrp || '',
             dcMaxCap: body.dcMaxCap || 0,
             dcMinInvVal: body.dcMinInvVal || 0,
             dcValidYN: body.dcValidYN,
-            ModUsr: modUsr.substring(0, 5)
+            ModUsr: 'ADM'
         })
     },
 
     updateData: {
         validate: (body) => {
-            if (!body.dcIdNo) throw new Error('Discount ID (dcIdNo) is required');
+            if (!body.dcIdNo) throw new Error('Discount ID is required');
             return true;
         },
 
@@ -134,7 +134,7 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             dcIdNo: body.dcIdNo,
             dcPrmCd: body.dcPrmCd,
             dcRuleCd: body.dcRuleCd,
@@ -145,12 +145,12 @@ module.exports = {
             dcSlabBas: body.dcSlabBas || '',
             dcEchelon: body.dcEchelon,
             dcExcYN: body.dcExcYN,
-            dcPriority: parseInt(body.dcPriority),
+            dcPriority: parseInt(body.dcPriority) || 0,
             dcStkGrp: body.dcStkGrp || '',
             dcMaxCap: body.dcMaxCap || 0,
             dcMinInvVal: body.dcMinInvVal || 0,
             dcValidYN: body.dcValidYN,
-            ModUsr: modUsr.substring(0, 5)
+            ModUsr: 'ADM'
         })
     },
 

@@ -27,8 +27,8 @@ module.exports = {
     addData: {
         validate: (body) => {
             const { RuleCode, ValueMode, MinValue, MaxValue, DiscountValue, TierOrder } = body;
-            if (!RuleCode) throw new Error('Rule Code (PMCd) is required');
-            if (!ValueMode) throw new Error('Value Mode (PSCd) is required');
+            if (!RuleCode) throw new Error('Rule Code is required');
+            if (!ValueMode) throw new Error('Value Mode is required');
             if (MinValue === undefined) throw new Error('Min Value is required');
             if (MaxValue === undefined) throw new Error('Max Value is required');
             if (DiscountValue === undefined) throw new Error('Discount Value is required');
@@ -54,7 +54,7 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             RuleCode: body.RuleCode || '',
             ValueMode: body.ValueMode || '',
             TierName: body.TierName || '',
@@ -62,17 +62,17 @@ module.exports = {
             TierOrder: parseFloat(body.TierOrder || 0),
             MaxValue: (body.MaxValue ?? '').toString(),
             DiscountValue: parseFloat(body.DiscountValue || 0),
-            ModUsr: (modUsr || 'SYS').substring(0, 5)
+            ModUsr: 'ADM'
         })
     },
 
     updateData: {
         validate: (body) => {
             if (!body.RuleCode) throw new Error('Rule Code is required');
-            if (body.MinValue === undefined || body.MinValue === null) throw new Error('Min Value (PValue) is required');
-            if (body.TierOrder === undefined || body.TierOrder === null) throw new Error('Tier Order (PNum) is required');
-            if (body.MaxValue === undefined || body.MaxValue === null) throw new Error('Max Value (PValue1) is required');
-            if (body.DiscountValue === undefined || body.DiscountValue === null) throw new Error('Discount Value (PNum1) is required');
+            if (body.MinValue === undefined || body.MinValue === null) throw new Error('Min Value is required');
+            if (body.TierOrder === undefined || body.TierOrder === null) throw new Error('Tier Order is required');
+            if (body.MaxValue === undefined || body.MaxValue === null) throw new Error('Max Value is required');
+            if (body.DiscountValue === undefined || body.DiscountValue === null) throw new Error('Discount Value is required');
             if (!body.OldRuleCode) throw new Error('Original Rule Code is required');
             if (body.OldTierOrder === undefined || body.OldTierOrder === null) throw new Error('Original Tier Order is required');
             return true;
@@ -107,7 +107,7 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             RuleCode: body.RuleCode || '',
             ValueMode: body.ValueMode || '',
             TierName: body.TierName || '',
@@ -117,7 +117,7 @@ module.exports = {
             DiscountValue: parseFloat(body.DiscountValue || 0),
             OldRuleCode: body.OldRuleCode || '',
             OldTierOrder: parseFloat(body.OldTierOrder || 0),
-            ModUsr: (modUsr || 'SYS').substring(0, 5)
+            ModUsr: 'ADM'
         })
     },
 

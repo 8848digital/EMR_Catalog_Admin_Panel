@@ -49,6 +49,7 @@ const PosCTAOperation = (() => {
     'HTranSearchJST': 'HTranSearchJST',
     'HTranSearchJMR': 'HTranSearchJMR',
     'HTranSearchJMS': 'HTranSearchJMS',
+    'HTranSearchEXC': 'HTranSearchEXC',
     'tranSearchTranSelected': 'tranSearchTranSelected',
     'TranVoucher': 'TranVoucher',
     'TVchrItmSelected': 'TVchrItmSelected',

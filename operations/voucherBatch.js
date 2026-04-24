@@ -28,15 +28,15 @@ module.exports = {
     addData: {
         validate: (body) => {
             const { VbDcIdNo, VbCd, VbCtg, VbSingYN, VbMaxUse, VbOtpYN, VbValidFrm, VbValidTo, VbValidYN } = body;
-            if (!VbDcIdNo) throw new Error('Discount ID Link (VbDcIdNo) is required');
-            if (!VbCd) throw new Error('Batch Code (VbCd) is required');
-            if (!VbCtg) throw new Error('Category (VbCtg) is required');
-            if (!VbSingYN) throw new Error('Single Use Y/N (VbSingYN) is required');
-            if (VbMaxUse === undefined) throw new Error('Max Use (VbMaxUse) is required');
-            if (!VbOtpYN) throw new Error('OTP Y/N (VbOtpYN) is required');
+            if (!VbDcIdNo) throw new Error('Discount Rule is required');
+            if (!VbCd) throw new Error('Batch Code is required');
+            if (!VbCtg) throw new Error('Category is required');
+            if (!VbSingYN) throw new Error('Single Use Y/N is required');
+            if (VbMaxUse === undefined) throw new Error('Max Use is required');
+            if (!VbOtpYN) throw new Error('OTP Y/N is required');
             if (!VbValidFrm) throw new Error('Valid From Date is required');
             if (!VbValidTo) throw new Error('Valid To Date is required');
-            if (!VbValidYN) throw new Error('Valid Y/N (VbValidYN) is required');
+            if (!VbValidYN) throw new Error('Active status is required');
             return true;
         },
 
@@ -62,25 +62,27 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             VbDcIdNo: body.VbDcIdNo,
             VbCd: body.VbCd,
             VbCtg: body.VbCtg,
             VbCrmTrig: body.VbCrmTrig || '',
-            VbTotVouchers: body.VbTotVouchers || 0,
+            VbTotVouchers: parseInt(body.VbTotVouchers) || 0,
             VbSingYN: body.VbSingYN,
-            VbMaxUse: parseInt(body.VbMaxUse),
+            VbMaxUse: parseInt(body.VbMaxUse) || 1,
             VbOtpYN: body.VbOtpYN,
-            VbValidFrm: body.VbValidFrm,
-            VbValidTo: body.VbValidTo,
+            VbValidFrm: body.VbValidFrm || null,
+            VbValidTo: body.VbValidTo || null,
             VbValidYN: body.VbValidYN,
-            ModUsr: modUsr.substring(0, 5)
+            ModUsr: 'ADM'
         })
     },
 
     updateData: {
         validate: (body) => {
-            if (!body.VbIdNo) throw new Error('Batch ID (VbIdNo) is required');
+            if (!body.VbIdNo) throw new Error('Batch ID is required');
+            if (!body.VbValidFrm) throw new Error('Valid From Date is required');
+            if (!body.VbValidTo) throw new Error('Valid To Date is required');
             return true;
         },
 
@@ -120,20 +122,20 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             VbIdNo: body.VbIdNo,
             VbDcIdNo: body.VbDcIdNo,
             VbCd: body.VbCd,
             VbCtg: body.VbCtg,
             VbCrmTrig: body.VbCrmTrig || '',
-            VbTotVouchers: body.VbTotVouchers || 0,
+            VbTotVouchers: parseInt(body.VbTotVouchers) || 0,
             VbSingYN: body.VbSingYN,
-            VbMaxUse: parseInt(body.VbMaxUse),
+            VbMaxUse: parseInt(body.VbMaxUse) || 1,
             VbOtpYN: body.VbOtpYN,
-            VbValidFrm: body.VbValidFrm,
-            VbValidTo: body.VbValidTo,
+            VbValidFrm: body.VbValidFrm || null,
+            VbValidTo: body.VbValidTo || null,
             VbValidYN: body.VbValidYN,
-            ModUsr: modUsr.substring(0, 5)
+            ModUsr: 'ADM'
         })
     },
 

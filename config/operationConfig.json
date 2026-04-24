@@ -177,7 +177,7 @@
     },
     {
       "key": "add_yStckGrp",
-      "label": "Manage Stock Groups",
+      "label": "Manage Stack Groups",
       "visible": true,
       "order": 26,
       "system": "POS"

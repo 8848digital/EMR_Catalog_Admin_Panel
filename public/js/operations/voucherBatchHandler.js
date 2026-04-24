@@ -18,6 +18,7 @@ const voucherBatchOperation = (() => {
             ], width: '80px'
         },
         { key: 'VbMaxUse', label: 'Max Use', editable: true, type: 'number', width: '80px' },
+        { key: 'VbTotVouchers', label: 'Total Vouchers', editable: true, type: 'number', width: '100px' },
         {
             key: 'VbOtpYN', label: 'OTP Req', editable: true, type: 'dropdown', staticOptions: [
                 { value: 'Y', label: 'Y' }, { value: 'N', label: 'N' }
@@ -87,7 +88,16 @@ const voucherBatchOperation = (() => {
             select.dataset.originalValue = value || '';
             return select;
         }
-        return null;
+
+        const input = document.createElement('input');
+        input.type = col.type || 'text';
+        input.className = 'edit-field';
+        input.dataset.field = col.key;
+        input.value = value || '';
+        input.dataset.originalValue = value || '';
+        input.style.width = '100%';
+        input.style.height = '30px';
+        return input;
     }
 
     async function loadData(BASE_URL, operation) {

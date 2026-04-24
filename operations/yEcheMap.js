@@ -24,9 +24,9 @@ module.exports = {
     addData: {
         validate: (body) => {
             const { RuleCode, EchelonType, TargetValue } = body;
-            if (!RuleCode) throw new Error('Rule Code (PMCd) is required');
-            if (!EchelonType) throw new Error('Echelon Type (PSCd) is required');
-            if (!TargetValue) throw new Error('Target Value (PValue) is required');
+            if (!RuleCode) throw new Error('Rule Code is required');
+            if (!EchelonType) throw new Error('Echelon Type is required');
+            if (!TargetValue) throw new Error('Target Value is required');
             return true;
         },
 
@@ -45,12 +45,12 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             RuleCode: body.RuleCode || '',
             EchelonType: body.EchelonType || '',
             Description: body.Description || '',
             TargetValue: body.TargetValue || '',
-            ModUsr: (modUsr || 'SYS').substring(0, 5)
+            ModUsr: 'ADM'
         })
     },
 
@@ -87,14 +87,14 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             RuleCode: body.RuleCode || '',
             EchelonType: body.EchelonType || '',
             TargetValue: body.TargetValue || '',
             Description: body.Description || '',
             OldRuleCode: body.OldRuleCode || '',
             OldTargetValue: body.OldTargetValue || '',
-            ModUsr: (modUsr || 'SYS').substring(0, 5)
+            ModUsr: 'ADM'
         })
     },
 

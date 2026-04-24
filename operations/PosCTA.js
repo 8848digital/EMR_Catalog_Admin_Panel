@@ -28,6 +28,7 @@ module.exports = {
             HTranSearchJST,
             HTranSearchJMR,
             HTranSearchJMS,
+            HTranSearchEXC,
             tranSearchTranSelected,
             TranVoucher,
             TVchrItmSelected,
@@ -88,6 +89,7 @@ module.exports = {
                 HTranSearchJST,
                 HTranSearchJMR,
                 HTranSearchJMS,
+                HTranSearchEXC,
                 tranSearchTranSelected,
                 TranVoucher,
                 TVchrItmSelected,
@@ -120,6 +122,7 @@ module.exports = {
                 HTranSearchJST: (HTranSearchJST || '').trim(),
                 HTranSearchJMR: (HTranSearchJMR || '').trim(),
                 HTranSearchJMS: (HTranSearchJMS || '').trim(),
+                HTranSearchEXC: (HTranSearchEXC || '').trim(),
                 tranSearchTranSelected: (tranSearchTranSelected || '').trim(),
                 TranVoucher: (TranVoucher || '').trim(),
                 TVchrItmSelected: (TVchrItmSelected || '').trim(),
@@ -133,7 +136,7 @@ module.exports = {
                 'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
                 'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
                 'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'tranSearchTranSelected',
+                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'HTranSearchEXC', 'tranSearchTranSelected',
                 'TranVoucher', 'TVchrItmSelected', 'CPayNotCredit', 'CPayCredit'
             ];
 
@@ -215,6 +218,7 @@ module.exports = {
                         HTranSearchJST = @HTranSearchJST,
                         HTranSearchJMR = @HTranSearchJMR, 
                         HTranSearchJMS = @HTranSearchJMS,
+                        HTranSearchEXC = @HTranSearchEXC,
                         tranSearchTranSelected = @tranSearchTranSelected,
                         TranVoucher = @TranVoucher,
                         TVchrItmSelected = @TVchrItmSelected,
@@ -249,6 +253,7 @@ module.exports = {
                     HTranSearchJST: sql.VarChar(50),
                     HTranSearchJMR: sql.VarChar(50),
                     HTranSearchJMS: sql.VarChar(50),
+                    HTranSearchEXC: sql.VarChar(50),
                     tranSearchTranSelected: sql.VarChar(50),
                     TranVoucher: sql.VarChar(50),
                     TVchrItmSelected: sql.VarChar(50),
@@ -281,13 +286,14 @@ module.exports = {
                     HTranSearchJST: trimmedData.HTranSearchJST,
                     HTranSearchJMR: trimmedData.HTranSearchJMR,
                     HTranSearchJMS: trimmedData.HTranSearchJMS,
+                    HTranSearchEXC: trimmedData.HTranSearchEXC,
                     tranSearchTranSelected: trimmedData.tranSearchTranSelected,
                     TranVoucher: trimmedData.TranVoucher,
                     TVchrItmSelected: trimmedData.TVchrItmSelected,
                     CPayNotCredit: trimmedData.CPayNotCredit,
                     CPayCredit: trimmedData.CPayCredit,
                     Position: trimmedData.Position,
-                    ModUsr: modUsr.substring(0, 50)
+                    ModUsr: 'ADM'
                 },
                 returnRaw: true
             };
@@ -347,6 +353,7 @@ module.exports = {
                 HTranSearchJST,
                 HTranSearchJMR,
                 HTranSearchJMS,
+                HTranSearchEXC,
                 tranSearchTranSelected,
                 TranVoucher,
                 TVchrItmSelected,
@@ -379,6 +386,7 @@ module.exports = {
                 HTranSearchJST: (HTranSearchJST || '').trim(),
                 HTranSearchJMR: (HTranSearchJMR || '').trim(),
                 HTranSearchJMS: (HTranSearchJMS || '').trim(),
+                HTranSearchEXC: (HTranSearchEXC || '').trim(),
                 tranSearchTranSelected: (tranSearchTranSelected || '').trim(),
                 TranVoucher: (TranVoucher || '').trim(),
                 TVchrItmSelected: (TVchrItmSelected || '').trim(),
@@ -392,7 +400,7 @@ module.exports = {
                 'HomeScreen', 'HCustSelect', 'HItmSelect', 'HMulItmSelect', 'HStkCart',
                 'Transaction', 'CustSearch', 'CustSearchSelect', 'ItemSearch',
                 'ItemSearchSelect', 'TransactionSearch', 'Checkout', 'CheckoutExit',
-                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'tranSearchTranSelected',
+                'Invoice', 'Entry', 'Closing', 'ClosingValidated', 'HTranSearchJST', 'HTranSearchJMR', 'HTranSearchJMS', 'HTranSearchEXC', 'tranSearchTranSelected',
                 'TranVoucher', 'TVchrItmSelected', 'CPayNotCredit', 'CPayCredit'
             ];
 
@@ -450,13 +458,13 @@ module.exports = {
                     (CTA, HomeScreen, HCustSelect, HItmSelect, HMulItmSelect, HStkCart, 
                      [Transaction], CustSearch, CustSearchSelect, ItemSearch, ItemSearchSelect, 
                      TransactionSearch, Checkout, CheckoutExit, ColHexCd, Invoice, Entry, 
-                     Closing, ClosingValidated, HTranSearchJST, HTranSearchJMR, HTranSearchJMS,tranSearchTranSelected, 
+                     Closing, ClosingValidated, HTranSearchJST, HTranSearchJMR, HTranSearchJMS, HTranSearchEXC, tranSearchTranSelected, 
                      TranVoucher, TVchrItmSelected, CPayNotCredit, CPayCredit, Position, ModUsr, ModDate, CreatedUsr, CreatedDate)
                     VALUES 
                     (@CTA, @HomeScreen, @HCustSelect, @HItmSelect, @HMulItmSelect, @HStkCart,
                      @Transaction, @CustSearch, @CustSearchSelect, @ItemSearch, @ItemSearchSelect,
                      @TransactionSearch, @Checkout, @CheckoutExit, @ColHexCd, @Invoice, @Entry,
-                     @Closing, @ClosingValidated, @HTranSearchJST, @HTranSearchJMR, @HTranSearchJMS, @tranSearchTranSelected, 
+                     @Closing, @ClosingValidated, @HTranSearchJST, @HTranSearchJMR, @HTranSearchJMS, @HTranSearchEXC, @tranSearchTranSelected, 
                      @TranVoucher, @TVchrItmSelected, @CPayNotCredit, @CPayCredit, @Position, @ModUsr, GETDATE(), @CreatedUsr, GETDATE())
                 `,
                 inputTypeMap: {
@@ -482,6 +490,7 @@ module.exports = {
                     HTranSearchJST: sql.VarChar(50),
                     HTranSearchJMR: sql.VarChar(50),
                     HTranSearchJMS: sql.VarChar(50),
+                    HTranSearchEXC: sql.VarChar(50),
                     tranSearchTranSelected: sql.VarChar(50),
                     TranVoucher: sql.VarChar(50),
                     TVchrItmSelected: sql.VarChar(50),
@@ -514,14 +523,15 @@ module.exports = {
                     HTranSearchJST: trimmedData.HTranSearchJST,
                     HTranSearchJMR: trimmedData.HTranSearchJMR,
                     HTranSearchJMS: trimmedData.HTranSearchJMS,
+                    HTranSearchEXC: trimmedData.HTranSearchEXC,
                     tranSearchTranSelected: trimmedData.tranSearchTranSelected,
                     TranVoucher: trimmedData.TranVoucher,
                     TVchrItmSelected: trimmedData.TVchrItmSelected,
                     CPayNotCredit: trimmedData.CPayNotCredit,
                     CPayCredit: trimmedData.CPayCredit,
                     Position: trimmedData.Position,
-                    ModUsr: modUsr.substring(0, 50),
-                    CreatedUsr: modUsr.substring(0, 50)
+                    ModUsr: 'ADM',
+                    CreatedUsr: 'ADM'
                 },
                 returnRaw: true
             };

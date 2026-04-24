@@ -25,9 +25,9 @@ module.exports = {
     addData: {
         validate: (body) => {
             const { VchVbIdNo, VchCd, VchSts, VchUsedCnt, VchIssDt } = body;
-            if (!VchVbIdNo) throw new Error('Batch ID (VchVbIdNo) is required');
-            if (!VchCd) throw new Error('Voucher Code (VchCd) is required');
-            if (!VchSts) throw new Error('Status (VchSts) is required');
+            if (!VchVbIdNo) throw new Error('Batch ID is required');
+            if (!VchCd) throw new Error('Voucher Code is required');
+            if (!VchSts) throw new Error('Status is required');
             if (VchUsedCnt === undefined) throw new Error('Used Count is required');
             if (!VchIssDt) throw new Error('Issue Date is required');
             return true;
@@ -52,7 +52,7 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             VchVbIdNo: body.VchVbIdNo,
             VchCd: body.VchCd,
             VchCmCd: body.VchCmCd || '',
@@ -61,13 +61,13 @@ module.exports = {
             VchIssDt: body.VchIssDt,
             VchRedDt: body.VchRedDt || null,
             VchExpDt: body.VchExpDt || null,
-            ModUsr: modUsr.substring(0, 5)
+            ModUsr: 'ADM'
         })
     },
 
     updateData: {
         validate: (body) => {
-            if (!body.VchIdNo) throw new Error('Voucher ID (VchIdNo) is required');
+            if (!body.VchIdNo) throw new Error('Voucher ID is required');
             return true;
         },
 
@@ -101,7 +101,7 @@ module.exports = {
             ModUsr: sql.VarChar(5)
         },
 
-        prepareInputValues: (body, modUsr) => ({
+        prepareInputValues: (body) => ({
             VchIdNo: body.VchIdNo,
             VchVbIdNo: body.VchVbIdNo,
             VchCd: body.VchCd,
@@ -111,7 +111,7 @@ module.exports = {
             VchIssDt: body.VchIssDt,
             VchRedDt: body.VchRedDt || null,
             VchExpDt: body.VchExpDt || null,
-            ModUsr: modUsr.substring(0, 5)
+            ModUsr: 'ADM'
         })
     },
 
