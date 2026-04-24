@@ -181,18 +181,12 @@ const yDiscSlbOperation = (() => {
         return result.data;
     }
 
+    function clearCache() { lookupCache = {}; }
     return {
-        getColumns,
-        generateRowId,
-        loadData,
-        saveRow,
-        addNewRow,
-        saveNewRow,
-        deleteRow,
-        renderDisplayCell,
-        createEditControl,
-        supportsAdd: true,
-        supportsDelete: true
+        getColumns, generateRowId, loadData, saveRow,
+        addNewRow, saveNewRow, deleteRow,
+        renderDisplayCell, createEditControl, clearCache,
+        supportsAdd: true, supportsDelete: true
     };
 })();
 

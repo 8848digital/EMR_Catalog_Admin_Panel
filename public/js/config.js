@@ -304,6 +304,11 @@ const ConfigManager = (() => {
     currentOperation = operation;
     currentHandler = handlers[operation];
 
+    // Clear lookup cache if handler supports it to ensure real-time data refreshing
+    if (currentHandler && typeof currentHandler.clearCache === 'function') {
+      currentHandler.clearCache();
+    }
+
     if (!currentHandler) {
       showMessage('Handler not found for this operation', 'error');
       return;
