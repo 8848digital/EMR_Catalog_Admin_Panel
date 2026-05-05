@@ -409,7 +409,7 @@ async function getLookupData(conn) {
       throw new Error('source parameter is required');
     }
 
-    const yDb = process.env.yDb;
+    const yDb = (process.env.yDb || '').trim();
 
     // Lookup configurations
     const lookupConfigs = {
@@ -472,8 +472,22 @@ async function getLookupData(conn) {
         from: `[${yDb}].[dbo].[voucherBatch]`,
         whereConditions: ["VbValidYN = 'Y'"],
         orderByClause: 'VbIdNo DESC'
+      },
+      yCtg: {
+        selectClause: `PSCd AS value, PDesc AS label`,
+        from: `[${yDb}].[dbo].[yParam]`,
+        whereConditions: ["PTyp = 'yFilter'", "PmCd = 'DmCtg'"],
+        orderByClause: 'TRY_CAST(Pvalue3 AS INT)'
       }
     };
+
+    if (source === 'yBOM') {
+      return [
+        { value: 'GOLD_STUDDED', label: 'Gold Studded' },
+        { value: 'SILVER_STUDDED', label: 'Silver Studded' },
+        { value: 'NON_STUDDED', label: 'Non-Studded' }
+      ];
+    }
 
     const config = lookupConfigs[source];
     if (!config) {

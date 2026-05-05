@@ -4,7 +4,7 @@ const yEcheMapOperation = (() => {
     const COLUMNS = [
         { key: 'RuleCode', label: 'Rule Code', editable: true, type: 'dropdown', lookupSource: 'yDiscRule', width: '150px' },
         { key: 'EchelonType', label: 'Echelon Type', editable: true, type: 'dropdown', lookupSource: 'yEchelon', width: '120px' },
-        { key: 'TargetValue', label: 'Target Value', editable: true, type: 'text', width: '120px' },
+        { key: 'TargetValue', label: 'Target Value', editable: true, type: 'dropdown', width: '120px' },
         { key: 'Description', label: 'Description', editable: true, type: 'text', width: '200px' }
     ];
 
@@ -36,6 +36,9 @@ const yEcheMapOperation = (() => {
     // Load all lookups needed by dropdown columns
     async function loadAllLookups(BASE_URL) {
         const sources = [...new Set(COLUMNS.filter(c => c.lookupSource).map(c => c.lookupSource))];
+        // Ensure new lookups are also loaded
+        if (!sources.includes('yCtg')) sources.push('yCtg');
+        if (!sources.includes('yBOM')) sources.push('yBOM');
         await Promise.all(sources.map(s => fetchLookup(BASE_URL, s)));
     }
 
@@ -68,12 +71,56 @@ const yEcheMapOperation = (() => {
     }
 
     // Create edit control
-    function createEditControl(col, value) {
+    function createEditControl(col, value, rowData = {}) {
         if (col.type === 'dropdown') {
             const wrapper = document.createElement('span');
-            wrapper.innerHTML = buildSelect(col, value);
+
+            // For TargetValue, we need to populate options based on EchelonType
+            if (col.key === 'TargetValue') {
+                const echelonType = rowData.EchelonType || '';
+                let options = [];
+                if (echelonType === 'CATEGORY') options = lookupCache['yCtg'] || [];
+                else if (echelonType === 'GROUP') options = lookupCache['yBOM'] || [];
+
+                let html = `<select class="edit-field" data-field="${col.key}" style="width:100%;height:30px;">`;
+                html += `<option value="">--Select--</option>`;
+                options.forEach(opt => {
+                    const sel = (opt.value === value || opt.value === (value || '').trim()) ? ' selected' : '';
+                    html += `<option value="${opt.value}"${sel}>${opt.label}</option>`;
+                });
+                html += `</select>`;
+                wrapper.innerHTML = html;
+            } else {
+                wrapper.innerHTML = buildSelect(col, value);
+            }
+
             const select = wrapper.firstChild;
             select.dataset.originalValue = value || '';
+
+            // If it's EchelonType, add a listener to update TargetValue dropdown in the same row
+            if (col.key === 'EchelonType') {
+                select.addEventListener('change', (e) => {
+                    const newType = e.target.value;
+                    const row = e.target.closest('tr');
+                    if (!row) return;
+
+                    const targetValSelect = row.querySelector('[data-field="TargetValue"]');
+                    if (targetValSelect) {
+                        let newOptions = [];
+                        if (newType === 'CATEGORY') newOptions = lookupCache['yCtg'] || [];
+                        else if (newType === 'GROUP') newOptions = lookupCache['yBOM'] || [];
+
+                        targetValSelect.innerHTML = '<option value="">--Select--</option>';
+                        newOptions.forEach(opt => {
+                            const option = document.createElement('option');
+                            option.value = opt.value;
+                            option.textContent = opt.label;
+                            targetValSelect.appendChild(option);
+                        });
+                    }
+                });
+            }
+
             return select;
         }
         return null;
@@ -120,24 +167,34 @@ const yEcheMapOperation = (() => {
         await loadAllLookups(BASE_URL);
 
         const visibleColumns = COLUMNS.filter(col => !col.hidden);
-        const cells = visibleColumns.map(col => {
-            const widthStyle = col.width ? `style="min-width: ${col.width};"` : '';
+        const row = document.createElement('tr');
+        row.dataset.isNew = 'true';
+        row.style.backgroundColor = '#f0f7ff';
+
+        visibleColumns.forEach(col => {
+            const td = document.createElement('td');
+            if (col.width) td.style.minWidth = col.width;
+
             if (col.editable) {
-                if (col.type === 'dropdown') {
-                    return `<td ${widthStyle}>${buildSelect(col, '')}</td>`;
+                const control = createEditControl(col, '', {});
+                if (control) {
+                    td.appendChild(control);
+                } else {
+                    td.innerHTML = `<input type="text" class="edit-field" data-field="${col.key}" style="width: 100%; height: 30px;">`;
                 }
-                return `<td ${widthStyle}><input type="text" class="edit-field" data-field="${col.key}" style="width: 100%; height: 30px;"></td>`;
             }
-            return `<td ${widthStyle}></td>`;
-        }).join('');
+            row.appendChild(td);
+        });
 
-        const newRow = `<tr data-is-new="true" style="background-color: #f0f7ff;">${cells}
-            <td class="action-cell">
-                <button class="action-btn save-btn" onclick="ConfigManager.saveNewRow()" title="Save">💾</button>
-                <button class="action-btn cancel-btn" onclick="ConfigManager.cancelNewRow()" title="Cancel">❌</button>
-            </td></tr>`;
+        const actionTd = document.createElement('td');
+        actionTd.className = 'action-cell';
+        actionTd.innerHTML = `
+            <button class="action-btn save-btn" onclick="ConfigManager.saveNewRow()" title="Save">💾</button>
+            <button class="action-btn cancel-btn" onclick="ConfigManager.cancelNewRow()" title="Cancel">❌</button>
+        `;
+        row.appendChild(actionTd);
 
-        tableBody.insertAdjacentHTML('afterbegin', newRow);
+        tableBody.insertBefore(row, tableBody.firstChild);
     }
 
     async function saveNewRow(row, BASE_URL, operation) {
