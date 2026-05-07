@@ -10,7 +10,7 @@ const yStckGrpOperation = (() => {
     async function loadData(BASE_URL, operation) {
         const response = await fetch(`${BASE_URL}/getData?operation=${operation}`);
         const result = await response.json();
-        if (!result.success) throw new Error(result.error || 'Failed to load Stock Group data');
+        if (!result.success) throw new Error(result.error || 'Failed to load Stack Group data');
         return result.data || [];
     }
 
@@ -33,7 +33,7 @@ const yStckGrpOperation = (() => {
         });
 
         const result = await response.json();
-        if (!result.success) throw new Error(result.error || 'Failed to update Stock Group');
+        if (!result.success) throw new Error(result.error || 'Failed to update Stack Group');
         return result.data;
     }
 
@@ -79,7 +79,7 @@ const yStckGrpOperation = (() => {
         });
 
         const result = await response.json();
-        if (!result.success) throw new Error(result.error || 'Failed to add Stock Group');
+        if (!result.success) throw new Error(result.error || 'Failed to add Stack Group');
         return result.data;
     }
 
@@ -94,7 +94,7 @@ const yStckGrpOperation = (() => {
         });
 
         const result = await response.json();
-        if (!result.success) throw new Error(result.error || 'Failed to delete Stock Group');
+        if (!result.success) throw new Error(result.error || 'Failed to delete Stack Group');
         return result.data;
     }
 

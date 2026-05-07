@@ -1,7 +1,7 @@
 const sql = require('mssql');
 
 module.exports = {
-    label: 'Manage Stock Groups',
+    label: 'Manage Stack Groups',
 
     getData: {
         selectClause: `

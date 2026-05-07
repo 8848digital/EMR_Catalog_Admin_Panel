@@ -74,7 +74,6 @@ const ConfigManager = (() => {
     if (operationSelect) {
       operationSelect.addEventListener('change', (e) => {
         handleOperationChange(e);
-        updateCustomSelect(operationSelect);
       });
     }
 
@@ -131,6 +130,31 @@ const ConfigManager = (() => {
           option.textContent = op.label;
           operationSelect.appendChild(option);
         });
+
+        // Check for operation in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const opFromUrl = urlParams.get('operation');
+        if (opFromUrl) {
+          operationSelect.value = opFromUrl;
+          // Trigger the operational logic directly without another reload
+          const handlersMap = handlers; // Access mapping from outer scope
+          if (handlersMap[opFromUrl]) {
+            currentOperation = opFromUrl;
+            currentHandler = handlersMap[opFromUrl];
+
+            if (currentHandler.clearCache) {
+              currentHandler.clearCache();
+            }
+
+            if (currentHandler.requiresPMCdFilter) {
+              loadPMCdDropdown().then(() => {
+                const pmcdGroup = document.getElementById('pmcdFilterGroup');
+                if (pmcdGroup) pmcdGroup.classList.remove('hidden');
+                updateCustomSelect(document.getElementById('pmcdSelect'));
+              });
+            }
+          }
+        }
 
         // Refresh custom select after options are loaded
         updateCustomSelect(operationSelect);
@@ -295,30 +319,13 @@ const ConfigManager = (() => {
   async function handleOperationChange(e) {
     const operation = e.target.value;
 
-    resetPageState();
-
     if (!operation) {
+      window.location.href = '/config';
       return;
     }
 
-    currentOperation = operation;
-    currentHandler = handlers[operation];
-
-    // Clear lookup cache if handler supports it to ensure real-time data refreshing
-    if (currentHandler && typeof currentHandler.clearCache === 'function') {
-      currentHandler.clearCache();
-    }
-
-    if (!currentHandler) {
-      showMessage('Handler not found for this operation', 'error');
-      return;
-    }
-
-    if (currentHandler.requiresPMCdFilter) {
-      await loadPMCdDropdown();
-      const pmcdGroup = document.getElementById('pmcdFilterGroup');
-      if (pmcdGroup) pmcdGroup.classList.remove('hidden');
-    }
+    // Instead of resetting state manually, we refresh the page to ensure all lookups and caches are fresh
+    window.location.href = `/config?operation=${operation}`;
   }
 
   async function loadPMCdDropdown() {

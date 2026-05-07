@@ -480,6 +480,9 @@ tr.editing-row {
 
 .confirm-btn {
   background: #2F7474;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   /* Use primary teal for confirm */
   color: white;
   border: none;
@@ -489,6 +492,7 @@ tr.editing-row {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  height: 30px;
 }
 
 .confirm-btn:hover {
