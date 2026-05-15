@@ -6,6 +6,7 @@ module.exports = {
     getData: {
         selectClause: `
             PMCd AS Code,
+            PValue AS Value,
             PDesc AS Description
         `,
         from: `[${process.env.yDb}].[dbo].[yParam]`,
@@ -30,17 +31,19 @@ module.exports = {
             INSERT INTO [${process.env.yDb}].[dbo].[yParam]
             (PTyp, PMCd, PSCd, PDesc, PDesc225, PValue, PNum, PValue1, PNum1, PValue2, ModUsr, ModDt, ModTime, PValue3, PValidYn, PPrtKey)
             VALUES 
-            ('ySlabBas', @Code, '', @Description, '', '', 0, '', 0, '', @ModUsr, GETDATE(), 0, '', 'Y', 'N')
+            ('ySlabBas', @Code, '', @Description, '', @Value, 0, '', 0, '', @ModUsr, GETDATE(), 0, '', 'Y', 'N')
         `,
 
         inputTypeMap: {
             Code: sql.VarChar(30),
+            Value: sql.VarChar(30),
             Description: sql.VarChar(140),
             ModUsr: sql.VarChar(5)
         },
 
         prepareInputValues: (body, modUsr) => ({
             Code: body.Code,
+            Value: body.Value || '',
             Description: body.Description,
             ModUsr: modUsr.substring(0, 5)
         })
@@ -57,6 +60,7 @@ module.exports = {
             UPDATE [${process.env.yDb}].[dbo].[yParam]
             SET 
                 PMCd = @Code,
+                PValue = @Value,
                 PDesc = @Description,
                 ModUsr = @ModUsr,
                 ModDt = GETDATE(),
@@ -66,6 +70,7 @@ module.exports = {
 
         inputTypeMap: {
             Code: sql.VarChar(30),
+            Value: sql.VarChar(30),
             Description: sql.VarChar(140),
             OldCode: sql.VarChar(30),
             ModUsr: sql.VarChar(5)
@@ -73,6 +78,7 @@ module.exports = {
 
         prepareInputValues: (body, modUsr) => ({
             Code: body.Code,
+            Value: body.Value || '',
             Description: body.Description,
             OldCode: body.OldCode,
             ModUsr: modUsr.substring(0, 5)

@@ -77,7 +77,7 @@ const yEcheMapOperation = (() => {
 
             // For TargetValue, we need to populate options based on EchelonType
             if (col.key === 'TargetValue') {
-                const echelonType = rowData.EchelonType || '';
+                const echelonType = (rowData.EchelonType || '').trim();
                 let options = [];
                 if (echelonType === 'CATEGORY') options = lookupCache['yCtg'] || [];
                 else if (echelonType === 'GROUP') options = lookupCache['yBOM'] || [];
@@ -100,7 +100,7 @@ const yEcheMapOperation = (() => {
             // If it's EchelonType, add a listener to update TargetValue dropdown in the same row
             if (col.key === 'EchelonType') {
                 select.addEventListener('change', (e) => {
-                    const newType = e.target.value;
+                    const newType = (e.target.value || '').trim();
                     const row = e.target.closest('tr');
                     if (!row) return;
 

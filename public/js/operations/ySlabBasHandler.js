@@ -1,6 +1,7 @@
 const ySlabBasOperation = (() => {
     const COLUMNS = [
         { key: 'Code', label: 'Code', editable: true, type: 'text', width: '150px' },
+        { key: 'Value', label: 'Value', editable: true, type: 'text', width: '150px' },
         { key: 'Description', label: 'Description', editable: true, type: 'text', width: '300px' }
     ];
 
@@ -26,8 +27,7 @@ const ySlabBasOperation = (() => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 operation: operation,
-                Code: fields.Code,
-                Description: fields.Description,
+                ...fields,
                 OldCode: uniqueId
             })
         });
