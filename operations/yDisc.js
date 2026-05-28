@@ -19,7 +19,8 @@ module.exports = {
             dcStkGrp,
             dcMaxCap,
             dcMinInvVal,
-            dcValidYN
+            dcValidYN,
+            dcOccasion
         `,
         from: `[${process.env.yDb}].[dbo].[yDisc]`,
         whereConditions: [],
@@ -44,9 +45,9 @@ module.exports = {
 
         rawQuery: `
             INSERT INTO [${process.env.yDb}].[dbo].[yDisc]
-            (dcPrmCd, dcRuleCd, dcTyp, dcValMode, dcVal, dcIngTgt, dcSlabBas, dcEchelon, dcExcYN, dcPriority, dcStkGrp, dcMaxCap, dcMinInvVal, dcValidYN, ModUsr, ModDt, ModTime)
+            (dcPrmCd, dcRuleCd, dcTyp, dcValMode, dcVal, dcIngTgt, dcSlabBas, dcEchelon, dcExcYN, dcPriority, dcStkGrp, dcMaxCap, dcMinInvVal, dcValidYN, dcOccasion, ModUsr, ModDt, ModTime)
             VALUES 
-            (@dcPrmCd, @dcRuleCd, @dcTyp, @dcValMode, @dcVal, @dcIngTgt, @dcSlabBas, @dcEchelon, @dcExcYN, @dcPriority, @dcStkGrp, @dcMaxCap, @dcMinInvVal, @dcValidYN, @ModUsr, GETDATE(), 0)
+            (@dcPrmCd, @dcRuleCd, @dcTyp, @dcValMode, @dcVal, @dcIngTgt, @dcSlabBas, @dcEchelon, @dcExcYN, @dcPriority, @dcStkGrp, @dcMaxCap, @dcMinInvVal, @dcValidYN, @dcOccasion, @ModUsr, GETDATE(), 0)
         `,
 
         inputTypeMap: {
@@ -64,6 +65,7 @@ module.exports = {
             dcMaxCap: sql.Decimal(18, 2),
             dcMinInvVal: sql.Decimal(18, 2),
             dcValidYN: sql.VarChar(1),
+            dcOccasion: sql.VarChar(50),
             ModUsr: sql.VarChar(5)
         },
 
@@ -82,6 +84,7 @@ module.exports = {
             dcMaxCap: body.dcMaxCap || 0,
             dcMinInvVal: body.dcMinInvVal || 0,
             dcValidYN: body.dcValidYN,
+            dcOccasion: body.dcOccasion || null,
             ModUsr: 'ADM'
         })
     },
@@ -109,6 +112,7 @@ module.exports = {
                 dcMaxCap = @dcMaxCap,
                 dcMinInvVal = @dcMinInvVal,
                 dcValidYN = @dcValidYN,
+                dcOccasion = @dcOccasion,
                 ModUsr = @ModUsr,
                 ModDt = GETDATE(),
                 ModTime = 0
@@ -131,6 +135,7 @@ module.exports = {
             dcMaxCap: sql.Decimal(18, 2),
             dcMinInvVal: sql.Decimal(18, 2),
             dcValidYN: sql.VarChar(1),
+            dcOccasion: sql.VarChar(50),
             ModUsr: sql.VarChar(5)
         },
 
@@ -150,6 +155,7 @@ module.exports = {
             dcMaxCap: body.dcMaxCap || 0,
             dcMinInvVal: body.dcMinInvVal || 0,
             dcValidYN: body.dcValidYN,
+            dcOccasion: body.dcOccasion || null,
             ModUsr: 'ADM'
         })
     },
