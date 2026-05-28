@@ -39,6 +39,7 @@ const yEcheMapOperation = (() => {
         // Ensure new lookups are also loaded
         if (!sources.includes('yCtg')) sources.push('yCtg');
         if (!sources.includes('yBOM')) sources.push('yBOM');
+        if (!sources.includes('yMet')) sources.push('yMet');
         await Promise.all(sources.map(s => fetchLookup(BASE_URL, s)));
     }
 
@@ -70,60 +71,185 @@ const yEcheMapOperation = (() => {
         return null;
     }
 
-    // Create edit control
+    // // Create edit control
+    // function createEditControl(col, value, rowData = {}) {
+    //     if (col.type === 'dropdown') {
+    //         const wrapper = document.createElement('span');
+
+    //         // For TargetValue, we need to populate options based on EchelonType
+    //         if (col.key === 'TargetValue') {
+    //             const echelonType = (rowData.EchelonType || '').trim();
+    //             let options = [];
+    //             if (echelonType === 'CATEGORY') options = lookupCache['yCtg'] || [];
+    //             else if (echelonType === 'GROUP') options = lookupCache['yBOM'] || [];
+
+    //             let html = `<select class="edit-field" data-field="${col.key}" style="width:100%;height:30px;">`;
+    //             html += `<option value="">--Select--</option>`;
+    //             options.forEach(opt => {
+    //                 const sel = (opt.value === value || opt.value === (value || '').trim()) ? ' selected' : '';
+    //                 html += `<option value="${opt.value}"${sel}>${opt.label}</option>`;
+    //             });
+    //             html += `</select>`;
+    //             wrapper.innerHTML = html;
+    //         } else {
+    //             wrapper.innerHTML = buildSelect(col, value);
+    //         }
+
+    //         const select = wrapper.firstChild;
+    //         select.dataset.originalValue = value || '';
+
+    //         // If it's EchelonType, add a listener to update TargetValue dropdown in the same row
+    //         if (col.key === 'EchelonType') {
+    //             select.addEventListener('change', (e) => {
+    //                 const newType = (e.target.value || '').trim();
+    //                 const row = e.target.closest('tr');
+    //                 if (!row) return;
+
+    //                 const targetValSelect = row.querySelector('[data-field="TargetValue"]');
+    //                 if (targetValSelect) {
+    //                     let newOptions = [];
+    //                     if (newType === 'CATEGORY') newOptions = lookupCache['yCtg'] || [];
+    //                     else if (newType === 'GROUP') newOptions = lookupCache['yBOM'] || [];
+
+    //                     targetValSelect.innerHTML = '<option value="">--Select--</option>';
+    //                     newOptions.forEach(opt => {
+    //                         const option = document.createElement('option');
+    //                         option.value = opt.value;
+    //                         option.textContent = opt.label;
+    //                         targetValSelect.appendChild(option);
+    //                     });
+    //                 }
+    //             });
+    //         }
+
+    //         return select;
+    //     }
+    //     return null;
+    // }
+
     function createEditControl(col, value, rowData = {}) {
-        if (col.type === 'dropdown') {
-            const wrapper = document.createElement('span');
+        if (col.type !== 'dropdown') return null;
 
-            // For TargetValue, we need to populate options based on EchelonType
-            if (col.key === 'TargetValue') {
-                const echelonType = (rowData.EchelonType || '').trim();
+        const wrapper = document.createElement('span');
+
+        // TargetValue special handling
+        if (col.key === 'TargetValue') {
+            const echelonType = (rowData.EchelonType || '').trim();
+
+            // DESIGN / SKU → text field
+            if (echelonType === 'DESIGN' || echelonType === 'SKU' || echelonType === 'ALL') {
+                wrapper.innerHTML = `
+                <input
+                    type="text"
+                    class="edit-field"
+                    data-field="TargetValue"
+                    value="${value || ''}"
+                    style="width:100%;height:30px;"
+                />`;
+            }
+            else {
                 let options = [];
-                if (echelonType === 'CATEGORY') options = lookupCache['yCtg'] || [];
-                else if (echelonType === 'GROUP') options = lookupCache['yBOM'] || [];
 
-                let html = `<select class="edit-field" data-field="${col.key}" style="width:100%;height:30px;">`;
-                html += `<option value="">--Select--</option>`;
+                if (echelonType === 'CATEGORY') {
+                    options = lookupCache['yCtg'] || [];
+                }
+                else if (echelonType === 'GROUP') {
+                    options = lookupCache['yBOM'] || [];
+                }
+                else if (echelonType === 'MAIN_MET') {
+                    options = lookupCache['yMet'] || [];
+                }
+
+                let html = `
+                <select class="edit-field"
+                        data-field="TargetValue"
+                        style="width:100%;height:30px;">
+                    <option value="">--Select--</option>
+            `;
+
                 options.forEach(opt => {
-                    const sel = (opt.value === value || opt.value === (value || '').trim()) ? ' selected' : '';
-                    html += `<option value="${opt.value}"${sel}>${opt.label}</option>`;
+                    const selected =
+                        opt.value === value ? 'selected' : '';
+
+                    html += `
+                    <option value="${opt.value}" ${selected}>
+                        ${opt.label}
+                    </option>`;
                 });
+
                 html += `</select>`;
                 wrapper.innerHTML = html;
-            } else {
-                wrapper.innerHTML = buildSelect(col, value);
             }
-
-            const select = wrapper.firstChild;
-            select.dataset.originalValue = value || '';
-
-            // If it's EchelonType, add a listener to update TargetValue dropdown in the same row
-            if (col.key === 'EchelonType') {
-                select.addEventListener('change', (e) => {
-                    const newType = (e.target.value || '').trim();
-                    const row = e.target.closest('tr');
-                    if (!row) return;
-
-                    const targetValSelect = row.querySelector('[data-field="TargetValue"]');
-                    if (targetValSelect) {
-                        let newOptions = [];
-                        if (newType === 'CATEGORY') newOptions = lookupCache['yCtg'] || [];
-                        else if (newType === 'GROUP') newOptions = lookupCache['yBOM'] || [];
-
-                        targetValSelect.innerHTML = '<option value="">--Select--</option>';
-                        newOptions.forEach(opt => {
-                            const option = document.createElement('option');
-                            option.value = opt.value;
-                            option.textContent = opt.label;
-                            targetValSelect.appendChild(option);
-                        });
-                    }
-                });
-            }
-
-            return select;
         }
-        return null;
+        else {
+            wrapper.innerHTML = buildSelect(col, value);
+        }
+
+        const control = wrapper.firstElementChild;
+
+        if (!control) return null;
+
+        control.dataset.originalValue = value || '';
+
+        // EchelonType dynamic change
+        if (col.key === 'EchelonType') {
+            control.addEventListener('change', e => {
+                const newType = e.target.value.trim();
+                const row = e.target.closest('tr');
+
+                if (!row) return;
+
+                const td = row
+                    .querySelector('[data-field="TargetValue"]')
+                    ?.closest('td');
+
+                if (!td) return;
+
+                // DESIGN / SKU -> text
+                if (newType === 'DESIGN' || newType === 'SKU' || newType === 'ALL') {
+                    td.innerHTML = `
+                    <input
+                        type="text"
+                        class="edit-field"
+                        data-field="TargetValue"
+                        style="width:100%;height:30px;"
+                    />
+                `;
+                    return;
+                }
+
+                let options = [];
+
+                if (newType === 'CATEGORY') {
+                    options = lookupCache['yCtg'] || [];
+                }
+                else if (newType === 'GROUP') {
+                    options = lookupCache['yBOM'] || [];
+                }
+                else if (newType === 'MAIN_MET') {
+                    options = lookupCache['yMet'] || [];
+                }
+
+                let html = `
+                <select class="edit-field"
+                        data-field="TargetValue"
+                        style="width:100%;height:30px;">
+                    <option value="">--Select--</option>`;
+
+                options.forEach(opt => {
+                    html += `
+                    <option value="${opt.value}">
+                        ${opt.label}
+                    </option>`;
+                });
+
+                html += `</select>`;
+
+                td.innerHTML = html;
+            });
+        }
+
+        return control;
     }
 
     async function loadData(BASE_URL, operation) {

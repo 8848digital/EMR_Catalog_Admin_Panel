@@ -478,6 +478,12 @@ async function getLookupData(conn) {
         from: `[${yDb}].[dbo].[yParam]`,
         whereConditions: ["PTyp = 'yFilter'", "PMCd = 'DmCtg'"],
         orderByClause: 'TRY_CAST(PValue3 AS INT)'
+      },
+      yMet: {
+        selectClause: `PSCd AS value, PDesc AS label`,
+        from: `[${yDb}].[dbo].[yParam]`,
+        whereConditions: ["PTyp = 'yMet'", "PMCd = 'M'"],
+        orderByClause: 'PSCd'
       }
     };
 
