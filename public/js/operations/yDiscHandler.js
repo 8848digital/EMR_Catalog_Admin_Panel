@@ -39,6 +39,12 @@ const yDiscOperation = (() => {
                 { value: 'ANNIVERSARY', label: 'ANNIVERSARY' },
                 { value: 'FIRST_PURCHASE', label: 'FIRST_PURCHASE' }
             ], width: '140px'
+        },
+        {
+            key: 'dcIsManual', label: 'Manual', editable: true, type: 'dropdown', staticOptions: [
+                { value: 'Y', label: 'Y' },
+                { value: 'N', label: 'N' }
+            ], width: '80px'
         }
     ];
 
