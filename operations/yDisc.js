@@ -21,7 +21,8 @@ module.exports = {
             dcMinInvVal,
             dcValidYN,
             dcOccasion,
-            dcIsManual
+            dcIsManual,
+            dcPrimaryYN
         `,
         from: `[${process.env.yDb}].[dbo].[yDisc]`,
         whereConditions: [],
@@ -46,9 +47,9 @@ module.exports = {
 
         rawQuery: `
             INSERT INTO [${process.env.yDb}].[dbo].[yDisc]
-            (dcPrmCd, dcRuleCd, dcTyp, dcValMode, dcVal, dcIngTgt, dcSlabBas, dcEchelon, dcExcYN, dcPriority, dcStkGrp, dcMaxCap, dcMinInvVal, dcValidYN, dcOccasion, dcIsManual, ModUsr, ModDt, ModTime)
+            (dcPrmCd, dcRuleCd, dcTyp, dcValMode, dcVal, dcIngTgt, dcSlabBas, dcEchelon, dcExcYN, dcPriority, dcStkGrp, dcMaxCap, dcMinInvVal, dcValidYN, dcOccasion, dcIsManual, dcPrimaryYN, ModUsr, ModDt, ModTime)
             VALUES 
-            (@dcPrmCd, @dcRuleCd, @dcTyp, @dcValMode, @dcVal, @dcIngTgt, @dcSlabBas, @dcEchelon, @dcExcYN, @dcPriority, @dcStkGrp, @dcMaxCap, @dcMinInvVal, @dcValidYN, @dcOccasion, @dcIsManual, @ModUsr, GETDATE(), 0)
+            (@dcPrmCd, @dcRuleCd, @dcTyp, @dcValMode, @dcVal, @dcIngTgt, @dcSlabBas, @dcEchelon, @dcExcYN, @dcPriority, @dcStkGrp, @dcMaxCap, @dcMinInvVal, @dcValidYN, @dcOccasion, @dcIsManual, @dcPrimaryYN, @ModUsr, GETDATE(), 0)
         `,
 
         inputTypeMap: {
@@ -68,6 +69,7 @@ module.exports = {
             dcValidYN: sql.VarChar(1),
             dcOccasion: sql.VarChar(50),
             dcIsManual: sql.Char(1),
+            dcPrimaryYN: sql.Char(1),
             ModUsr: sql.VarChar(5)
         },
 
@@ -88,6 +90,7 @@ module.exports = {
             dcValidYN: body.dcValidYN,
             dcOccasion: body.dcOccasion || null,
             dcIsManual: body.dcIsManual || 'N',
+            dcPrimaryYN: body.dcPrimaryYN || 'N',
             ModUsr: 'ADM'
         })
     },
@@ -117,6 +120,7 @@ module.exports = {
                 dcValidYN = @dcValidYN,
                 dcOccasion = @dcOccasion,
                 dcIsManual = @dcIsManual,
+                dcPrimaryYN = @dcPrimaryYN,
                 ModUsr = @ModUsr,
                 ModDt = GETDATE(),
                 ModTime = 0
@@ -141,6 +145,7 @@ module.exports = {
             dcValidYN: sql.VarChar(1),
             dcOccasion: sql.VarChar(50),
             dcIsManual: sql.Char(1),
+            dcPrimaryYN: sql.Char(1),
             ModUsr: sql.VarChar(5)
         },
 
@@ -162,6 +167,7 @@ module.exports = {
             dcValidYN: body.dcValidYN,
             dcOccasion: body.dcOccasion || null,
             dcIsManual: body.dcIsManual || 'N',
+            dcPrimaryYN: body.dcPrimaryYN || 'N',
             ModUsr: 'ADM'
         })
     },

@@ -73,8 +73,13 @@ module.exports = {
             if (body.TierOrder === undefined || body.TierOrder === null) throw new Error('Tier Order is required');
             if (body.MaxValue === undefined || body.MaxValue === null) throw new Error('Max Value is required');
             if (body.DiscountValue === undefined || body.DiscountValue === null) throw new Error('Discount Value is required');
-            if (!body.OldRuleCode) throw new Error('Original Rule Code is required');
-            if (body.OldTierOrder === undefined || body.OldTierOrder === null) throw new Error('Original Tier Order is required');
+            if (body.OldRuleCode) {
+                if (body.OldTierOrder === undefined || body.OldTierOrder === null) throw new Error('Original Tier Order is required');
+                if (body.OldMinValue === undefined || body.OldMinValue === null) throw new Error('Original Min Value is required');
+                if (body.OldMaxValue === undefined || body.OldMaxValue === null) throw new Error('Original Max Value is required');
+                if (body.OldTierName === undefined || body.OldTierName === null) throw new Error('Original Tier Name is required');
+                if (body.OldDiscountValue === undefined || body.OldDiscountValue === null) throw new Error('Original Discount Value is required');
+            }
             return true;
         },
 
@@ -91,7 +96,7 @@ module.exports = {
                 ModUsr = @ModUsr,
                 ModDt = GETDATE(),
                 ModTime = 0
-            WHERE PTyp = 'yDiscSlb' AND PMCd = @OldRuleCode AND PNum = @OldTierOrder
+            WHERE PTyp = 'yDiscSlb' AND PMCd = @OldRuleCode AND PNum = @OldTierOrder AND PValue = @OldMinValue AND PValue1 = @OldMaxValue AND PDesc = @OldTierName AND PNum1 = @OldDiscountValue
         `,
 
         inputTypeMap: {
@@ -104,6 +109,10 @@ module.exports = {
             DiscountValue: sql.Float,
             OldRuleCode: sql.VarChar(30),
             OldTierOrder: sql.Float,
+            OldMinValue: sql.VarChar(30),
+            OldMaxValue: sql.VarChar(120),
+            OldTierName: sql.VarChar(30),
+            OldDiscountValue: sql.Float,
             ModUsr: sql.VarChar(5)
         },
 
@@ -117,19 +126,31 @@ module.exports = {
             DiscountValue: parseFloat(body.DiscountValue || 0),
             OldRuleCode: body.OldRuleCode || '',
             OldTierOrder: parseFloat(body.OldTierOrder || 0),
+            OldMinValue: (body.OldMinValue ?? '').toString(),
+            OldMaxValue: (body.OldMaxValue ?? '').toString(),
+            OldTierName: body.OldTierName || '',
+            OldDiscountValue: parseFloat(body.OldDiscountValue || 0),
             ModUsr: 'ADM'
         })
     },
 
     deleteData: {
-        rawQuery: `DELETE FROM [${process.env.yDb}].[dbo].[yParam] WHERE PTyp = 'yDiscSlb' AND PMCd = @RuleCode AND PNum = @TierOrder`,
+        rawQuery: `DELETE FROM [${process.env.yDb}].[dbo].[yParam] WHERE PTyp = 'yDiscSlb' AND PMCd = @RuleCode AND PNum = @TierOrder AND PValue = @MinValue AND PValue1 = @MaxValue AND PDesc = @TierName AND PNum1 = @DiscountValue`,
         inputTypeMap: {
             RuleCode: sql.VarChar(30),
-            TierOrder: sql.Float
+            TierOrder: sql.Float,
+            MinValue: sql.VarChar(30),
+            MaxValue: sql.VarChar(120),
+            TierName: sql.VarChar(30),
+            DiscountValue: sql.Float
         },
         prepareInputValues: (body) => ({
             RuleCode: body.RuleCode,
-            TierOrder: parseFloat(body.TierOrder)
+            TierOrder: parseFloat(body.TierOrder),
+            MinValue: (body.MinValue ?? '').toString(),
+            MaxValue: (body.MaxValue ?? '').toString(),
+            TierName: body.TierName || '',
+            DiscountValue: parseFloat(body.DiscountValue || 0)
         })
     }
 };

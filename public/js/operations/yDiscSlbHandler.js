@@ -16,7 +16,7 @@ const yDiscSlbOperation = (() => {
     }
 
     function generateRowId(row) {
-        return `${row.RuleCode}|${row.TierOrder}`;
+        return `${row.RuleCode}|${row.TierOrder}|${row.MinValue}|${row.MaxValue}|${row.TierName}|${row.DiscountValue}`;
     }
 
     // Fetch lookup data from server
@@ -102,6 +102,10 @@ const yDiscSlbOperation = (() => {
                 operation: operation,
                 OldRuleCode: originalValues.RuleCode,
                 OldTierOrder: originalValues.TierOrder,
+                OldMinValue: originalValues.MinValue,
+                OldMaxValue: originalValues.MaxValue,
+                OldTierName: originalValues.TierName,
+                OldDiscountValue: originalValues.DiscountValue,
                 ...fields
             })
         });
@@ -164,15 +168,18 @@ const yDiscSlbOperation = (() => {
     }
 
     async function deleteRow(uniqueId, BASE_URL, operation) {
-        // uniqueId is RuleCode|TierOrder
-        const [ruleCode, tierOrder] = uniqueId.split('|');
+        const [ruleCode, tierOrder, minValue, maxValue, tierName, discountValue] = uniqueId.split('|');
         const response = await fetch(`${BASE_URL}/deleteData`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 operation: operation,
                 RuleCode: ruleCode,
-                TierOrder: tierOrder
+                TierOrder: tierOrder,
+                MinValue: minValue,
+                MaxValue: maxValue,
+                TierName: tierName,
+                DiscountValue: discountValue
             })
         });
 

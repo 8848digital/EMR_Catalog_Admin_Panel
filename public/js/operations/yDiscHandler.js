@@ -4,8 +4,8 @@ const yDiscOperation = (() => {
 
     const COLUMNS = [
         { key: 'dcIdNo', label: 'ID', hidden: true, editable: false, type: 'text', width: '60px' },
-        { key: 'dcPrmCd', label: 'Promo Code', editable: true, type: 'dropdown', lookupSource: 'yPromo', width: '160px' },
         { key: 'dcRuleCd', label: 'Rule Code', editable: true, type: 'text', width: '140px' },
+        { key: 'dcPrmCd', label: 'Promo Code', editable: true, type: 'dropdown', lookupSource: 'yPromo', width: '160px' },
         { key: 'dcTyp', label: 'Description', editable: true, type: 'text', width: '160px' },
         { key: 'dcValMode', label: 'Val Mode', editable: true, type: 'dropdown', lookupSource: 'yValMode', width: '110px' },
         { key: 'dcVal', label: 'Value', editable: true, type: 'number', width: '80px' },
@@ -45,6 +45,12 @@ const yDiscOperation = (() => {
                 { value: 'Y', label: 'Y' },
                 { value: 'N', label: 'N' }
             ], width: '80px'
+        },
+        {
+            key: 'dcPrimaryYN', label: 'Is Primary', editable: true, type: 'dropdown', staticOptions: [
+                { value: 'Y', label: 'Primary' },
+                { value: 'N', label: 'Non Primary' }
+            ], width: '130px'
         }
     ];
 
