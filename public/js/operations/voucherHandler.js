@@ -5,7 +5,7 @@ const voucherOperation = (() => {
         { key: 'VchIdNo', label: 'ID', hidden: true, editable: false, type: 'text', width: '60px' },
         { key: 'VchVbIdNo', label: 'Batch', editable: true, type: 'dropdown', lookupSource: 'voucherBatch', width: '200px' },
         { key: 'VchCd', label: 'Voucher Code', editable: true, type: 'text', width: '150px' },
-        { key: 'VchCmCd', label: 'Customer', editable: true, type: 'text', width: '100px' },
+        // { key: 'VchCmCd', label: 'Customer', editable: true, type: 'text', width: '100px' }, // removed from UI
         {
             key: 'VchSts', label: 'Status', editable: true, type: 'dropdown', staticOptions: [
                 { value: 'A', label: 'A - Active' },
@@ -14,9 +14,10 @@ const voucherOperation = (() => {
             ], width: '110px'
         },
         { key: 'VchUsedCnt', label: 'Used Count', editable: true, type: 'number', width: '80px' },
-        { key: 'VchIssDt', label: 'Issue Date', editable: true, type: 'date', width: '130px' },
-        { key: 'VchRedDt', label: 'Redeem Date', editable: true, type: 'date', width: '130px' },
+        { key: 'VchIssDt', label: 'Issue Date', editable: true, noEdit: true, type: 'date', width: '130px' }, // editable on add only
+        { key: 'VchRedDt', label: 'Redeem Date', editable: false, type: 'date', width: '130px' }, // never editable
         { key: 'VchExpDt', label: 'Expiry Date', editable: true, type: 'date', width: '130px' }
+        // VchTotVouchers: hidden, defaults to 1 — sent in saveNewRow
     ];
 
     function getColumns() { return COLUMNS; }
@@ -78,6 +79,18 @@ const voucherOperation = (() => {
             select.dataset.originalValue = value || '';
             return select;
         }
+        if (col.type === 'date') {
+            // noEdit:true = read-only during update (editable on add only); return null so cell stays as text
+            if (col.noEdit) return null;
+            const input = document.createElement('input');
+            input.type = 'date';
+            input.className = 'edit-field';
+            input.dataset.field = col.key;
+            input.value = value || '';
+            input.dataset.originalValue = value || '';
+            input.style.cssText = 'width:100%;height:30px;';
+            return input;
+        }
         return null;
     }
 
@@ -89,9 +102,15 @@ const voucherOperation = (() => {
         return result.data || [];
     }
 
-    async function saveRow(row, uniqueId, BASE_URL, operation) {
+    async function saveRow(row, uniqueId, BASE_URL, operation, originalValues) {
         const fields = {};
         row.querySelectorAll('.edit-field').forEach(el => { fields[el.dataset.field] = el.value.trim(); });
+        // Re-inject noEdit fields (e.g. VchIssDt) from original values so backend doesn't get NULL
+        COLUMNS.filter(col => col.editable && col.noEdit).forEach(col => {
+            if (!fields[col.key] && originalValues && originalValues[col.key] !== undefined) {
+                fields[col.key] = originalValues[col.key];
+            }
+        });
         const response = await fetch(`${BASE_URL}/updateData`, {
             method: 'PUT', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ operation, VchIdNo: uniqueId, ...fields })
@@ -109,7 +128,8 @@ const voucherOperation = (() => {
         const visibleColumns = COLUMNS.filter(col => !col.hidden);
         const cells = visibleColumns.map(col => {
             const ws = col.width ? `style="min-width:${col.width};"` : '';
-            if (!col.editable) return `<td ${ws}></td>`;
+            // noAdd:true = editable on update only; render as empty (read-only) cell when adding
+            if (!col.editable || col.noAdd) return `<td ${ws}></td>`;
             if (col.type === 'dropdown') return `<td ${ws}>${buildSelect(col, '')}</td>`;
             const t = col.type || 'text';
             return `<td ${ws}><input type="${t}" class="edit-field" data-field="${col.key}" style="width:100%;height:30px;"></td>`;
@@ -126,6 +146,8 @@ const voucherOperation = (() => {
     async function saveNewRow(row, BASE_URL, operation) {
         const fields = {};
         row.querySelectorAll('.edit-field').forEach(el => { fields[el.dataset.field] = el.value.trim(); });
+        // VchTotVouchers defaults to 1, not shown in UI
+        if (!fields.VchTotVouchers) fields.VchTotVouchers = '1';
         const response = await fetch(`${BASE_URL}/addData`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ operation, ...fields })

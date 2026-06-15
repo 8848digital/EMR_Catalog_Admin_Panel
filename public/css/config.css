@@ -1,3 +1,11 @@
+:root {
+  --light-cyan-accent: #E7F7F7;
+  --color-white: #ffffff;
+  --border-form: #E0E0E0;
+  --dark-green: #004040;
+  --color-black: #000000;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -5,9 +13,9 @@
 }
 
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f8fafc;
-  padding: 20px 0;
+  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--light-cyan-accent);
+  padding: 24px 0;
   min-height: 100vh;
 }
 
@@ -20,11 +28,11 @@ body {
 
 /* Filter Section */
 .filter-section {
-  background: #ffffff;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e2e8f0;
+  background: var(--color-white);
+  padding: 32px;
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border-form);
   margin-bottom: 24px;
   position: relative;
 }
@@ -71,7 +79,7 @@ h2::after {
   transform: translateX(-50%);
   width: 50px;
   height: 2px;
-  background: #2F7474;
+  background: #004040;
   border-radius: 1px;
 }
 
@@ -127,7 +135,7 @@ select {
 input:focus,
 select:focus {
   outline: none;
-  border-color: #2F7474;
+  border-color: #004040;
   /* Use primary teal on focus */
   box-shadow: 0 0 0 3px rgba(47, 116, 116, 0.1);
 }
@@ -138,7 +146,7 @@ input[readonly] {
 }
 
 button {
-  background: #2F7474;
+  background: #004040;
   color: white;
   border: none;
   padding: 10px 16px;
@@ -161,7 +169,7 @@ select option {
 select option:checked,
 select option:hover {
   background-color: #E8F2F2 !important;
-  color: #2F7474 !important;
+  color: #004040 !important;
 }
 
 
@@ -177,11 +185,11 @@ button:disabled {
 
 /* Results Section */
 .results-section {
-  background: #ffffff;
-  padding: 24px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-  border: 1px solid #e2e8f0;
+  background: var(--color-white);
+  padding: 32px;
+  border-radius: 24px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+  border: 1px solid var(--border-form);
 }
 
 .results-section.hidden {
@@ -401,7 +409,7 @@ tr.editing-row {
   width: 40px;
   height: 40px;
   border: 4px solid #f3f3f3;
-  border-top: 4px solid #2F7474;
+  border-top: 4px solid #004040;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -479,7 +487,7 @@ tr.editing-row {
 }
 
 .confirm-btn {
-  background: #2F7474;
+  background: #004040;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -676,7 +684,7 @@ tr.editing-row {
 
 /* Softer action icon colors */
 .edit-btn i {
-  color: #2F7474;
+  color: #004040;
   /* Use primary teal */
 }
 
@@ -762,7 +770,7 @@ tr.editing-row {
 }
 
 .custom-select.open .custom-select-trigger {
-  border-color: #2F7474;
+  border-color: #004040;
   box-shadow: 0 0 0 3px rgba(47, 116, 116, 0.1);
 }
 
@@ -796,7 +804,7 @@ tr.editing-row {
   visibility: visible;
   pointer-events: all;
   transform: translateY(0);
-  border-color: #2F7474;
+  border-color: #004040;
 }
 
 .custom-option {
@@ -814,14 +822,14 @@ tr.editing-row {
   cursor: pointer;
   background-color: #D7F1ED;
   /* Softer light mint highlight to match POS app */
-  color: #2F7474;
+  color: #004040;
   /* Primary teal text */
 }
 
 .custom-option.selected {
   background-color: #E8F2F2;
   /* Slightly different highlight for current selection */
-  color: #2F7474;
+  color: #004040;
   font-weight: 600;
 }
 

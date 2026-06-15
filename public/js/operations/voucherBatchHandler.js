@@ -18,12 +18,8 @@ const voucherBatchOperation = (() => {
             ], width: '80px'
         },
         { key: 'VbMaxUse', label: 'Max Use', editable: true, type: 'number', width: '80px' },
-        { key: 'VbTotVouchers', label: 'Total Vouchers', editable: true, type: 'number', width: '100px' },
-        {
-            key: 'VbOtpYN', label: 'OTP Req', editable: true, type: 'dropdown', staticOptions: [
-                { value: 'Y', label: 'Y' }, { value: 'N', label: 'N' }
-            ], width: '80px'
-        },
+        // { key: 'VbTotVouchers', label: 'Total Vouchers', editable: true, type: 'number', width: '100px' }, // hidden — defaults to 1
+        // { key: 'VbOtpYN', label: 'OTP Req', editable: true, type: 'dropdown', ... }, // hidden — defaults to N
         { key: 'VbValidFrm', label: 'Valid From', editable: true, type: 'date', width: '130px' },
         { key: 'VbValidTo', label: 'Valid To', editable: true, type: 'date', width: '130px' },
         {
@@ -111,6 +107,9 @@ const voucherBatchOperation = (() => {
     async function saveRow(row, uniqueId, BASE_URL, operation) {
         const fields = {};
         row.querySelectorAll('.edit-field').forEach(el => { fields[el.dataset.field] = el.value.trim(); });
+        // VbOtpYN and VbTotVouchers are hidden from UI — preserve defaults so backend doesn't get NULL
+        if (!fields.VbOtpYN) fields.VbOtpYN = 'N';
+        if (!fields.VbTotVouchers) fields.VbTotVouchers = '1';
         const response = await fetch(`${BASE_URL}/updateData`, {
             method: 'PUT', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ operation, VbIdNo: uniqueId, ...fields })
@@ -145,6 +144,9 @@ const voucherBatchOperation = (() => {
     async function saveNewRow(row, BASE_URL, operation) {
         const fields = {};
         row.querySelectorAll('.edit-field').forEach(el => { fields[el.dataset.field] = el.value.trim(); });
+        // VbTotVouchers defaults to 1, VbOtpYN defaults to N — not shown in UI
+        if (!fields.VbTotVouchers) fields.VbTotVouchers = '1';
+        if (!fields.VbOtpYN) fields.VbOtpYN = 'N';
         const response = await fetch(`${BASE_URL}/addData`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ operation, ...fields })

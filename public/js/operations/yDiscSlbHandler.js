@@ -4,7 +4,7 @@ const yDiscSlbOperation = (() => {
     const COLUMNS = [
         { key: 'RuleCode', label: 'Rule Code', editable: true, type: 'dropdown', lookupSource: 'yDiscRule', width: '150px' },
         { key: 'ValueMode', label: 'Value Mode', editable: true, type: 'dropdown', lookupSource: 'yValMode', width: '120px' },
-        { key: 'TierName', label: 'Tier Name', editable: true, type: 'text', width: '150px' },
+        // { key: 'TierName', label: 'Tier Name', editable: true, type: 'text', width: '150px' }, // removed from UI
         { key: 'TierOrder', label: 'Order', editable: true, type: 'number', width: '60px' },
         { key: 'MinValue', label: 'Min Val', editable: true, type: 'number', width: '100px' },
         { key: 'MaxValue', label: 'Max Val', editable: true, type: 'number', width: '100px' },
@@ -95,17 +95,22 @@ const yDiscSlbOperation = (() => {
             if (field) fields[field] = el.value.trim();
         });
 
+        // Parse original key values from uniqueId (reliable even when TierName is hidden from UI)
+        const [oldRuleCode, oldTierOrder, oldMinValue, oldMaxValue, oldTierName, oldDiscountValue] = uniqueId.split('|');
+        // TierName is hidden from UI — always set to '' going forward
+        if (!fields.TierName) fields.TierName = '';
+
         const response = await fetch(`${BASE_URL}/updateData`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 operation: operation,
-                OldRuleCode: originalValues.RuleCode,
-                OldTierOrder: originalValues.TierOrder,
-                OldMinValue: originalValues.MinValue,
-                OldMaxValue: originalValues.MaxValue,
-                OldTierName: originalValues.TierName,
-                OldDiscountValue: originalValues.DiscountValue,
+                OldRuleCode: oldRuleCode,
+                OldTierOrder: oldTierOrder,
+                OldMinValue: oldMinValue,
+                OldMaxValue: oldMaxValue,
+                OldTierName: oldTierName,
+                OldDiscountValue: oldDiscountValue,
                 ...fields
             })
         });
@@ -152,6 +157,8 @@ const yDiscSlbOperation = (() => {
             const field = el.dataset.field;
             if (field) fields[field] = el.value.trim();
         });
+        // TierName is hidden from UI — default to ''
+        if (!fields.TierName) fields.TierName = '';
 
         const response = await fetch(`${BASE_URL}/addData`, {
             method: 'POST',

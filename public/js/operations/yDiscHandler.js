@@ -11,12 +11,7 @@ const yDiscOperation = (() => {
         { key: 'dcVal', label: 'Value', editable: true, type: 'number', width: '80px' },
         { key: 'dcIngTgt', label: 'Ingredient Target', editable: true, type: 'dropdown', lookupSource: 'yIngTrgt', allowBlank: true, width: '120px' },
         { key: 'dcSlabBas', label: 'Slab Basis', editable: true, type: 'dropdown', lookupSource: 'ySlabBas', allowBlank: true, width: '130px' },
-        {
-            key: 'dcEchelon', label: 'Echelon', editable: true, type: 'dropdown', lookupSource: 'yEchelon', staticPrefix: [
-                { value: 'ALL', label: 'ALL' },
-                { value: 'MANUAL', label: 'MANUAL' }
-            ], width: '140px'
-        },
+        { key: 'dcEchelon', label: 'Echelon', editable: true, type: 'dropdown', lookupSource: 'yEchelon', width: '140px' },
         {
             key: 'dcExcYN', label: 'Exclusive', editable: true, type: 'dropdown', staticOptions: [
                 { value: 'Y', label: 'Y' },
@@ -25,8 +20,8 @@ const yDiscOperation = (() => {
         },
         { key: 'dcPriority', label: 'Priority', editable: true, type: 'number', width: '70px' },
         { key: 'dcStkGrp', label: 'stacking Group', editable: true, type: 'dropdown', lookupSource: 'yStckGrp', allowBlank: true, width: '130px' },
-        { key: 'dcMaxCap', label: 'Max Cap', editable: true, type: 'number', width: '80px' },
-        { key: 'dcMinInvVal', label: 'Min Inv', editable: true, type: 'number', width: '80px' },
+        // { key: 'dcMaxCap', label: 'Max Cap', editable: true, type: 'number', width: '80px' },      // hidden — default 0
+        // { key: 'dcMinInvVal', label: 'Min Inv', editable: true, type: 'number', width: '80px' },   // hidden — default 0
         {
             key: 'dcValidYN', label: 'Valid', editable: true, type: 'dropdown', staticOptions: [
                 { value: 'Y', label: 'Y' },
@@ -45,13 +40,14 @@ const yDiscOperation = (() => {
                 { value: 'Y', label: 'Y' },
                 { value: 'N', label: 'N' }
             ], width: '80px'
-        },
-        {
-            key: 'dcPrimaryYN', label: 'Is Primary', editable: true, type: 'dropdown', staticOptions: [
-                { value: 'Y', label: 'Primary' },
-                { value: 'N', label: 'Non Primary' }
-            ], width: '130px'
         }
+        // Uncomment below when Is Primary feature is ready:
+        // ,{
+        //     key: 'dcPrimaryYN', label: 'Is Primary', editable: true, type: 'dropdown', staticOptions: [
+        //         { value: 'Y', label: 'Primary' },
+        //         { value: 'N', label: 'Non Primary' }
+        //     ], width: '130px'
+        // }
     ];
 
     function getColumns() { return COLUMNS; }
