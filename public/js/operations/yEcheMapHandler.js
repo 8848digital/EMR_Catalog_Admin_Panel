@@ -156,7 +156,7 @@ const yEcheMapOperation = (() => {
                 else if (echelonType === 'GROUP') {
                     options = lookupCache['yBOM'] || [];
                 }
-                else if (echelonType === 'MAIN_MET') {
+                else if (echelonType === 'PER_GM') {
                     options = lookupCache['yMet'] || [];
                 }
 
@@ -226,7 +226,7 @@ const yEcheMapOperation = (() => {
                 else if (newType === 'GROUP') {
                     options = lookupCache['yBOM'] || [];
                 }
-                else if (newType === 'MAIN_MET') {
+                else if (newType === 'PER_GM') {
                     options = lookupCache['yMet'] || [];
                 }
 

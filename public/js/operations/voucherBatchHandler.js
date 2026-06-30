@@ -5,18 +5,8 @@ const voucherBatchOperation = (() => {
         { key: 'VbIdNo', label: 'ID', hidden: true, editable: false, type: 'text', width: '60px' },
         { key: 'VbDcIdNo', label: 'Discount Rule', editable: true, type: 'dropdown', lookupSource: 'yDisc', width: '200px' },
         { key: 'VbCd', label: 'Batch Code', editable: true, type: 'text', width: '150px' },
-        {
-            key: 'VbCtg', label: 'Category', editable: true, type: 'dropdown', staticOptions: [
-                { value: 'PROMO', label: 'PROMO' },
-                { value: 'CRM', label: 'CRM' },
-                { value: 'LOYALTY', label: 'LOYALTY' }
-            ], width: '100px'
-        },
-        {
-            key: 'VbSingYN', label: 'Single Use', editable: true, type: 'dropdown', staticOptions: [
-                { value: 'Y', label: 'Y' }, { value: 'N', label: 'N' }
-            ], width: '80px'
-        },
+        // { key: 'VbCtg', label: 'Category', ... }, // hidden — defaults to PROMO
+        // { key: 'VbSingYN', label: 'Single Use', ... }, // hidden — defaults to Y
         { key: 'VbMaxUse', label: 'Max Use', editable: true, type: 'number', width: '80px' },
         // { key: 'VbTotVouchers', label: 'Total Vouchers', editable: true, type: 'number', width: '100px' }, // hidden — defaults to 1
         // { key: 'VbOtpYN', label: 'OTP Req', editable: true, type: 'dropdown', ... }, // hidden — defaults to N
@@ -107,9 +97,11 @@ const voucherBatchOperation = (() => {
     async function saveRow(row, uniqueId, BASE_URL, operation) {
         const fields = {};
         row.querySelectorAll('.edit-field').forEach(el => { fields[el.dataset.field] = el.value.trim(); });
-        // VbOtpYN and VbTotVouchers are hidden from UI — preserve defaults so backend doesn't get NULL
+        // VbOtpYN, VbTotVouchers, VbSingYN, VbCtg are hidden from UI — preserve defaults so backend doesn't get NULL
         if (!fields.VbOtpYN) fields.VbOtpYN = 'N';
         if (!fields.VbTotVouchers) fields.VbTotVouchers = '1';
+        if (!fields.VbSingYN) fields.VbSingYN = 'Y';
+        if (!fields.VbCtg) fields.VbCtg = 'PROMO';
         const response = await fetch(`${BASE_URL}/updateData`, {
             method: 'PUT', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ operation, VbIdNo: uniqueId, ...fields })
@@ -144,9 +136,11 @@ const voucherBatchOperation = (() => {
     async function saveNewRow(row, BASE_URL, operation) {
         const fields = {};
         row.querySelectorAll('.edit-field').forEach(el => { fields[el.dataset.field] = el.value.trim(); });
-        // VbTotVouchers defaults to 1, VbOtpYN defaults to N — not shown in UI
+        // VbTotVouchers defaults to 1, VbOtpYN defaults to N, VbSingYN defaults to Y, VbCtg defaults to PROMO — not shown in UI
         if (!fields.VbTotVouchers) fields.VbTotVouchers = '1';
         if (!fields.VbOtpYN) fields.VbOtpYN = 'N';
+        if (!fields.VbSingYN) fields.VbSingYN = 'Y';
+        if (!fields.VbCtg) fields.VbCtg = 'PROMO';
         const response = await fetch(`${BASE_URL}/addData`, {
             method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ operation, ...fields })

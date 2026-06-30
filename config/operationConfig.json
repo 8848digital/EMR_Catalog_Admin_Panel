@@ -197,15 +197,15 @@
       "system": "POS"
     },
     {
-      "key": "add_voucher",
-      "label": "Manage Vouchers",
+      "key": "add_voucherBatch",
+      "label": "Manage Voucher Batches",
       "visible": true,
       "order": 29,
       "system": "POS"
     },
     {
-      "key": "add_voucherBatch",
-      "label": "Manage Voucher Batches",
+      "key": "add_voucher",
+      "label": "Manage Vouchers",
       "visible": true,
       "order": 30,
       "system": "POS"

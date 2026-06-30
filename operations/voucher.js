@@ -24,11 +24,11 @@ module.exports = {
 
     addData: {
         validate: (body) => {
-            const { VchVbIdNo, VchCd, VchSts, VchUsedCnt, VchIssDt } = body;
+            const { VchVbIdNo, VchCd, VchSts, VchIssDt } = body;
             if (!VchVbIdNo) throw new Error('Batch ID is required');
             if (!VchCd) throw new Error('Voucher Code is required');
             if (!VchSts) throw new Error('Status is required');
-            if (VchUsedCnt === undefined) throw new Error('Used Count is required');
+            // VchUsedCnt is not user-supplied — defaults to 0 on insert
             if (!VchIssDt) throw new Error('Issue Date is required');
             return true;
         },
@@ -57,7 +57,7 @@ module.exports = {
             VchCd: body.VchCd,
             VchCmCd: body.VchCmCd || '',
             VchSts: body.VchSts,
-            VchUsedCnt: parseInt(body.VchUsedCnt) || 0,
+            VchUsedCnt: 0, // always 0 on insert — not user-supplied
             VchIssDt: body.VchIssDt,
             VchRedDt: body.VchRedDt || null,
             VchExpDt: body.VchExpDt || null,
@@ -78,7 +78,7 @@ module.exports = {
                 VchCd = @VchCd,
                 VchCmCd = @VchCmCd,
                 VchSts = @VchSts,
-                VchUsedCnt = @VchUsedCnt,
+                -- VchUsedCnt intentionally excluded — preserved as-is in DB
                 VchIssDt = @VchIssDt,
                 VchRedDt = @VchRedDt,
                 VchExpDt = @VchExpDt,
@@ -94,7 +94,7 @@ module.exports = {
             VchCd: sql.VarChar(50),
             VchCmCd: sql.VarChar(20),
             VchSts: sql.VarChar(15),
-            VchUsedCnt: sql.Int,
+            // VchUsedCnt excluded from update — DB value is preserved
             VchIssDt: sql.SmallDateTime,
             VchRedDt: sql.SmallDateTime,
             VchExpDt: sql.SmallDateTime,
@@ -107,7 +107,7 @@ module.exports = {
             VchCd: body.VchCd,
             VchCmCd: body.VchCmCd || '',
             VchSts: body.VchSts,
-            VchUsedCnt: parseInt(body.VchUsedCnt) || 0,
+            // VchUsedCnt excluded — DB value is never overwritten on update
             VchIssDt: body.VchIssDt,
             VchRedDt: body.VchRedDt || null,
             VchExpDt: body.VchExpDt || null,

@@ -218,7 +218,8 @@ button:disabled {
 .table-container {
   width: 100%;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto;
+  max-height: calc(100vh - 280px);
   -webkit-overflow-scrolling: touch;
   touch-action: pan-x pan-y;
 }
@@ -243,6 +244,10 @@ th {
   font-size: 13px;
   min-width: 120px;
   white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  box-shadow: 0 1px 0 #e2e8f0;
 }
 
 td {
@@ -722,7 +727,8 @@ tr.editing-row {
 .table-container {
   width: 100%;
   overflow-x: auto;
-  overflow-y: hidden;
+  overflow-y: auto;
+  max-height: calc(100vh - 280px);
   padding-bottom: 10px;
   /* visible scrollbar */
 }

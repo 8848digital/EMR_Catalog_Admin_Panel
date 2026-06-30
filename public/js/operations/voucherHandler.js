@@ -13,9 +13,9 @@ const voucherOperation = (() => {
                 { value: 'E', label: 'E - Expired' }
             ], width: '110px'
         },
-        { key: 'VchUsedCnt', label: 'Used Count', editable: true, type: 'number', width: '80px' },
+        { key: 'VchUsedCnt', label: 'Used Count', editable: false, noUpdateField: true, type: 'number', width: '80px' }, // read-only: 0 on insert, preserved on update
         { key: 'VchIssDt', label: 'Issue Date', editable: true, noEdit: true, type: 'date', width: '130px' }, // editable on add only
-        { key: 'VchRedDt', label: 'Redeem Date', editable: false, type: 'date', width: '130px' }, // never editable
+        { key: 'VchRedDt', label: 'Last Redeem Date', editable: false, type: 'date', width: '130px' }, // never editable
         { key: 'VchExpDt', label: 'Expiry Date', editable: true, type: 'date', width: '130px' }
         // VchTotVouchers: hidden, defaults to 1 — sent in saveNewRow
     ];
@@ -111,6 +111,10 @@ const voucherOperation = (() => {
                 fields[col.key] = originalValues[col.key];
             }
         });
+        // Re-inject VchUsedCnt from originalValues so the DB value is never overwritten
+        if (originalValues && originalValues.VchUsedCnt !== undefined) {
+            fields.VchUsedCnt = originalValues.VchUsedCnt;
+        }
         const response = await fetch(`${BASE_URL}/updateData`, {
             method: 'PUT', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ operation, VchIdNo: uniqueId, ...fields })
@@ -146,6 +150,8 @@ const voucherOperation = (() => {
     async function saveNewRow(row, BASE_URL, operation) {
         const fields = {};
         row.querySelectorAll('.edit-field').forEach(el => { fields[el.dataset.field] = el.value.trim(); });
+        // VchUsedCnt defaults to 0 on new insert — not editable in UI
+        if (fields.VchUsedCnt === undefined || fields.VchUsedCnt === '') fields.VchUsedCnt = '0';
         // VchTotVouchers defaults to 1, not shown in UI
         if (!fields.VchTotVouchers) fields.VchTotVouchers = '1';
         const response = await fetch(`${BASE_URL}/addData`, {

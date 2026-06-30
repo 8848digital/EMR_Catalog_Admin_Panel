@@ -27,11 +27,11 @@ module.exports = {
 
     addData: {
         validate: (body) => {
-            const { VbDcIdNo, VbCd, VbCtg, VbSingYN, VbMaxUse, VbOtpYN, VbValidFrm, VbValidTo, VbValidYN } = body;
+            const { VbDcIdNo, VbCd, VbMaxUse, VbOtpYN, VbValidFrm, VbValidTo, VbValidYN } = body;
             if (!VbDcIdNo) throw new Error('Discount Rule is required');
             if (!VbCd) throw new Error('Batch Code is required');
-            if (!VbCtg) throw new Error('Category is required');
-            if (!VbSingYN) throw new Error('Single Use Y/N is required');
+            // VbCtg hidden from UI — defaults to 'PROMO', no validation needed
+            // VbSingYN is hidden from UI — defaults to 'Y', no validation needed
             if (VbMaxUse === undefined) throw new Error('Max Use is required');
             if (!VbOtpYN) throw new Error('OTP Y/N is required');
             if (!VbValidFrm) throw new Error('Valid From Date is required');
@@ -65,10 +65,10 @@ module.exports = {
         prepareInputValues: (body) => ({
             VbDcIdNo: body.VbDcIdNo,
             VbCd: body.VbCd,
-            VbCtg: body.VbCtg,
+            VbCtg: 'PROMO', // hidden from UI — always PROMO
             VbCrmTrig: body.VbCrmTrig || '',
             VbTotVouchers: parseInt(body.VbTotVouchers) || 0,
-            VbSingYN: body.VbSingYN,
+            VbSingYN: 'Y', // hidden from UI — always Y
             VbMaxUse: parseInt(body.VbMaxUse) || 1,
             VbOtpYN: body.VbOtpYN,
             VbValidFrm: body.VbValidFrm || null,
@@ -126,10 +126,10 @@ module.exports = {
             VbIdNo: body.VbIdNo,
             VbDcIdNo: body.VbDcIdNo,
             VbCd: body.VbCd,
-            VbCtg: body.VbCtg,
+            VbCtg: 'PROMO', // hidden from UI — always PROMO
             VbCrmTrig: body.VbCrmTrig || '',
             VbTotVouchers: parseInt(body.VbTotVouchers) || 0,
-            VbSingYN: body.VbSingYN,
+            VbSingYN: 'Y', // hidden from UI — always Y
             VbMaxUse: parseInt(body.VbMaxUse) || 1,
             VbOtpYN: body.VbOtpYN,
             VbValidFrm: body.VbValidFrm || null,
