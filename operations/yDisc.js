@@ -1,5 +1,13 @@
 const sql = require('mssql');
 
+const dcSCdExpr = `
+    COALESCE(
+        (SELECT TOP 1 PSCd FROM [${process.env.DB_DATABASE}].[dbo].[Param]
+          WHERE PTyp = 'LABSCD' AND PMCd = 'DISC' AND PValue1 = @dcIngTgt),
+        (SELECT TOP 1 PSCd FROM [${process.env.DB_DATABASE}].[dbo].[Param]
+          WHERE PTyp = 'LABSCD' AND PMCd = 'DISC' AND PValue1 = 'F')
+    )`;
+
 module.exports = {
     label: 'Manage Discounts',
 
@@ -22,7 +30,8 @@ module.exports = {
             dcValidYN,
             dcOccasion,
             dcIsManual,
-            dcPrimaryYN
+            dcPrimaryYN,
+            dcSCd
         `,
         from: `[${process.env.yDb}].[dbo].[yDisc]`,
         whereConditions: [],
@@ -47,9 +56,9 @@ module.exports = {
 
         rawQuery: `
             INSERT INTO [${process.env.yDb}].[dbo].[yDisc]
-            (dcPrmCd, dcRuleCd, dcTyp, dcValMode, dcVal, dcIngTgt, dcSlabBas, dcEchelon, dcExcYN, dcPriority, dcStkGrp, dcMaxCap, dcMinInvVal, dcValidYN, dcOccasion, dcIsManual, dcPrimaryYN, ModUsr, ModDt, ModTime)
-            VALUES 
-            (@dcPrmCd, @dcRuleCd, @dcTyp, @dcValMode, @dcVal, @dcIngTgt, @dcSlabBas, @dcEchelon, @dcExcYN, @dcPriority, @dcStkGrp, @dcMaxCap, @dcMinInvVal, @dcValidYN, @dcOccasion, @dcIsManual, @dcPrimaryYN, @ModUsr, GETDATE(), 0)
+            (dcPrmCd, dcRuleCd, dcTyp, dcValMode, dcVal, dcIngTgt, dcSlabBas, dcEchelon, dcExcYN, dcPriority, dcStkGrp, dcMaxCap, dcMinInvVal, dcValidYN, dcOccasion, dcIsManual, dcPrimaryYN, dcSCd, ModUsr, ModDt, ModTime)
+            VALUES
+            (@dcPrmCd, @dcRuleCd, @dcTyp, @dcValMode, @dcVal, @dcIngTgt, @dcSlabBas, @dcEchelon, @dcExcYN, @dcPriority, @dcStkGrp, @dcMaxCap, @dcMinInvVal, @dcValidYN, @dcOccasion, @dcIsManual, @dcPrimaryYN, ${dcSCdExpr}, @ModUsr, GETDATE(), 0)
         `,
 
         inputTypeMap: {
@@ -121,6 +130,7 @@ module.exports = {
                 dcOccasion = @dcOccasion,
                 dcIsManual = @dcIsManual,
                 dcPrimaryYN = @dcPrimaryYN,
+                dcSCd = ${dcSCdExpr},
                 ModUsr = @ModUsr,
                 ModDt = GETDATE(),
                 ModTime = 0
