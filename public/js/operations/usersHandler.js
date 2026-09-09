@@ -1,12 +1,12 @@
 const usersOperation = (() => {
   const COLUMNS = [
-    { key: 'UserName', label: 'Username', editable: false, type: 'text', width: '200px', maxlength: 50 },
-    { key: 'EmrMapUser', label: 'Emr Map User', editable: false, type: 'text', width: '200px', maxlength: 50 },
-    { key: 'UserAbbreviation', label: 'User Abbreviation', editable: false, type: 'text', width: '150px' },
-    { key: 'location', label: 'Location', editable: true, type: 'text', width: '150px', maxlength: 15 },
+    { key: 'UserName', label: 'Username', editable: false, type: 'text', width: '180px', maxlength: 50 },
+    { key: 'location', label: 'Location', editable: true, type: 'text', width: '140px', maxlength: 15 },
     { key: 'CoCd', label: 'CoCd', editable: true, type: 'text', width: '100px', maxlength: 5 },
-    { key: 'MaxItemDiscPer', label: 'Max Item Disc %', editable: true, type: 'text', width: '150px', maxlength: 10 },
-    { key: 'MaxSalesDiscPer', label: 'Max Sales Disc %', editable: true, type: 'text', width: '150px', maxlength: 10 }
+    { key: 'EmrMapUser', label: 'Emr Map User', editable: true, type: 'text', width: '180px', maxlength: 50 },
+    { key: 'Password', label: 'Password', editable: true, type: 'text', width: '160px', maxlength: 50 },
+    { key: 'UserAbbreviation', label: 'User Abbreviation', editable: false, type: 'text', width: '150px' },
+    { key: 'isStoreMNG', label: 'isStoreMNG', editable: true, type: 'select', options: ['Y', 'N'], width: '120px' }
   ];
 
   function getColumns() {
@@ -35,18 +35,22 @@ const usersOperation = (() => {
   }
 
   async function saveRow(row, uniqueId, BASE_URL, operation) {
-    const fields = ['UserName', 'EmrMapUser', 'location', 'CoCd', 'MaxItemDiscPer', 'MaxSalesDiscPer'];
-    const data = { operation: operation, OldUserName: uniqueId };
+    const fields = ['location', 'CoCd', 'EmrMapUser', 'Password', 'isStoreMNG'];
+    const data = { 
+      operation: operation, 
+      OldUserName: uniqueId,
+      UserName: uniqueId
+    };
 
     fields.forEach(field => {
       const input = row.querySelector(`[data-field="${field}"]`);
       if (input) {
-        data[field] = input.value.trim();
+        data[field] = input.value !== undefined ? input.value.trim() : '';
       } else {
         // For non-editable cells, get value from table cell text or original-value
         const cell = row.querySelector(`td[data-field="${field}"]`);
         if (cell) {
-          data[field] = (cell.dataset.originalValue || cell.textContent).trim();
+          data[field] = (cell.dataset.originalValue || cell.textContent || '').trim();
         }
       }
     });
@@ -86,18 +90,11 @@ const usersOperation = (() => {
     }
 
     const newRow = `<tr data-is-new="true" style="background-color: #e8e6dfff;">
-      <td style="min-width: 200px;">
+      <td style="min-width: 180px;">
         <input type="text" class="edit-field" data-field="UserName"
           maxlength="50" style="width: 100%; background-color: white;" placeholder="Username">
       </td>
-      <td style="min-width: 200px;">
-        <input type="text" class="edit-field" data-field="EmrMapUser"
-          maxlength="50" style="width: 100%; background-color: white;" placeholder="Emr Map User">
-      </td>
-      <td style="min-width: 150px;">
-        <span style="color: grey;">(DB Generated)</span>
-      </td>
-      <td style="min-width: 150px;">
+      <td style="min-width: 140px;">
         <input type="text" class="edit-field" data-field="location"
           maxlength="15" style="width: 100%; background-color: white;" placeholder="Location">
       </td>
@@ -105,13 +102,22 @@ const usersOperation = (() => {
         <input type="text" class="edit-field" data-field="CoCd"
           maxlength="5" style="width: 100%; background-color: white;" placeholder="CoCd">
       </td>
-      <td style="min-width: 150px;">
-        <input type="text" class="edit-field" data-field="MaxItemDiscPer"
-          maxlength="10" style="width: 100%; background-color: white;" placeholder="Max Item Disc %">
+      <td style="min-width: 180px;">
+        <input type="text" class="edit-field" data-field="EmrMapUser"
+          maxlength="50" style="width: 100%; background-color: white;" placeholder="Emr Map User">
+      </td>
+      <td style="min-width: 160px;">
+        <input type="text" class="edit-field" data-field="Password"
+          maxlength="50" style="width: 100%; background-color: white;" placeholder="Password">
       </td>
       <td style="min-width: 150px;">
-        <input type="text" class="edit-field" data-field="MaxSalesDiscPer"
-          maxlength="10" style="width: 100%; background-color: white;" placeholder="Max Sales Disc %">
+        <span style="color: grey;">(DB Generated)</span>
+      </td>
+      <td style="min-width: 120px;">
+        <select class="edit-field" data-field="isStoreMNG" style="width: 100%; background-color: white;">
+          <option value="Y">Y</option>
+          <option value="N" selected>N</option>
+        </select>
       </td>
       <td class="action-cell">
         <button class="action-btn save-btn" onclick="ConfigManager.saveNewRow()" title="Save">💾</button>
@@ -126,18 +132,22 @@ const usersOperation = (() => {
   }
 
   async function saveNewRow(row, BASE_URL, operation) {
-    const fields = ['UserName', 'EmrMapUser', 'location', 'CoCd', 'MaxItemDiscPer', 'MaxSalesDiscPer'];
+    const fields = ['UserName', 'location', 'CoCd', 'EmrMapUser', 'Password', 'isStoreMNG'];
     const data = { operation: operation };
 
     fields.forEach(field => {
       const input = row.querySelector(`[data-field="${field}"]`);
       if (input) {
-        data[field] = input.value.trim();
+        data[field] = input.value !== undefined ? input.value.trim() : '';
       }
     });
 
     if (!data.UserName) {
       throw new Error('UserName is required');
+    }
+
+    if (!data.isStoreMNG) {
+      data.isStoreMNG = 'N';
     }
 
     const modUsr = sessionStorage.getItem('modUsr') || '';

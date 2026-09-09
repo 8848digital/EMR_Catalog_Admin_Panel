@@ -26,12 +26,12 @@ module.exports = {
             "vPTyp = @vPTyp",
             `vPCoCd IN (
                 SELECT PSCd
-                FROM [8848EmrKC_Testing].[dbo].[yParam]
+                FROM [${process.env.yDb}].[dbo].[yParam] 
                 WHERE PTyp = 'YvchheAD'
                   AND PMCd = 'CoCd'
                 UNION
                 SELECT PMCd
-                FROM [8848EmrKC_Testing].[dbo].[yParam]
+                FROM [${process.env.yDb}].[dbo].[yParam]
                 WHERE PTyp = 'Ystkcocd'
             )`
         ],

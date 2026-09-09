@@ -6,12 +6,12 @@ module.exports = {
     getData: {
         selectClause: `
             UserName,
-            EmrMapUser,
-            UserAbbreviation,
             location,
             CoCd,
-            MaxItemDiscPer,
-            MaxSalesDiscPer
+            EmrMapUser,
+            Password,
+            UserAbbreviation,
+            isStoreMNG
         `,
         from: () => `[${process.env.yDb}].[dbo].[Users]`,
         whereConditions: [],
@@ -23,12 +23,10 @@ module.exports = {
     updateData: {
         validate: (body) => {
             const { UserName, OldUserName } = body;
+            const targetUserName = OldUserName || UserName;
 
-            if (!UserName || UserName.trim() === '') {
+            if (!targetUserName || targetUserName.trim() === '') {
                 throw new Error('UserName is required');
-            }
-            if (!OldUserName) {
-                throw new Error('Original UserName (OldUserName) is required');
             }
             return true;
         },
@@ -37,16 +35,23 @@ module.exports = {
             const { sql, exeQuery } = conn;
             const {
                 UserName,
-                EmrMapUser,
                 location,
                 CoCd,
-                MaxItemDiscPer,
-                MaxSalesDiscPer,
+                EmrMapUser,
+                Password,
+                isStoreMNG,
                 OldUserName
             } = body;
 
-            const newUserName = UserName.trim();
-            const oldUserName = OldUserName.trim();
+            const oldUserName = (OldUserName || UserName || '').trim();
+            const newUserName = (UserName || OldUserName || '').trim();
+
+            if (!oldUserName) {
+                throw new Error('Original UserName (OldUserName) is required');
+            }
+            if (!newUserName) {
+                throw new Error('UserName is required');
+            }
 
             const isUserNameChanged = newUserName !== oldUserName;
 
@@ -71,37 +76,54 @@ module.exports = {
                 }
             }
 
+            const setClauses = [
+                'UserName = @NewUserName',
+                'ModDt = GETDATE()'
+            ];
+            const inputTypeMap = {
+                NewUserName: sql.VarChar(50),
+                OldUserName: sql.VarChar(50)
+            };
+            const inputValuesMap = {
+                NewUserName: newUserName,
+                OldUserName: oldUserName
+            };
+
+            if (location !== undefined) {
+                setClauses.push('location = @location');
+                inputTypeMap.location = sql.VarChar(15);
+                inputValuesMap.location = location || null;
+            }
+            if (CoCd !== undefined) {
+                setClauses.push('CoCd = @CoCd');
+                inputTypeMap.CoCd = sql.VarChar(5);
+                inputValuesMap.CoCd = CoCd || null;
+            }
+            if (EmrMapUser !== undefined) {
+                setClauses.push('EmrMapUser = @EmrMapUser');
+                inputTypeMap.EmrMapUser = sql.VarChar(50);
+                inputValuesMap.EmrMapUser = EmrMapUser || null;
+            }
+            if (Password !== undefined) {
+                setClauses.push('Password = @Password');
+                inputTypeMap.Password = sql.VarChar(50);
+                inputValuesMap.Password = Password || null;
+            }
+            if (isStoreMNG !== undefined) {
+                setClauses.push('isStoreMNG = @isStoreMNG');
+                inputTypeMap.isStoreMNG = sql.VarChar(5);
+                inputValuesMap.isStoreMNG = isStoreMNG != null && String(isStoreMNG).trim() !== '' ? String(isStoreMNG).trim() : 'N';
+            }
+
             const updateQuery = {
                 rawQuery: `
                     UPDATE [${process.env.yDb}].[dbo].[Users]
                     SET 
-                        UserName = @NewUserName,
-                        EmrMapUser = @EmrMapUser,
-                        location = @location,
-                        CoCd = @CoCd,
-                        MaxItemDiscPer = @MaxItemDiscPer,
-                        MaxSalesDiscPer = @MaxSalesDiscPer,
-                        ModDt = GETDATE()
+                        ${setClauses.join(',\n                        ')}
                     WHERE UserName = @OldUserName
                 `,
-                inputTypeMap: {
-                    NewUserName: sql.VarChar(50),
-                    EmrMapUser: sql.VarChar(50),
-                    location: sql.VarChar(15),
-                    CoCd: sql.VarChar(5),
-                    MaxItemDiscPer: sql.VarChar(10),
-                    MaxSalesDiscPer: sql.VarChar(10),
-                    OldUserName: sql.VarChar(50)
-                },
-                inputValuesMap: {
-                    NewUserName: newUserName,
-                    EmrMapUser: EmrMapUser || null,
-                    location: location || null,
-                    CoCd: CoCd || null,
-                    MaxItemDiscPer: MaxItemDiscPer || null,
-                    MaxSalesDiscPer: MaxSalesDiscPer || null,
-                    OldUserName: oldUserName
-                },
+                inputTypeMap,
+                inputValuesMap,
                 returnRaw: true
             };
 
@@ -131,11 +153,11 @@ module.exports = {
             const { sql, exeQuery } = conn;
             const {
                 UserName,
-                EmrMapUser,
                 location,
                 CoCd,
-                MaxItemDiscPer,
-                MaxSalesDiscPer
+                EmrMapUser,
+                Password,
+                isStoreMNG
             } = body;
 
             const trimmedUserName = UserName.trim();
@@ -159,25 +181,61 @@ module.exports = {
             const insertQuery = {
                 rawQuery: `
                     INSERT INTO [${process.env.yDb}].[dbo].[Users]
-                    (UserName, EmrMapUser, location, CoCd, MaxItemDiscPer, MaxSalesDiscPer, CreatedAt, ModDt, SyncStock)
+                    (
+                        UserName,
+                        DefCurrency,
+                        DefLang,
+                        CreatedAt,
+                        ModDt,
+                        RefreshRt,
+                        LabRt,
+                        RMCtg,
+                        SyncStock,
+                        Verticals,
+                        location,
+                        CoCd,
+                        EmrMapUser,
+                        Password,
+                        MaxItemDiscPer,
+                        MaxSalesDiscPer,
+                        isStoreMNG
+                    )
                     VALUES
-                    (@UserName, @EmrMapUser, @location, @CoCd, @MaxItemDiscPer, @MaxSalesDiscPer, GETDATE(), GETDATE(), 1)
+                    (
+                        @UserName,
+                        'Rs',
+                        'EN',
+                        GETDATE(),
+                        GETDATE(),
+                        0.00,
+                        0.00,
+                        '',
+                        0,
+                        '',
+                        @location,
+                        @CoCd,
+                        @EmrMapUser,
+                        @Password,
+                        '20',
+                        '20',
+                        @isStoreMNG
+                    )
                 `,
                 inputTypeMap: {
                     UserName: sql.VarChar(50),
-                    EmrMapUser: sql.VarChar(50),
                     location: sql.VarChar(15),
                     CoCd: sql.VarChar(5),
-                    MaxItemDiscPer: sql.VarChar(10),
-                    MaxSalesDiscPer: sql.VarChar(10)
+                    EmrMapUser: sql.VarChar(50),
+                    Password: sql.VarChar(50),
+                    isStoreMNG: sql.VarChar(5)
                 },
                 inputValuesMap: {
                     UserName: trimmedUserName,
-                    EmrMapUser: EmrMapUser || null,
                     location: location || null,
                     CoCd: CoCd || null,
-                    MaxItemDiscPer: MaxItemDiscPer || null,
-                    MaxSalesDiscPer: MaxSalesDiscPer || null
+                    EmrMapUser: EmrMapUser || null,
+                    Password: Password || null,
+                    isStoreMNG: isStoreMNG != null ? String(isStoreMNG).trim() : ''
                 },
                 returnRaw: true
             };
