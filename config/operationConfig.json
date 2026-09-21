@@ -15,234 +15,248 @@
       "system": "POS"
     },
     {
+      "key": "add_ySalesPerson",
+      "label": "Manage Sales Person",
+      "visible": true,
+      "order": 3,
+      "system": "POS"
+    },
+    {
+      "key": "add_yRazorpay",
+      "label": "Manage Razorpay",
+      "visible": true,
+      "order": 4,
+      "system": "POS"
+    },
+    {
       "key": "add_ctg_filter",
       "label": "Manage Category Filter",
       "visible": true,
-      "order": 3,
+      "order": 5,
       "system": "KC"
     },
     {
       "key": "add_cs_grd",
       "label": "Manage Colour Stone Grade",
       "visible": true,
-      "order": 4,
+      "order": 6,
       "system": "KC"
     },
     {
       "key": "add_cust_mp",
       "label": "Manage Customer Mapping",
       "visible": true,
-      "order": 5,
+      "order": 7,
       "system": "KC"
     },
     {
       "key": "add_custMst",
       "label": "Manage Customer Multiplier",
       "visible": true,
-      "order": 6,
+      "order": 8,
       "system": "Euro"
     },
     {
       "key": "add_design_size",
       "label": "Manage Design Size",
       "visible": true,
-      "order": 7,
+      "order": 9,
       "system": "KC"
     },
     {
       "key": "add_dia_grd",
       "label": "Manage Diamond Grade",
       "visible": true,
-      "order": 8,
+      "order": 10,
       "system": "KC"
     },
     {
       "key": "add_email",
       "label": "Manage Email Configuration",
       "visible": true,
-      "order": 9,
+      "order": 11,
       "system": "Euro"
     },
     {
       "key": "add_met_cd",
       "label": "Manage Metal Code",
       "visible": true,
-      "order": 10,
+      "order": 12,
       "system": "KC"
     },
     {
       "key": "add_met_col",
       "label": "Manage Metal Color",
       "visible": true,
-      "order": 11,
+      "order": 13,
       "system": "KC"
     },
     {
       "key": "add_met_kt",
       "label": "Manage Metal purity",
       "visible": true,
-      "order": 12,
+      "order": 14,
       "system": "KC"
     },
     {
       "key": "add_pos",
       "label": "Manage POS",
       "visible": true,
-      "order": 13,
+      "order": 15,
       "system": "POS"
     },
     {
       "key": "add_pos_invoice",
       "label": "Manage POS Invoice",
       "visible": true,
-      "order": 14,
+      "order": 16,
       "system": "POS"
     },
     {
       "key": "add_rg_filter",
       "label": "Manage Range Filter",
       "visible": true,
-      "order": 15,
+      "order": 17,
       "system": "KC"
     },
     {
       "key": "add_role",
       "label": "Manage Roles",
       "visible": true,
-      "order": 16,
+      "order": 18,
       "system": "KC"
     },
     {
       "key": "add_sls_prsn",
       "label": "Manage Sales Person",
       "visible": true,
-      "order": 17,
+      "order": 19,
       "system": "KC"
     },
     {
       "key": "add_usr_map",
       "label": "Manage User Mapping",
       "visible": true,
-      "order": 18,
+      "order": 20,
       "system": "KC"
     },
     {
       "key": "add_Users",
       "label": "Manage Users",
       "visible": true,
-      "order": 19,
+      "order": 21,
       "system": "POS"
     },
     {
       "key": "add_yValMode",
       "label": "Manage Value Modes",
       "visible": true,
-      "order": 20,
+      "order": 22,
       "system": "POS"
     },
     {
       "key": "add_yIngTrgt",
       "label": "Manage Ingredient Targets",
       "visible": true,
-      "order": 21,
+      "order": 23,
       "system": "POS"
     },
     {
       "key": "add_yEchelon",
       "label": "Manage Echelon Definitions",
       "visible": true,
-      "order": 22,
+      "order": 24,
       "system": "POS"
     },
     {
       "key": "add_ySlabBas",
       "label": "Manage Slab Basis",
       "visible": true,
-      "order": 23,
+      "order": 25,
       "system": "POS"
     },
     {
       "key": "add_yPromo",
       "label": "Manage Promotions",
       "visible": true,
-      "order": 24,
+      "order": 26,
       "system": "POS"
     },
     {
       "key": "add_yStckGrp",
       "label": "Manage Stack Groups",
       "visible": true,
-      "order": 25,
+      "order": 27,
       "system": "POS"
     },
     {
       "key": "add_yDisc",
       "label": "Manage Discounts",
       "visible": true,
-      "order": 26,
+      "order": 28,
       "system": "POS"
     },
-        {
+    {
       "key": "add_yEcheMap",
       "label": "Manage Echelon Mappings",
       "visible": true,
-      "order": 27,
+      "order": 29,
       "system": "POS"
     },
     {
       "key": "add_yDiscSlb",
       "label": "Manage Discount Slabs",
       "visible": true,
-      "order": 28,
+      "order": 30,
       "system": "POS"
     },
     {
       "key": "add_voucherBatch",
       "label": "Manage Voucher Batches",
       "visible": true,
-      "order": 29,
+      "order": 31,
       "system": "POS"
     },
     {
       "key": "add_voucher",
       "label": "Manage Vouchers",
       "visible": true,
-      "order": 30,
+      "order": 32,
       "system": "POS"
     },
     {
       "key": "add_yDiscFoc",
       "label": "Manage Discount Focus",
       "visible": false,
-      "order": 31,
+      "order": 33,
       "system": "POS"
     },
     {
       "key": "add_yEmpCeil",
       "label": "Manage Employee Ceilings",
       "visible": false,
-      "order": 32,
+      "order": 34,
       "system": "POS"
     },
     {
       "key": "add_yDiscTyp",
       "label": "Manage Discount Types",
       "visible": false,
-      "order": 33,
+      "order": 35,
       "system": "POS"
     },
     {
       "key": "add_yOrdLvl",
       "label": "Manage Order Levels",
       "visible": false,
-      "order": 34,
+      "order": 36,
       "system": "POS"
     },
     {
       "key": "add_yDStore",
       "label": "Manage Stores",
       "visible": false,
-      "order": 35,
+      "order": 37,
       "system": "POS"
     }
   ]

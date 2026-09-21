@@ -43,7 +43,9 @@ const ConfigManager = (() => {
     'add_yDStore': yDStoreOperation,
     'add_yOrdLvl': yOrdLvlOperation,
     'add_yDiscFoc': yDiscFocOperation,
-    'add_yEmpCeil': yEmpCeilOperation
+    'add_yEmpCeil': yEmpCeilOperation,
+    'add_ySalesPerson': ySalesPersonOperation,
+    'add_yRazorpay': yRazorpayOperation
   };
 
   // Helper function to escape HTML
