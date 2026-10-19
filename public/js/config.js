@@ -45,7 +45,8 @@ const ConfigManager = (() => {
     'add_yDiscFoc': yDiscFocOperation,
     'add_yEmpCeil': yEmpCeilOperation,
     'add_ySalesPerson': ySalesPersonOperation,
-    'add_yRazorpay': yRazorpayOperation
+    'add_yRazorpay': yRazorpayOperation,
+    'add_yFestPrcAdj': yFestPrcAdjOperation
   };
 
   // Helper function to escape HTML

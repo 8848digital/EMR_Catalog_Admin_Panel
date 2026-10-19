@@ -11,7 +11,9 @@ module.exports = {
             EmrMapUser,
             Password,
             UserAbbreviation,
-            isStoreMNG
+            isStoreMNG,
+            MaxItemDiscPer,
+            MaxSalesDiscPer
         `,
         from: () => `[${process.env.yDb}].[dbo].[Users]`,
         whereConditions: [],
@@ -40,6 +42,8 @@ module.exports = {
                 EmrMapUser,
                 Password,
                 isStoreMNG,
+                MaxItemDiscPer,
+                MaxSalesDiscPer,
                 OldUserName
             } = body;
 
@@ -114,6 +118,16 @@ module.exports = {
                 inputTypeMap.isStoreMNG = sql.VarChar(5);
                 inputValuesMap.isStoreMNG = isStoreMNG != null && String(isStoreMNG).trim() !== '' ? String(isStoreMNG).trim() : 'N';
             }
+            if (MaxItemDiscPer !== undefined) {
+                setClauses.push('MaxItemDiscPer = @MaxItemDiscPer');
+                inputTypeMap.MaxItemDiscPer = sql.VarChar(10);
+                inputValuesMap.MaxItemDiscPer = MaxItemDiscPer !== null ? String(MaxItemDiscPer).trim() : '0';
+            }
+            if (MaxSalesDiscPer !== undefined) {
+                setClauses.push('MaxSalesDiscPer = @MaxSalesDiscPer');
+                inputTypeMap.MaxSalesDiscPer = sql.VarChar(10);
+                inputValuesMap.MaxSalesDiscPer = MaxSalesDiscPer !== null ? String(MaxSalesDiscPer).trim() : '0';
+            }
 
             const updateQuery = {
                 rawQuery: `
@@ -157,7 +171,9 @@ module.exports = {
                 CoCd,
                 EmrMapUser,
                 Password,
-                isStoreMNG
+                isStoreMNG,
+                MaxItemDiscPer,
+                MaxSalesDiscPer
             } = body;
 
             const trimmedUserName = UserName.trim();
@@ -216,8 +232,8 @@ module.exports = {
                         @CoCd,
                         @EmrMapUser,
                         @Password,
-                        '20',
-                        '20',
+                        @MaxItemDiscPer,
+                        @MaxSalesDiscPer,
                         @isStoreMNG
                     )
                 `,
@@ -227,7 +243,9 @@ module.exports = {
                     CoCd: sql.VarChar(5),
                     EmrMapUser: sql.VarChar(50),
                     Password: sql.VarChar(50),
-                    isStoreMNG: sql.VarChar(5)
+                    isStoreMNG: sql.VarChar(5),
+                    MaxItemDiscPer: sql.VarChar(10),
+                    MaxSalesDiscPer: sql.VarChar(10)
                 },
                 inputValuesMap: {
                     UserName: trimmedUserName,
@@ -235,7 +253,9 @@ module.exports = {
                     CoCd: CoCd || null,
                     EmrMapUser: EmrMapUser || null,
                     Password: Password || null,
-                    isStoreMNG: isStoreMNG != null ? String(isStoreMNG).trim() : ''
+                    isStoreMNG: isStoreMNG != null ? String(isStoreMNG).trim() : '',
+                    MaxItemDiscPer: MaxItemDiscPer !== undefined && MaxItemDiscPer !== null ? String(MaxItemDiscPer).trim() : '20',
+                    MaxSalesDiscPer: MaxSalesDiscPer !== undefined && MaxSalesDiscPer !== null ? String(MaxSalesDiscPer).trim() : '20'
                 },
                 returnRaw: true
             };

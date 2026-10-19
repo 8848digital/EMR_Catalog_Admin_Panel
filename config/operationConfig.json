@@ -17,14 +17,14 @@
     {
       "key": "add_ySalesPerson",
       "label": "Manage Sales Person",
-      "visible": true,
+      "visible": false,
       "order": 3,
       "system": "POS"
     },
     {
       "key": "add_yRazorpay",
       "label": "Manage Razorpay",
-      "visible": true,
+      "visible": false,
       "order": 4,
       "system": "POS"
     },
@@ -148,115 +148,122 @@
       "system": "POS"
     },
     {
+      "key": "add_yFestPrcAdj",
+      "label": "Manage Festival Price Adjustment",
+      "visible": true,
+      "order": 22,
+      "system": "POS"
+    },
+    {
       "key": "add_yValMode",
       "label": "Manage Value Modes",
       "visible": true,
-      "order": 22,
+      "order": 23,
       "system": "POS"
     },
     {
       "key": "add_yIngTrgt",
       "label": "Manage Ingredient Targets",
       "visible": true,
-      "order": 23,
+      "order": 24,
       "system": "POS"
     },
     {
       "key": "add_yEchelon",
       "label": "Manage Echelon Definitions",
       "visible": true,
-      "order": 24,
+      "order": 25,
       "system": "POS"
     },
     {
       "key": "add_ySlabBas",
       "label": "Manage Slab Basis",
       "visible": true,
-      "order": 25,
+      "order": 26,
       "system": "POS"
     },
     {
       "key": "add_yPromo",
       "label": "Manage Promotions",
       "visible": true,
-      "order": 26,
+      "order": 27,
       "system": "POS"
     },
     {
       "key": "add_yStckGrp",
       "label": "Manage Stack Groups",
       "visible": true,
-      "order": 27,
+      "order": 28,
       "system": "POS"
     },
     {
       "key": "add_yDisc",
       "label": "Manage Discounts",
       "visible": true,
-      "order": 28,
+      "order": 29,
       "system": "POS"
     },
     {
       "key": "add_yEcheMap",
       "label": "Manage Echelon Mappings",
       "visible": true,
-      "order": 29,
+      "order": 30,
       "system": "POS"
     },
     {
       "key": "add_yDiscSlb",
       "label": "Manage Discount Slabs",
       "visible": true,
-      "order": 30,
+      "order": 31,
       "system": "POS"
     },
     {
       "key": "add_voucherBatch",
       "label": "Manage Voucher Batches",
       "visible": true,
-      "order": 31,
+      "order": 32,
       "system": "POS"
     },
     {
       "key": "add_voucher",
       "label": "Manage Vouchers",
       "visible": true,
-      "order": 32,
+      "order": 33,
       "system": "POS"
     },
     {
       "key": "add_yDiscFoc",
       "label": "Manage Discount Focus",
       "visible": false,
-      "order": 33,
+      "order": 34,
       "system": "POS"
     },
     {
       "key": "add_yEmpCeil",
       "label": "Manage Employee Ceilings",
       "visible": false,
-      "order": 34,
+      "order": 35,
       "system": "POS"
     },
     {
       "key": "add_yDiscTyp",
       "label": "Manage Discount Types",
       "visible": false,
-      "order": 35,
+      "order": 36,
       "system": "POS"
     },
     {
       "key": "add_yOrdLvl",
       "label": "Manage Order Levels",
       "visible": false,
-      "order": 36,
+      "order": 37,
       "system": "POS"
     },
     {
       "key": "add_yDStore",
       "label": "Manage Stores",
       "visible": false,
-      "order": 37,
+      "order": 38,
       "system": "POS"
     }
   ]

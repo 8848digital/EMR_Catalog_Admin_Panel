@@ -6,7 +6,9 @@ const usersOperation = (() => {
     { key: 'EmrMapUser', label: 'Emr Map User', editable: true, type: 'text', width: '180px', maxlength: 50 },
     { key: 'Password', label: 'Password', editable: true, type: 'text', width: '160px', maxlength: 50 },
     { key: 'UserAbbreviation', label: 'User Abbreviation', editable: false, type: 'text', width: '150px' },
-    { key: 'isStoreMNG', label: 'isStoreMNG', editable: true, type: 'select', options: ['Y', 'N'], width: '120px' }
+    { key: 'isStoreMNG', label: 'isStoreMNG', editable: true, type: 'select', options: ['Y', 'N'], width: '120px' },
+    { key: 'MaxItemDiscPer', label: 'Max Item Disc %', editable: true, type: 'text', width: '140px', maxlength: 10 },
+    { key: 'MaxSalesDiscPer', label: 'Max Sales Disc %', editable: true, type: 'text', width: '140px', maxlength: 10 }
   ];
 
   function getColumns() {
@@ -35,7 +37,7 @@ const usersOperation = (() => {
   }
 
   async function saveRow(row, uniqueId, BASE_URL, operation) {
-    const fields = ['location', 'CoCd', 'EmrMapUser', 'Password', 'isStoreMNG'];
+    const fields = ['location', 'CoCd', 'EmrMapUser', 'Password', 'isStoreMNG', 'MaxItemDiscPer', 'MaxSalesDiscPer'];
     const data = { 
       operation: operation, 
       OldUserName: uniqueId,
@@ -119,6 +121,14 @@ const usersOperation = (() => {
           <option value="N" selected>N</option>
         </select>
       </td>
+      <td style="min-width: 140px;">
+        <input type="text" class="edit-field" data-field="MaxItemDiscPer"
+          maxlength="10" style="width: 100%; background-color: white;" placeholder="Max Item Disc %">
+      </td>
+      <td style="min-width: 140px;">
+        <input type="text" class="edit-field" data-field="MaxSalesDiscPer"
+          maxlength="10" style="width: 100%; background-color: white;" placeholder="Max Sales Disc %">
+      </td>
       <td class="action-cell">
         <button class="action-btn save-btn" onclick="ConfigManager.saveNewRow()" title="Save">💾</button>
         <button class="action-btn cancel-btn" onclick="ConfigManager.cancelNewRow()" title="Cancel">❌</button>
@@ -132,7 +142,7 @@ const usersOperation = (() => {
   }
 
   async function saveNewRow(row, BASE_URL, operation) {
-    const fields = ['UserName', 'location', 'CoCd', 'EmrMapUser', 'Password', 'isStoreMNG'];
+    const fields = ['UserName', 'location', 'CoCd', 'EmrMapUser', 'Password', 'isStoreMNG', 'MaxItemDiscPer', 'MaxSalesDiscPer'];
     const data = { operation: operation };
 
     fields.forEach(field => {

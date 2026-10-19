@@ -35,6 +35,7 @@ const yDiscFocOperation = require('./yDiscFoc');
 const yEmpCeilOperation = require('./yEmpCeil');
 const ySalesPersonOperation = require('./ySalesPerson');
 const yRazorpayOperation = require('./yRazorpay');
+const yFestPrcAdjOperation = require('./yFestPrcAdj');
 
 module.exports = {
     add_custMst: custMstOperation,
@@ -73,5 +74,6 @@ module.exports = {
     add_yDiscFoc: yDiscFocOperation,
     add_yEmpCeil: yEmpCeilOperation,
     add_ySalesPerson: ySalesPersonOperation,
-    add_yRazorpay: yRazorpayOperation
+    add_yRazorpay: yRazorpayOperation,
+    add_yFestPrcAdj: yFestPrcAdjOperation
 };
